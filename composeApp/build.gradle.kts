@@ -42,9 +42,13 @@ kotlin {
     }
     commonMain.dependencies {
       implementation(projects.platform.data)
+      implementation(projects.platform.domain)
       implementation(projects.platform.model)
 
       implementation(libs.haze)
+
+      implementation(libs.coil.compose)
+      implementation(libs.coil.network.ktor3)
 
       implementation(compose.runtime)
       implementation(compose.material3)

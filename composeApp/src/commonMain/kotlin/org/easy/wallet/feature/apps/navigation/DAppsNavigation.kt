@@ -16,11 +16,11 @@ data object DAppsRoute
 
 fun NavController.navigateToDApps(navOptions: NavOptions) = navigate(route = DAppsRoute, navOptions)
 
-fun NavGraphBuilder.appsSection(readingDestination: NavGraphBuilder.() -> Unit,) {
+fun NavGraphBuilder.appsSection(appsNestedGraph: NavGraphBuilder.() -> Unit,) {
   navigation<DAppsBaseRoute>(startDestination = DAppsRoute) {
     composable<DAppsRoute> {
       DAppsScreen()
     }
-    readingDestination()
+    appsNestedGraph()
   }
 }

@@ -16,11 +16,13 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import org.easy.wallet.network.httpClient
 import org.easy.wallet.network.source.BlockChairController
+import org.easy.wallet.network.source.EtherScanController
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-enum class SourceQualifier {
-  BLOCK_CHAIR
+private enum class SourceQualifier {
+  BLOCK_CHAIR,
+  ETHER_SCAN
 }
 
 private fun httpClientWithDefault(serializersModule: SerializersModule? = null, config: HttpClientConfig<*>.() -> Unit = {}): HttpClient =
@@ -63,6 +65,22 @@ val networkModule = module {
       }
     }
   }
+  single(qualifier = named(SourceQualifier.ETHER_SCAN)) {
+    httpClientWithDefault {
+      defaultRequest {
+        url {
+          protocol = URLProtocol.HTTPS
+          host = "api.etherscan.io"
+//        host = "api-sepolia.etherscan.io"
+          path("api/")
+          // TODO add api key
+          parameters.append("apikey", "")
+        }
+        header("Content-Type", "application/json")
+      }
+    }
+  }
 
   factory { BlockChairController(get(qualifier = named(SourceQualifier.BLOCK_CHAIR))) }
+  factory { EtherScanController(get(qualifier = named(SourceQualifier.ETHER_SCAN))) }
 }

@@ -1,4 +1,5 @@
 <resources>
+    <string name="tab_assets">Assets</string>
     <string name="tab_news">News</string>
     <string name="tab_dapp">dApp</string>
     <string name="tab_account">Account</string>

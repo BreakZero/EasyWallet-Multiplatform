@@ -16,11 +16,11 @@ data object NewsRoute
 
 fun NavController.navigateToNews(navOptions: NavOptions) = navigate(route = NewsRoute, navOptions)
 
-fun NavGraphBuilder.newsSection(readingDestination: NavGraphBuilder.() -> Unit,) {
+fun NavGraphBuilder.newsSection(newsNestedGraph: NavGraphBuilder.() -> Unit,) {
   navigation<NewsBaseRoute>(startDestination = NewsRoute) {
     composable<NewsRoute> {
       NewsScreen()
     }
-    readingDestination()
+    newsNestedGraph()
   }
 }

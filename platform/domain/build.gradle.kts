@@ -7,13 +7,11 @@ kotlin {
     commonMain {
       dependencies {
         implementation(projects.platform.model)
-        implementation(projects.platform.network)
+        implementation(projects.platform.data)
         implementation(projects.platform.datastore)
 
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.koin.core)
-        api(libs.wallet.core.kotlin)
-        api(libs.paging.compose.common)
         implementation(libs.kermit)
       }
     }
@@ -21,5 +19,5 @@ kotlin {
 }
 
 android {
-  namespace = "org.easy.wallet.data"
+  namespace = "org.easy.wallet.domain"
 }

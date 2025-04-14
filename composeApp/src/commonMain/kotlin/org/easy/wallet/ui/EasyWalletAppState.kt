@@ -14,7 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import kotlinx.coroutines.CoroutineScope
 import org.easy.wallet.feature.account.navigation.navigateToAccount
-import org.easy.wallet.feature.apps.navigation.navigateToDApps
+import org.easy.wallet.feature.assets.navigation.navigateToAssets
 import org.easy.wallet.feature.news.navigation.navigateToNews
 import org.easy.wallet.navhost.TopLevelDestination
 
@@ -64,8 +64,9 @@ class EasyAppState(
     }
 
     when (topLevelDestination) {
+      TopLevelDestination.Assets -> navController.navigateToAssets(topLevelNavOptions)
       TopLevelDestination.News -> navController.navigateToNews(topLevelNavOptions)
-      TopLevelDestination.DApps -> navController.navigateToDApps(topLevelNavOptions)
+//      TopLevelDestination.DApps -> navController.navigateToDApps(topLevelNavOptions)
       TopLevelDestination.Account -> navController.navigateToAccount(topLevelNavOptions)
     }
   }

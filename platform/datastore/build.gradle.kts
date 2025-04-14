@@ -12,6 +12,7 @@ kotlin {
     }
     commonMain {
       dependencies {
+        implementation(projects.platform.model)
         implementation(libs.kotlinx.coroutines.core)
 
         implementation(libs.koin.core)

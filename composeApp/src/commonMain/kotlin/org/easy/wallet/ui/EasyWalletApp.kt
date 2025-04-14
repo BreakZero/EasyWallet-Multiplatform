@@ -29,7 +29,7 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
-import org.easy.wallet.feature.news.navigation.NewsBaseRoute
+import org.easy.wallet.feature.assets.navigation.AssetsBaseRoute
 import org.easy.wallet.navhost.WalletNavHost
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -52,7 +52,7 @@ fun EasyWalletApp(appState: EasyAppState) {
     WalletNavHost(
       modifier = Modifier.fillMaxSize().hazeSource(hazeState),
       navController = appState.navController,
-      startDestination = NewsBaseRoute
+      startDestination = AssetsBaseRoute
     )
 
     AnimatedVisibility(
