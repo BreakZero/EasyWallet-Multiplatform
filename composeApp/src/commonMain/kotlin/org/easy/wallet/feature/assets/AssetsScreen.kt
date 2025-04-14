@@ -1,5 +1,6 @@
 package org.easy.wallet.feature.assets
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,8 +44,11 @@ private fun AssetsScreen(state: AssetsUiState) {
           modifier = Modifier.fillMaxSize(),
           contentPadding = PaddingValues(
             top = it.calculateTopPadding(),
-            bottom = it.calculateBottomPadding() + 100.dp
-          )
+            bottom = it.calculateBottomPadding() + 100.dp,
+            start = 16.dp,
+            end = 16.dp
+          ),
+          verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
           if (state.walletName.isNullOrBlank()) {
             item {

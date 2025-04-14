@@ -6,5 +6,6 @@ import org.easy.wallet.model.Balance
 
 interface AssetsRepository {
   fun loadAllAssets(): Flow<List<Assets>>
+
   fun fetchBalance(address: List<Assets>): Flow<List<Balance>>
 }

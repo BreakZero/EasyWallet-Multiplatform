@@ -33,6 +33,7 @@ enum class TopLevelDestination(
     titleTextId = Res.string.tab_news,
     route = NewsRoute::class
   ),
+
 //  DApps(
 //    selectedIcon = Res.drawable.compose_multiplatform,
 //    unselectedIcon = Res.drawable.compose_multiplatform,

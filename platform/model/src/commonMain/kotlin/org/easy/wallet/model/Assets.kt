@@ -16,7 +16,7 @@ data class BasicAssets(
   override val decimals: Int,
   override val contractAddress: String? = null,
   override val logoUrl: String? = null
-): Assets
+) : Assets
 
 data class Balance(
   override val id: String,
@@ -26,16 +26,14 @@ data class Balance(
   override val contractAddress: String? = null,
   override val logoUrl: String? = null,
   val balance: String = "0.0"
-): Assets
+) : Assets
 
-fun Assets.toBalance(balance: String = "0.0"): Balance {
-  return Balance(
-    id = this.id,
-    coinName = this.coinName,
-    symbol = this.symbol,
-    decimals = this.decimals,
-    contractAddress = this.contractAddress,
-    logoUrl = this.logoUrl,
-    balance = balance
-  )
-}
+fun Assets.toBalance(balance: String = "0.0"): Balance = Balance(
+  id = this.id,
+  coinName = this.coinName,
+  symbol = this.symbol,
+  decimals = this.decimals,
+  contractAddress = this.contractAddress,
+  logoUrl = this.logoUrl,
+  balance = balance
+)

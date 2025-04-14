@@ -1,11 +1,12 @@
 package org.easy.wallet.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,31 +22,33 @@ fun AssetsItemView(
   modifier: Modifier = Modifier,
   onItemClick: () -> Unit
 ) {
-  Row(
-    modifier = modifier
-      .clickable(onClick = onItemClick)
-      .padding(
-        horizontal = 16.dp,
-        vertical = 12.dp
-      ),
-    verticalAlignment = Alignment.CenterVertically
-  ) {
-    DynamicAsyncImage(
+  Card(modifier = modifier, onClick = onItemClick) {
+    Row(
       modifier = Modifier
-        .size(48.dp)
-        .clip(CircleShape),
-      imageUrl = assets.logoUrl,
-      contentDescription = assets.coinName
-    )
-    Text(
-      modifier = Modifier.padding(start = 12.dp),
-      text = assets.coinName,
-      style = MaterialTheme.typography.titleMedium
-    )
-    Spacer(modifier = Modifier.weight(1.0f))
-    Text(
-      text = "${assets.balance} ${assets.symbol}",
-      style = MaterialTheme.typography.titleLarge
-    )
+        .fillMaxWidth()
+        .padding(
+          horizontal = 16.dp,
+          vertical = 12.dp
+        ),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      DynamicAsyncImage(
+        modifier = Modifier
+          .size(48.dp)
+          .clip(CircleShape),
+        imageUrl = assets.logoUrl,
+        contentDescription = assets.coinName
+      )
+      Text(
+        modifier = Modifier.padding(start = 12.dp),
+        text = assets.coinName,
+        style = MaterialTheme.typography.titleMedium
+      )
+      Spacer(modifier = Modifier.weight(1.0f))
+      Text(
+        text = "${assets.balance} ${assets.symbol}",
+        style = MaterialTheme.typography.titleLarge
+      )
+    }
   }
 }

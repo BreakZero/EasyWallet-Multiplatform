@@ -31,15 +31,16 @@ class BalanceUseCase internal constructor(
     return combine(assetsFlow, walletFlow) { assets, wallet ->
       if (wallet != null) {
         coroutineScope {
-          assets.map { asset ->
-            async {
-              val balance = balanceRepository.fetchBalance(
-                wallet.getAddressForCoin(CoinType.Ethereum),
-                asset.contractAddress
-              )
-              asset.toBalance(balance)
-            }
-          }.awaitAll()
+          assets
+            .map { asset ->
+              async {
+                val balance = balanceRepository.fetchBalance(
+                  wallet.getAddressForCoin(CoinType.Ethereum),
+                  asset.contractAddress
+                )
+                asset.toBalance(balance)
+              }
+            }.awaitAll()
         }
       } else {
         assets.map { it.toBalance() }

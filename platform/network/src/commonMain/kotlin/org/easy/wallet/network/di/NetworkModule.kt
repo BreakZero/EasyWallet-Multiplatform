@@ -21,13 +21,11 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 private enum class SourceQualifier {
-  BLOCK_CHAIR, ETHER_SCAN
+  BLOCK_CHAIR,
+  ETHER_SCAN
 }
 
-private fun httpClientWithDefault(
-  serializersModule: SerializersModule? = null,
-  config: HttpClientConfig<*>.() -> Unit = {}
-): HttpClient =
+private fun httpClientWithDefault(serializersModule: SerializersModule? = null, config: HttpClientConfig<*>.() -> Unit = {}): HttpClient =
   httpClient {
     install(HttpCookies)
     install(ContentNegotiation) {

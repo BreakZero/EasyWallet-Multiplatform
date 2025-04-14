@@ -10,5 +10,6 @@ interface WalletRepository {
   fun hasActivatedWallet(): Flow<Boolean>
 
   fun walletName(): Flow<String?>
+
   fun walletMnemonic(): Flow<String?>
 }

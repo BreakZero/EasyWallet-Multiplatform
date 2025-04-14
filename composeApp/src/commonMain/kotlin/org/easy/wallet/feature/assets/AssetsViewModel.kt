@@ -31,5 +31,9 @@ class AssetsViewModel(
 
 sealed interface AssetsUiState {
   data object Fetching : AssetsUiState
-  data class WalletAssets(val walletName: String?, val assets: List<Balance>) : AssetsUiState
+
+  data class WalletAssets(
+    val walletName: String?,
+    val assets: List<Balance>
+  ) : AssetsUiState
 }

@@ -13,31 +13,29 @@ internal data class TokenList(
 
 @Serializable
 internal data class TokenInformation(
-    @SerialName("address")
-    val address: String,
-    @SerialName("asset")
-    val asset: String,
-    @SerialName("chainId")
-    val chainId: Int,
-    @SerialName("decimals")
-    val decimals: Int,
-    @SerialName("logoURI")
-    val logoURI: String,
-    @SerialName("name")
-    val name: String,
-    @SerialName("symbol")
-    val symbol: String,
-    @SerialName("type")
-    val type: String
+  @SerialName("address")
+  val address: String,
+  @SerialName("asset")
+  val asset: String,
+  @SerialName("chainId")
+  val chainId: Int,
+  @SerialName("decimals")
+  val decimals: Int,
+  @SerialName("logoURI")
+  val logoURI: String,
+  @SerialName("name")
+  val name: String,
+  @SerialName("symbol")
+  val symbol: String,
+  @SerialName("type")
+  val type: String
 )
 
-internal fun TokenInformation.toAssets(): Assets {
-  return BasicAssets(
-    id = this.asset,
-    contractAddress = address,
-    coinName = name,
-    decimals = decimals,
-    symbol = symbol,
-    logoUrl = logoURI
-  )
-}
+internal fun TokenInformation.toAssets(): Assets = BasicAssets(
+  id = this.asset,
+  contractAddress = address,
+  coinName = name,
+  decimals = decimals,
+  symbol = symbol,
+  logoUrl = logoURI
+)

@@ -21,18 +21,14 @@ class WalletRepositoryImpl internal constructor(
     walletDataStore.addWallet(name, value)
   }
 
-  override fun hasActivatedWallet(): Flow<Boolean> {
-    return walletDataStore.getWalletName().flatMapLatest { walletName ->
-      walletDataStore.activeWallet(walletName.orEmpty()).map { !it.isNullOrBlank() }
-        .catch { emit(false) }
-    }
+  override fun hasActivatedWallet(): Flow<Boolean> = walletDataStore.getWalletName().flatMapLatest { walletName ->
+    walletDataStore
+      .activeWallet(walletName.orEmpty())
+      .map { !it.isNullOrBlank() }
+      .catch { emit(false) }
   }
 
-  override fun walletName(): Flow<String?> {
-    return walletDataStore.getWalletName()
-  }
+  override fun walletName(): Flow<String?> = walletDataStore.getWalletName()
 
-  override fun walletMnemonic(): Flow<String?> {
-    return walletDataStore.walletMnemonic()
-  }
+  override fun walletMnemonic(): Flow<String?> = walletDataStore.walletMnemonic()
 }

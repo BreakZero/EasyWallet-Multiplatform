@@ -30,10 +30,7 @@ fun AccountScreen(navigateToWallet: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AccountTabScreen(
-  uiState: AccountUiState,
-  onEvent: () -> Unit
-) {
+private fun AccountTabScreen(uiState: AccountUiState, onEvent: () -> Unit) {
   Scaffold(
     modifier = Modifier.fillMaxSize(),
     topBar = {
@@ -74,7 +71,6 @@ private fun AccountTabScreen(
           )
         }
       }
-
     }
   }
 }

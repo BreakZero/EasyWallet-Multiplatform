@@ -7,7 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.assets.AssetsScreen
-import org.easy.wallet.feature.news.NewsScreen
 
 @Serializable
 data object AssetsBaseRoute
