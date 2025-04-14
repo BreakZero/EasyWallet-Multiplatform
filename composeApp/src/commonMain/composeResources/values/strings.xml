@@ -19,7 +19,9 @@
     <string name="restore_wallet_confirm_password">Confirm password</string>
     <string name="restore_wallet_seed_phrase">Seed phrase</string>
     <string name="create_wallet">Create Wallet</string>
-    <string name="restore_wallet">Restore Wallet</string>"
+    <string name="restore_wallet">Restore Wallet</string>
+    <string name="password_enter">Enter 6 digits password</string>
+    <string name="password_confirm">Please Enter 6 digits password again</string>
 
     <string name="button_continue">Continue</string>
     <string name="button_cancel">Cancel</string>
