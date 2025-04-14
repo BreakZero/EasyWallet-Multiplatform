@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.wallet.WalletOptionScreen
 import org.easy.wallet.feature.wallet.create.GenerateSeedScreen
 import org.easy.wallet.feature.wallet.create.SetPasswordScreen
+import org.easy.wallet.feature.wallet.password.CreatePasswordScreen
 import org.easy.wallet.feature.wallet.restore.WalletRestoreScreen
 
 @Serializable
@@ -21,6 +22,9 @@ data object GenerateSeedRoute
 @Serializable
 data object WalletRestoreRoute
 
+@Serializable
+data object CreatePasswordRoute
+
 fun NavGraphBuilder.attachWalletGraph(navController: NavController) {
   composable<WalletOptionRoute> {
     WalletOptionScreen(
@@ -28,6 +32,10 @@ fun NavGraphBuilder.attachWalletGraph(navController: NavController) {
       onRestoreWallet = { navController.navigate(SetPasswordRoute) },
       popBackStack = navController::popBackStack
     )
+  }
+
+  composable<CreatePasswordRoute> {
+    CreatePasswordScreen()
   }
 
   composable<SetPasswordRoute> {
