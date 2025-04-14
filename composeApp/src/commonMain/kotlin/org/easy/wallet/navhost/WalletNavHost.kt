@@ -22,7 +22,7 @@ fun WalletNavHost(
     navController = navController,
     startDestination = startDestination
   ) {
-    assetsSection { }
+    assetsSection(navController) { }
     newsSection { }
     appsSection { }
     accountSection(

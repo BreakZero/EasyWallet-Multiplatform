@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.wallet.WalletOptionScreen
 import org.easy.wallet.feature.wallet.create.GenerateSeedScreen
 import org.easy.wallet.feature.wallet.create.SetPasswordScreen
+import org.easy.wallet.feature.wallet.restore.WalletRestoreScreen
 
 @Serializable
 data object WalletOptionRoute
@@ -16,6 +17,9 @@ data object SetPasswordRoute
 
 @Serializable
 data object GenerateSeedRoute
+
+@Serializable
+data object WalletRestoreRoute
 
 fun NavGraphBuilder.attachWalletGraph(navController: NavController) {
   composable<WalletOptionRoute> {
@@ -36,5 +40,9 @@ fun NavGraphBuilder.attachWalletGraph(navController: NavController) {
 
   composable<GenerateSeedRoute> {
     GenerateSeedScreen()
+  }
+
+  composable<WalletRestoreRoute> {
+    WalletRestoreScreen()
   }
 }

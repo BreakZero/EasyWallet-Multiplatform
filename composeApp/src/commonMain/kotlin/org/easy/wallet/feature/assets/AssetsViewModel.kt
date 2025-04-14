@@ -22,18 +22,24 @@ class AssetsViewModel(
     },
     balanceUseCase()
   ) { walletName, balances ->
-    AssetsUiState.WalletAssets(
-      walletName = walletName,
-      assets = balances
-    )
+    if (walletName.isNullOrBlank()) {
+      AssetsUiState.EmptyWallet
+    } else {
+      AssetsUiState.WalletAssets(
+        walletName = walletName,
+        assets = balances
+      )
+    }
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3_000), AssetsUiState.Fetching)
 }
 
 sealed interface AssetsUiState {
   data object Fetching : AssetsUiState
 
+  data object EmptyWallet : AssetsUiState
+
   data class WalletAssets(
-    val walletName: String?,
+    val walletName: String,
     val assets: List<Balance>
   ) : AssetsUiState
 }

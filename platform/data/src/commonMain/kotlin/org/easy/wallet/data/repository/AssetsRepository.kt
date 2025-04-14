@@ -1,11 +1,11 @@
 package org.easy.wallet.data.repository
 
 import kotlinx.coroutines.flow.Flow
-import org.easy.wallet.model.Assets
+import org.easy.wallet.model.Asset
 import org.easy.wallet.model.Balance
 
 interface AssetsRepository {
-  fun loadAllAssets(): Flow<List<Assets>>
+  fun loadAllAssets(): Flow<List<Asset>>
 
-  fun fetchBalance(address: List<Assets>): Flow<List<Balance>>
+  fun fetchBalance(address: List<Asset>): Flow<List<Balance>>
 }

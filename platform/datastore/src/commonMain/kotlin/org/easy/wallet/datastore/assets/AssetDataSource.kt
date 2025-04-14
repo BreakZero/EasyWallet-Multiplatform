@@ -6,10 +6,10 @@ import kotlinx.serialization.json.Json
 import org.easy.wallet.datastore.assets.model.TokenInformation
 import org.easy.wallet.datastore.assets.model.TokenList
 import org.easy.wallet.datastore.assets.model.toAssets
-import org.easy.wallet.model.Assets
+import org.easy.wallet.model.Asset
 
 class AssetDataSource internal constructor() {
-  fun loadAssets(): Flow<List<Assets>> {
+  fun loadAssets(): Flow<List<Asset>> {
     val tokens = Json.decodeFromString<TokenList>(TOKEN_LIST).tokens
     return flow { emit(tokens.map(TokenInformation::toAssets)) }
   }

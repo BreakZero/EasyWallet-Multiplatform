@@ -18,7 +18,12 @@
     <string name="restore_wallet_new_password">New password</string>
     <string name="restore_wallet_confirm_password">Confirm password</string>
     <string name="restore_wallet_seed_phrase">Seed phrase</string>
+    <string name="create_wallet">Create Wallet</string>
+    <string name="restore_wallet">Restore Wallet</string>"
 
     <string name="button_continue">Continue</string>
     <string name="button_cancel">Cancel</string>
+
+    <string name="home_tips">Easy Wallet – Effortless asset management</string>
+    <string name="home_tips_desc">Wallet·Trades·Insights</string>
 </resources>

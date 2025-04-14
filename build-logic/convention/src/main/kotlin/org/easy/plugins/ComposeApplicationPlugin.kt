@@ -8,7 +8,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.getByType
 
-class ComposeApplicationPlugin: Plugin<Project> {
+class ComposeApplicationPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
       apply(plugin = "org.jetbrains.kotlin.multiplatform")

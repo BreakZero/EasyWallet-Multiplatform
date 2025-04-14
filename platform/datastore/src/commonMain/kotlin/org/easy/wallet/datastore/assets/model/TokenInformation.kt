@@ -2,8 +2,8 @@ package org.easy.wallet.datastore.assets.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.easy.wallet.model.Assets
-import org.easy.wallet.model.BasicAssets
+import org.easy.wallet.model.Asset
+import org.easy.wallet.model.BasicAsset
 
 @Serializable
 internal data class TokenList(
@@ -31,7 +31,7 @@ internal data class TokenInformation(
   val type: String
 )
 
-internal fun TokenInformation.toAssets(): Assets = BasicAssets(
+internal fun TokenInformation.toAssets(): Asset = BasicAsset(
   id = this.asset,
   contractAddress = address,
   coinName = name,
