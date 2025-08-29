@@ -56,7 +56,7 @@ class EasyAppState(
 
   fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
     val topLevelNavOptions = navOptions {
-      popUpTo(navController.graph.findStartDestination().id) {
+      popUpTo(navController.graph.findStartDestination().route!!) {
         saveState = true
       }
       launchSingleTop = true

@@ -2,6 +2,7 @@ package org.easy.wallet.feature.news
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,6 +32,7 @@ fun NewsScreen() {
 private fun NewsTabScreen(newsPagingItems: LazyPagingItems<News>) {
   Scaffold(
     modifier = Modifier.fillMaxSize(),
+    contentWindowInsets = WindowInsets(0),
     topBar = {
       TopAppBar(
         title = {
@@ -50,7 +52,7 @@ private fun NewsTabScreen(newsPagingItems: LazyPagingItems<News>) {
       pagingItems = newsPagingItems,
       contentPadding = PaddingValues(
         top = 16.dp,
-        bottom = it.calculateBottomPadding() + 100.dp
+        bottom = it.calculateBottomPadding()
       ),
       verticalArrangement = Arrangement.spacedBy(12.dp),
       itemKey = { index -> newsPagingItems[index]!!.hash },

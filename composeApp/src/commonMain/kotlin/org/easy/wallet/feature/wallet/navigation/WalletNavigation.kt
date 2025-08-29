@@ -35,7 +35,9 @@ fun NavGraphBuilder.attachWalletGraph(navController: NavController) {
   }
 
   composable<CreatePasswordRoute> {
-    CreatePasswordScreen()
+    CreatePasswordScreen(
+      popBackStack = navController::popBackStack
+    )
   }
 
   composable<SetPasswordRoute> {

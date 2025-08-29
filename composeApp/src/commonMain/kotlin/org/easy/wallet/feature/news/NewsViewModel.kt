@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.stateIn
 import org.easy.wallet.data.repository.NewsRepository
 
 class NewsViewModel constructor(
-  private val newsRepository: NewsRepository
+  newsRepository: NewsRepository
 ) : ViewModel() {
   val newsPagingData = newsRepository
     .getNews()
