@@ -5,7 +5,9 @@ plugins {
 kotlin {
   sourceSets {
     commonMain {
-      dependencies {  }
+      dependencies {
+        api(libs.bignum)
+      }
     }
   }
 }
