@@ -1,22 +1,24 @@
 package org.easy.wallet.model
 
-interface Assets {
+interface Asset {
   val id: String
   val coinName: String
   val symbol: String
   val decimals: Int
   val contractAddress: String?
   val logoUrl: String?
+  val displayDecimals: Int
 }
 
-data class BasicAssets(
+data class BasicAsset(
   override val id: String,
   override val coinName: String,
   override val symbol: String,
   override val decimals: Int,
   override val contractAddress: String? = null,
-  override val logoUrl: String? = null
-) : Assets
+  override val logoUrl: String? = null,
+  override val displayDecimals: Int = decimals
+) : Asset
 
 data class Balance(
   override val id: String,
@@ -25,10 +27,11 @@ data class Balance(
   override val decimals: Int,
   override val contractAddress: String? = null,
   override val logoUrl: String? = null,
+  override val displayDecimals: Int = decimals,
   val balance: String = "0.0"
-) : Assets
+) : Asset
 
-fun Assets.toBalance(balance: String = "0.0"): Balance = Balance(
+fun Asset.toBalance(balance: String = "0.0"): Balance = Balance(
   id = this.id,
   coinName = this.coinName,
   symbol = this.symbol,

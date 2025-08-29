@@ -18,7 +18,7 @@ import org.easy.wallet.model.Balance
 
 @Composable
 fun AssetsItemView(
-  assets: Balance,
+  asset: Balance,
   modifier: Modifier = Modifier,
   onItemClick: () -> Unit
 ) {
@@ -36,17 +36,17 @@ fun AssetsItemView(
         modifier = Modifier
           .size(48.dp)
           .clip(CircleShape),
-        imageUrl = assets.logoUrl,
-        contentDescription = assets.coinName
+        imageUrl = asset.logoUrl,
+        contentDescription = asset.coinName
       )
       Text(
         modifier = Modifier.padding(start = 12.dp),
-        text = assets.coinName,
+        text = asset.coinName,
         style = MaterialTheme.typography.titleMedium
       )
       Spacer(modifier = Modifier.weight(1.0f))
       Text(
-        text = "${assets.balance} ${assets.symbol}",
+        text = "${asset.balance} ${asset.symbol}",
         style = MaterialTheme.typography.titleLarge
       )
     }

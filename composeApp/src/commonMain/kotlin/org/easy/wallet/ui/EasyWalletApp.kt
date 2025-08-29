@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
@@ -66,7 +65,8 @@ fun EasyWalletApp(appState: EasyAppState) {
           .hazeEffect(state = hazeState, style = style) {
             this.inputScale = HazeInputScale.Default
           }.fillMaxWidth(),
-        containerColor = Color.Transparent
+        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.66f),
+        tonalElevation = 3.dp
       ) {
         appState.topLevelDestinations.forEach { destination ->
           val selected = currentDestination
