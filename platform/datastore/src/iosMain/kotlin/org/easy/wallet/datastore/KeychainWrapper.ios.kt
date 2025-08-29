@@ -45,8 +45,7 @@ actual class PasswordStorage {
   }
 }
 
-private fun NSData.stringValue(encoding: ULong): String? =
-  NSString.create(data = this, encoding = encoding)?.toString()
+private fun NSData.stringValue(encoding: ULong): String? = NSString.create(data = this, encoding = encoding)?.toString()
 
 @OptIn(ExperimentalForeignApi::class)
 private fun ByteArray.toNSData(): NSData = this.usePinned {
