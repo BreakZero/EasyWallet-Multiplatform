@@ -1,7 +1,7 @@
 [versions]
-kotlin = "2.1.0"
-androidGradlePlugin = "8.8.0"
-androidTools = "31.8.0"
+kotlin = "2.2.10"
+androidGradlePlugin = "8.12.2"
+androidTools = "31.12.2"
 
 easy-version = "1.0.0"
 
