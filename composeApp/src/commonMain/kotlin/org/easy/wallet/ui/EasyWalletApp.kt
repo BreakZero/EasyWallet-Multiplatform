@@ -66,7 +66,8 @@ fun EasyWalletApp(appState: EasyAppState) {
           .hazeEffect(state = hazeState, style = style) {
             this.inputScale = HazeInputScale.Default
           }.fillMaxWidth(),
-        containerColor = Color.Transparent
+        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.66f),
+        tonalElevation = 3.dp
       ) {
         appState.topLevelDestinations.forEach { destination ->
           val selected = currentDestination
