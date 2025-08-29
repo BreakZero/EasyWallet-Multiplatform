@@ -69,6 +69,7 @@ private fun AssetsScreen(state: AssetsUiState, onEvent: (AssetEvent) -> Unit = {
           modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
+            .padding(bottom = 24.dp)
         ) {
           Spacer(Modifier.weight(1f))
 
@@ -91,7 +92,6 @@ private fun AssetsScreen(state: AssetsUiState, onEvent: (AssetEvent) -> Unit = {
           ) {
             Text(stringResource(Res.string.restore_wallet))
           }
-          Spacer(Modifier.height(160.dp))
         }
       }
 

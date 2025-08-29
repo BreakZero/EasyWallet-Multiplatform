@@ -11,7 +11,7 @@ class CreatePasswordViewModel : ViewModel() {
   private val _state = MutableStateFlow<PasswordUiState>(PasswordUiState.SetUp(TextFieldState()))
   val state = _state.asStateFlow()
 
-  fun enterNumber(number: String) {
+  fun enterNumber(number: Char) {
     when (val value = _state.value) {
       is PasswordUiState.SetUp -> {
         value.password.edit { append(number) }
