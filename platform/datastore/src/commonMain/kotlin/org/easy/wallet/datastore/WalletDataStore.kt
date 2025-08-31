@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import okio.Path.Companion.toPath
+import org.easy.wallet.datastore.model.PreferencesKeys
 
 internal const val DATA_STORE_FILE_NAME = "wallet.preferences_pb"
 

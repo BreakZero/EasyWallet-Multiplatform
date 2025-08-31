@@ -9,7 +9,6 @@ interface TokenRepository {
   suspend fun getById(tokenId: String): Token?
   suspend fun getByChain(chainId: String, onlyEnabled: Boolean = true): List<Token>
   suspend fun getByContract(chainId: String, standard: TokenStandard, contract: String): Token?
-  suspend fun search(chainId: String, keyword: String, limit: Int = 20, offset: Int = 0): List<Token>
   suspend fun setEnabled(tokenId: String, enabled: Boolean)
   suspend fun setSortOrder(tokenId: String, sortOrder: Int)
   suspend fun delete(tokenId: String)

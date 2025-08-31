@@ -25,22 +25,25 @@ class AccountRepositoryImpl internal constructor(
       WalletAccount(
         id = it.id,
         name = it.name,
-        mnemonic = mnemonic,
-        createdAt = it.createdAt,
-        alias = it.alias
+        mnemonic = mnemonic
       )
     }
 
-  suspend fun create(name: String, mnemonic: String) {
+  suspend fun create(name: String, mnemonic: String): WalletAccount {
     val id = Uuid.random().toString()
     val alias = "acc_$id"
     keyStorePort.store(alias, mnemonic.encodeToByteArray())
-
+    val createAt = Clock.System.now().toEpochMilliseconds()
     accountsQueries.insertAccount(
       id = id,
       name = name,
-      createdAt = Clock.System.now().toEpochMilliseconds(),
+      createdAt = createAt,
       alias = alias
+    )
+    return WalletAccount(
+      id = id,
+      name = name,
+      mnemonic = mnemonic
     )
   }
 
