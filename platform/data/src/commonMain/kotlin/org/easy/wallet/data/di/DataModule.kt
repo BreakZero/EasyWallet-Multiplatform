@@ -9,6 +9,7 @@ import org.easy.wallet.data.repository.NewsRepository
 import org.easy.wallet.data.repository.NewsRepositoryImpl
 import org.easy.wallet.data.repository.WalletRepository
 import org.easy.wallet.data.repository.WalletRepositoryImpl
+import org.easy.wallet.database.di.databaseModules
 import org.easy.wallet.datastore.di.storeModules
 import org.easy.wallet.network.di.networkModule
 import org.koin.dsl.bind
@@ -16,7 +17,7 @@ import org.koin.dsl.module
 
 val dataModule = module {
 
-  includes(networkModule, storeModules)
+  includes(networkModule, storeModules, databaseModules)
 
   single { NewsRepositoryImpl(get()) } bind NewsRepository::class
   single { WalletRepositoryImpl(get()) } bind WalletRepository::class

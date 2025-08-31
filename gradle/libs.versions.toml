@@ -1,5 +1,6 @@
 [versions]
 agp = "8.12.2"
+sqlDriver = "2.1.0"
 androidx-activityCompose = "1.10.1"
 androidx-lifecycle = "2.9.3"
 bignum = "0.3.10"
@@ -43,6 +44,10 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
+
+#
+android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDriver" }
+native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDriver" }
 
 # Coroutine
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
