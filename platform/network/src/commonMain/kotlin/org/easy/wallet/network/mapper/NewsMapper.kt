@@ -1,4 +1,4 @@
-package org.easy.wallet.data.mapper
+package org.easy.wallet.network.mapper
 
 import org.easy.wallet.model.News
 import org.easy.wallet.network.model.dto.BlockChairNewsDto

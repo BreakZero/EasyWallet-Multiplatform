@@ -1,0 +1,87 @@
+-- 1.sqm  —— tokens schema + seed initial data
+
+-- ========== TABLE ==========
+CREATE TABLE tokens (
+  token_id   TEXT NOT NULL PRIMARY KEY,           -- 统一主键，如 evm:1/native 或 evm:1/erc20:<addr>
+  chain_id   TEXT NOT NULL,                       -- "evm:1", "btc:main", "evm:137", ...
+  standard   TEXT NOT NULL,                       -- "NATIVE","ERC20","ERC721","SPL",...
+  contract   TEXT,                                -- 合约地址；原生为 NULL（EVM 合约统一小写）
+  symbol     TEXT NOT NULL,
+  name       TEXT NOT NULL,
+  decimals   INTEGER NOT NULL,                    -- NFT 可为 0
+  icon_url   TEXT,
+  enabled    INTEGER NOT NULL DEFAULT 1,          -- 0/1
+  sort_order INTEGER NOT NULL DEFAULT 0,          -- UI 排序
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+
+-- ========= RECOMMENDED INDEXES =========
+-- 合约在同链/同标准唯一（排除 NATIVE）
+CREATE UNIQUE INDEX idx_tokens_unique_contract
+  ON tokens(chain_id, standard, contract)
+  WHERE contract IS NOT NULL;
+
+-- 每条链仅一个 NATIVE
+CREATE UNIQUE INDEX idx_tokens_single_native
+  ON tokens(chain_id, standard)
+  WHERE standard = 'NATIVE';
+
+CREATE INDEX idx_tokens_chain_enabled ON tokens(chain_id, enabled);
+CREATE INDEX idx_tokens_symbol        ON tokens(symbol);
+CREATE INDEX idx_tokens_contract      ON tokens(contract);
+
+-- ========= INITIAL DATA =========
+-- ---- Bitcoin mainnet (native) ----
+INSERT INTO tokens(token_id, chain_id, standard, contract, symbol, name, decimals, icon_url, enabled, sort_order, created_at, updated_at)
+VALUES ('btc:main/native','btc:main','NATIVE',NULL,'BTC','Bitcoin',8,
+        'https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png',
+        1,0, 0,0);
+
+-- ---- Ethereum mainnet (native) ----
+INSERT INTO tokens VALUES
+('evm:1/native','evm:1','NATIVE',NULL,'ETH','Ethereum',18,
+ 'https://assets.coingecko.com/coins/images/279/thumb/ethereum.png',
+ 1,0, 0,0);
+
+-- ---- Ethereum ERC-20（合约统一小写）----
+INSERT INTO tokens VALUES
+('evm:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7','evm:1','ERC20','0xdac17f958d2ee523a2206206994597c13d831ec7','USDT','Tether USD',6,'https://assets.coingecko.com/coins/images/325/thumb/Tether.png',1,10,0,0);
+
+INSERT INTO tokens VALUES
+('evm:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48','evm:1','ERC20','0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48','USDC','USD Coin',6,'https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png',1,11,0,0);
+
+INSERT INTO tokens VALUES
+('evm:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f','evm:1','ERC20','0x6b175474e89094c44da98b954eedeac495271d0f','DAI','Dai Stablecoin',18,'https://assets.coingecko.com/coins/images/9956/thumb/4943.png',1,12,0,0);
+
+INSERT INTO tokens VALUES
+('evm:1/erc20:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599','evm:1','ERC20','0x2260fac5e5542a773aa44fbcfedf7c193bc2c599','WBTC','Wrapped BTC',8,'https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png',1,20,0,0);
+
+INSERT INTO tokens VALUES
+('evm:1/erc20:0x1f9840a85d5af5bf1d1762f925bdaddc4201f984','evm:1','ERC20','0x1f9840a85d5af5bf1d1762f925bdaddc4201f984','UNI','Uniswap',18,'https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png',1,30,0,0);
+
+INSERT INTO tokens VALUES
+('evm:1/erc20:0x6b3595068778dd592e39a122f4f5a5cf09c90fe2','evm:1','ERC20','0x6b3595068778dd592e39a122f4f5a5cf09c90fe2','SUSHI','Sushi',18,'https://assets.coingecko.com/coins/images/12271/thumb/sushiswap.png',1,31,0,0);
+
+INSERT INTO tokens VALUES
+('evm:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca','evm:1','ERC20','0x514910771af9ca656af840dff83e8264ecf986ca','LINK','Chainlink',18,'https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png',1,32,0,0);
+
+-- ---- Polygon (evm:137) ----
+INSERT INTO tokens VALUES
+('evm:137/native','evm:137','NATIVE',NULL,'MATIC','Polygon',18,'https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png',1,0,0,0);
+
+INSERT INTO tokens VALUES
+('evm:137/erc20:0x2791bca1f2de4661ed88a30c99a7a9449aa84174','evm:137','ERC20','0x2791bca1f2de4661ed88a30c99a7a9449aa84174','USDC.e','USD Coin (bridged)',6,'https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png',1,10,0,0);
+
+INSERT INTO tokens VALUES
+('evm:137/erc20:0xc2132d05d31c914a87c6611c10748aeb04b58e8f','evm:137','ERC20','0xc2132d05d31c914a87c6611c10748aeb04b58e8f','USDT','Tether USD',6,'https://assets.coingecko.com/coins/images/325/thumb/Tether.png',1,11,0,0);
+
+-- ---- Arbitrum One (evm:42161) ----
+INSERT INTO tokens VALUES
+('evm:42161/native','evm:42161','NATIVE',NULL,'ETH','Ether (Arbitrum)',18,'https://assets.coingecko.com/coins/images/279/thumb/ethereum.png',1,0,0,0);
+
+INSERT INTO tokens VALUES
+('evm:42161/erc20:0xaf88d065e77c8cc2239327c5edb3a432268e5831','evm:42161','ERC20','0xaf88d065e77c8cc2239327c5edb3a432268e5831','USDC','USD Coin (native)',6,'https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png',1,10,0,0);
+
+INSERT INTO tokens VALUES
+('evm:42161/erc20:0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9','evm:42161','ERC20','0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9','USDT','Tether USD',6,'https://assets.coingecko.com/coins/images/325/thumb/Tether.png',1,11,0,0);

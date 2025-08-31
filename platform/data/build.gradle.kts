@@ -11,6 +11,9 @@ kotlin {
         implementation(projects.platform.datastore)
         implementation(projects.platform.database)
 
+
+        implementation(libs.sqldelight.coroutines.extensions)
+
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.koin.core)
         api(libs.wallet.core.kotlin)

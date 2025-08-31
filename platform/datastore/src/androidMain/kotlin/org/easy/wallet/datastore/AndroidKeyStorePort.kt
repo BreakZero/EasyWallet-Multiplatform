@@ -20,7 +20,7 @@ import javax.crypto.spec.GCMParameterSpec
 class AndroidKeyStorePort(
   private val context: Context,
   private val masterAlias: String = DEFAULT_MASTER_ALIAS,
-  private val preferStrongBox: Boolean = true,
+  private val preferStrongBox: Boolean = false,
   /**
    * 是否启用“解锁门槛”：
    * - 0：不要求用户认证（后台任务、无交互适用）
@@ -118,21 +118,14 @@ class AndroidKeyStorePort(
       .setRandomizedEncryptionRequired(true)
 
     if (authValiditySeconds > 0) {
-      // 要求设备凭证/生物认证后，在有效期内可直接使用
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        builder.setUserAuthenticationRequired(true)
-          .setUserAuthenticationParameters(
-            authValiditySeconds,
-            KeyProperties.AUTH_BIOMETRIC_STRONG or KeyProperties.AUTH_DEVICE_CREDENTIAL
-          )
-      } else {
-        @Suppress("DEPRECATION")
-        builder.setUserAuthenticationRequired(true)
-          .setUserAuthenticationValidityDurationSeconds(authValiditySeconds)
-      }
+      builder.setUserAuthenticationRequired(true)
+        .setUserAuthenticationParameters(
+          authValiditySeconds,
+          KeyProperties.AUTH_BIOMETRIC_STRONG or KeyProperties.AUTH_DEVICE_CREDENTIAL
+        )
     }
 
-    if (preferStrongBox && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+    if (preferStrongBox) {
       try {
         builder.setIsStrongBoxBacked(true)
       } catch (_: Throwable) {
@@ -143,5 +136,4 @@ class AndroidKeyStorePort(
     keyGen.init(builder.build())
     return keyGen.generateKey()
   }
-
 }

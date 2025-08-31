@@ -5,10 +5,8 @@ CREATE TABLE accounts (
   alias TEXT NOT NULL
 );
 
-
 selectAllAccounts:
 SELECT * FROM accounts;
-
 
 selectAccountById:
 SELECT * FROM accounts WHERE id = ?;

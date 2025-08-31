@@ -1,12 +1,15 @@
 package org.easy.wallet.data.di
 
 import org.easy.wallet.data.paging.NewsPagingSource
+import org.easy.wallet.data.repository.AccountRepositoryImpl
 import org.easy.wallet.data.repository.AllAssetsRepository
 import org.easy.wallet.data.repository.AssetsRepository
 import org.easy.wallet.data.repository.BalanceRepository
 import org.easy.wallet.data.repository.EthereumBalanceRepository
 import org.easy.wallet.data.repository.NewsRepository
 import org.easy.wallet.data.repository.NewsRepositoryImpl
+import org.easy.wallet.data.repository.TokenRepository
+import org.easy.wallet.data.repository.TokenRepositoryImpl
 import org.easy.wallet.data.repository.WalletRepository
 import org.easy.wallet.data.repository.WalletRepositoryImpl
 import org.easy.wallet.database.di.databaseModules
@@ -24,6 +27,10 @@ val dataModule = module {
 
   single { AllAssetsRepository(get()) } bind AssetsRepository::class
   single { EthereumBalanceRepository(get()) } bind BalanceRepository::class
+
+  single { AccountRepositoryImpl(driverFactory = get(), keyStorePort = get()) }
+
+  single { TokenRepositoryImpl(driverFactory = get())  } bind TokenRepository::class
 
   factory { NewsPagingSource(get()) }
 }
