@@ -5,7 +5,10 @@ import org.easy.wallet.database.DatabaseDriverFactory
 import org.easy.wallet.database.EasyWalletDatabase
 import org.easy.wallet.model.Token
 import org.easy.wallet.model.TokenStandard
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class TokenRepositoryImpl internal constructor(
   driverFactory: DatabaseDriverFactory
 ) : TokenRepository {
@@ -72,24 +75,19 @@ class TokenRepositoryImpl internal constructor(
       .executeAsOneOrNull()?.toExternal()
   }
 
-  override suspend fun search(
-    chainId: String,
-    keyword: String,
-    limit: Int,
-    offset: Int
-  ): List<Token> {
-    TODO("Not yet implemented")
-  }
-
   override suspend fun setEnabled(tokenId: String, enabled: Boolean) {
-    TODO("Not yet implemented")
+    tokenQueries.updateTokenEnabled(
+      if (enabled) 1 else 0,
+      Clock.System.now().toEpochMilliseconds(),
+      tokenId
+    )
   }
 
   override suspend fun setSortOrder(tokenId: String, sortOrder: Int) {
-    TODO("Not yet implemented")
+    tokenQueries.updateTokenSort(sortOrder.toLong(), Clock.System.now().toEpochMilliseconds(), tokenId)
   }
 
   override suspend fun delete(tokenId: String) {
-    TODO("Not yet implemented")
+    tokenQueries.deleteToken(token_id = tokenId)
   }
 }
