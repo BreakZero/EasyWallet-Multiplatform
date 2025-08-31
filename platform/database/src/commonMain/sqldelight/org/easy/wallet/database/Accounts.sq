@@ -1,0 +1,20 @@
+CREATE TABLE accounts (
+  id TEXT NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  createdAt INTEGER NOT NULL,
+  alias TEXT NOT NULL
+);
+
+
+selectAllAccounts:
+SELECT * FROM accounts;
+
+
+selectAccountById:
+SELECT * FROM accounts WHERE id = ?;
+
+insertAccount:
+INSERT INTO accounts(id, name, createdAt, alias) VALUES (?, ?, ?, ?);
+
+deleteAccountById:
+DELETE FROM accounts WHERE id = ?;
