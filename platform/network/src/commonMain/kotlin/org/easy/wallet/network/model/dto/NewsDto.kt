@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BlockChairNewsDto(
+internal data class BlockChairNewsDto(
   @SerialName("description")
   val description: String,
   @SerialName("file")

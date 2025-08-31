@@ -13,6 +13,8 @@ kotlin {
     }
     commonMain {
       dependencies {
+        implementation(projects.platform.model)
+
         implementation(libs.ktor.client.core)
         implementation(libs.ktor.client.content)
         implementation(libs.ktor.serialization)

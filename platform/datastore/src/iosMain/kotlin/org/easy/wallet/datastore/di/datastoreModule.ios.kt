@@ -3,8 +3,10 @@ package org.easy.wallet.datastore.di
 import kotlinx.cinterop.ExperimentalForeignApi
 import org.easy.wallet.datastore.DATA_STORE_FILE_NAME
 import org.easy.wallet.datastore.IOSKeyStorePort
+import org.easy.wallet.datastore.KeyStorePort
 import org.easy.wallet.datastore.createDataStore
 import org.koin.core.module.Module
+import org.koin.dsl.bind
 import org.koin.dsl.module
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
@@ -26,5 +28,5 @@ internal actual val platformDataStoreModule: Module = module {
     }
   }
 
-  single { IOSKeyStorePort() }
+  single { IOSKeyStorePort() } bind KeyStorePort::class
 }

@@ -2,9 +2,7 @@ package org.easy.wallet.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import org.easy.wallet.data.mapper.toNews
 import org.easy.wallet.model.News
-import org.easy.wallet.network.model.dto.BlockChairNewsDto
 import org.easy.wallet.network.source.BlockChairController
 
 internal class NewsPagingSource(
@@ -18,11 +16,19 @@ internal class NewsPagingSource(
 
   override suspend fun load(params: LoadParams<Int>): LoadResult<Int, News> {
     val offset = params.key ?: 0
-    val newsList = blockChairController.getNews(limit = PAGE_SIZE, offset = offset).map(BlockChairNewsDto::toNews)
-    return LoadResult.Page(
-      data = newsList,
-      prevKey = if (offset <= 0) null else offset - PAGE_SIZE,
-      nextKey = if (newsList.isEmpty()) null else offset + PAGE_SIZE
+    val result = blockChairController.loadNews(limit = PAGE_SIZE, offset = offset)
+
+    return result.fold(
+      onFailure = {
+        LoadResult.Error(throwable = it)
+      },
+      onSuccess = {
+        LoadResult.Page(
+          data = it,
+          prevKey = if (offset <= 0) null else offset - PAGE_SIZE,
+          nextKey = if (it.isEmpty()) null else offset + PAGE_SIZE
+        )
+      }
     )
   }
 }

@@ -25,7 +25,9 @@ fun AccountScreen(navigateToWallet: () -> Unit) {
   val viewModel: AccountViewModel = koinViewModel()
   val uiState by viewModel.state.collectAsStateWithLifecycle()
 
-  AccountTabScreen(uiState = uiState, onEvent = navigateToWallet)
+  AccountTabScreen(uiState = uiState, onEvent = {
+    viewModel.listAccounts()
+  })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +50,7 @@ private fun AccountTabScreen(uiState: AccountUiState, onEvent: () -> Unit) {
         is AccountUiState.Info -> {
           ListItem(
             modifier = Modifier
-              .fillMaxWidth(),
+              .fillMaxWidth().clickable(onClick = onEvent),
             headlineContent = {
               Text("Wallet")
             },

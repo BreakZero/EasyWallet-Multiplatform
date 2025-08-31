@@ -8,13 +8,10 @@ import org.easy.wallet.network.safeGet
 class EtherScanController internal constructor(
   private val httpClient: HttpClient
 ) {
-  suspend fun balance(address: String, contractAddress: String? = null): String {
-    val action = if (contractAddress.isNullOrBlank()) {
-      "balance"
-    } else {
-      "tokenbalance"
-    }
-    val response = httpClient
+  suspend fun balance(address: String, contractAddress: String? = null): Result<String> {
+    val action = if (contractAddress.isNullOrBlank()) "balance" else "tokenbalance"
+
+    val result = httpClient
       .safeGet<EtherScanBaseResponse<String>>("") {
         parameter("module", "account")
         parameter("action", action)
@@ -23,11 +20,10 @@ class EtherScanController internal constructor(
           parameter("contractaddress", contractAddress)
         }
         parameter("tag", "latest")
-      }.getOrNull()
-    return if (response != null && response.status == "1") {
-      response.result
-    } else {
-      "0.00"
+      }
+    return result.map {
+      if (it.status == "1") "0.00"
+      else it.result
     }
   }
 }

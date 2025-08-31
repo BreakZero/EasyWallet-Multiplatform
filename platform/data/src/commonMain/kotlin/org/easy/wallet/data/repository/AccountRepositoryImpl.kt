@@ -20,9 +20,12 @@ class AccountRepositoryImpl internal constructor(
 
   suspend fun listAccounts(): List<WalletAccount> =
     accountsQueries.selectAllAccounts().executeAsList().map {
+      val alias = it.alias
+      val mnemonic = keyStorePort.load(alias).decodeToString()
       WalletAccount(
         id = it.id,
         name = it.name,
+        mnemonic = mnemonic,
         createdAt = it.createdAt,
         alias = it.alias
       )

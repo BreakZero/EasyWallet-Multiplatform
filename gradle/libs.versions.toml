@@ -45,9 +45,10 @@ navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-co
 
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 
-#
-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDriver" }
-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDriver" }
+# SQLDelight
+sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDriver" }
+sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDriver" }
+sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDriver" }
 
 # Coroutine
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }

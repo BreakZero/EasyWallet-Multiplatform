@@ -13,14 +13,18 @@ value class TokenId(val value: String)
 enum class TokenStandard { NATIVE, ERC20, ERC721, SPL, TRC20 }
 
 data class Token(
-  val id: TokenId,
-  val chainId: ChainId,
+  val tokenId: String,
+  val chainId: String,
+  val standard: TokenStandard,
+  val contract: String?,
   val symbol: String,
   val name: String,
   val decimals: Int,
-  val standard: TokenStandard,
-  val contract: String? = null,
-  val iconUrl: String? = null
+  val iconUrl: String?,
+  val enabled: Boolean,
+  val sortOrder: Int,
+  val createdAt: Long,
+  val updatedAt: Long
 )
 
 sealed class TxStatus { object Pending: TxStatus(); object Success: TxStatus(); data class Failed(val reason:String?): TxStatus() }
