@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.assets.AssetsScreen
-import org.easy.wallet.feature.wallet.navigation.CreatePasswordRoute
+import org.easy.wallet.feature.wallet.navigation.SetPassCodeRoute
 
 @Serializable
 data object AssetsBaseRoute
@@ -15,15 +15,19 @@ data object AssetsBaseRoute
 @Serializable
 data object AssetsRoute
 
-fun NavController.navigateToAssets(navOptions: NavOptions) = navigate(route = AssetsRoute, navOptions)
+fun NavController.navigateToAssets(navOptions: NavOptions) =
+  navigate(route = AssetsRoute, navOptions)
 
-fun NavGraphBuilder.assetsSection(navController: NavController, assertNestedGraph: NavGraphBuilder.() -> Unit,) {
+fun NavGraphBuilder.assetsSection(
+  navController: NavController,
+  assertNestedGraph: NavGraphBuilder.() -> Unit,
+) {
   navigation<AssetsBaseRoute>(startDestination = AssetsRoute) {
     composable<AssetsRoute> {
       AssetsScreen(
         onAssetClick = {},
-        onCreateWallet = {},
-        onRestoreWallet = { navController.navigate(CreatePasswordRoute) }
+        onCreateWallet = { navController.navigate(route = SetPassCodeRoute(false)) },
+        onRestoreWallet = { navController.navigate(SetPassCodeRoute(true)) }
       )
     }
     assertNestedGraph()

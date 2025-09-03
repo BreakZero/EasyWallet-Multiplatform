@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -32,34 +33,51 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import easywallet.composeapp.generated.resources.Res
 import easywallet.composeapp.generated.resources.button_continue
 import easywallet.composeapp.generated.resources.create_wallet_secure_write_down_seed
 import easywallet.composeapp.generated.resources.create_wallet_secure_write_down_seed_desc
+import org.easy.wallet.components.EasyTopAppBar
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun GenerateSeedScreen() {
+fun GenerateSeedScreen(
+  passcode: String,
+  popBackStack: () -> Unit
+) {
   val viewModel: GenerateSeedViewModel = koinViewModel()
+  val mnemonic by viewModel.mnemonic.collectAsStateWithLifecycle()
+  val words = mnemonic.split(" ")
+
   GenerateSeedScreen(
-    words = viewModel.words,
+    words = words,
+    popBackStack = popBackStack,
     onAction = {
-      viewModel.onAction()
+      viewModel.createWallet(passcode)
     }
   )
 }
 
 @Composable
-private fun GenerateSeedScreen(words: List<String>, onAction: () -> Unit) {
+private fun GenerateSeedScreen(
+  words: List<String>,
+  onAction: () -> Unit,
+  popBackStack: () -> Unit
+) {
   var hiddenWords by remember { mutableStateOf(true) }
   Scaffold(
-    modifier = Modifier.fillMaxSize(),
+    contentWindowInsets = WindowInsets(0),
+    topBar = {
+      EasyTopAppBar(onBack = popBackStack)
+    },
     bottomBar = {
       Button(
         modifier = Modifier
-          .fillMaxWidth()
           .navigationBarsPadding()
+          .fillMaxWidth()
           .padding(horizontal = 16.dp)
           .padding(bottom = 16.dp),
         enabled = !hiddenWords,
@@ -126,5 +144,17 @@ private fun GenerateSeedScreen(words: List<String>, onAction: () -> Unit) {
         }
       }
     }
+  }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+  Scaffold(modifier = Modifier.fillMaxSize()) {
+    GenerateSeedScreen(
+      words = listOf("word1", "word2", "word3", "word4", "word5", "word6"),
+      onAction = {},
+      popBackStack = {}
+    )
   }
 }
