@@ -44,6 +44,7 @@ kotlin {
       implementation(projects.platform.data)
       implementation(projects.platform.domain)
       implementation(projects.platform.model)
+      implementation(projects.platform.datastore)
 
       implementation(libs.haze)
 

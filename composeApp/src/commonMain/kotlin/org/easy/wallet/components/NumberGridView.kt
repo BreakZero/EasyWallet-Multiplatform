@@ -1,15 +1,20 @@
 package org.easy.wallet.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -26,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -54,21 +60,16 @@ fun NumberGridView(
   LazyVerticalGrid(
     modifier = modifier.background(Color.Gray),
     columns = GridCells.Fixed(3),
-    contentPadding = WindowInsets.safeContent.asPaddingValues()
+    contentPadding = WindowInsets.safeDrawing
+      .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+      .asPaddingValues()
   ) {
     items(digitKeys, key = { it.key }) { item ->
       Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
           .height(56.dp)
-          .drawBehind {
-            drawLine(
-              color = Color.Red,
-              start = Offset(0f, size.height),
-              end = Offset(size.width, size.height),
-              strokeWidth = 2f
-            )
-          }
+          .border(Dp.Hairline, color = Color.Red)
           .clickable(enabled = item.key != ' ') {
             when (item) {
               DigitKey.DELETE -> onDeleteClicked()
@@ -83,10 +84,6 @@ fun NumberGridView(
           color = if (item == DigitKey.EMPTY) Color.Transparent else Color.Black
         )
       }
-    }
-
-    item(span = { GridItemSpan(maxLineSpan) }) {
-      VerticalDivider(color = Color.Red)
     }
   }
 }
