@@ -3,7 +3,7 @@ package org.easy.wallet.datastore
 import kotlinx.cinterop.ExperimentalForeignApi
 
 @OptIn(ExperimentalForeignApi::class)
-class IOSKeyStorePort() : KeyStorePort {
+class IOSKeyStorePort : KeyStorePort {
   override suspend fun store(alias: String, plaintext: ByteArray) {
     TODO("Not yet implemented")
   }
@@ -23,5 +23,4 @@ class IOSKeyStorePort() : KeyStorePort {
   override suspend fun decryptEphemeral(blob: EncryptedBlob): ByteArray {
     TODO("Not yet implemented")
   }
-
 }

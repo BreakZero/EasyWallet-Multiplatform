@@ -22,8 +22,11 @@ class EtherScanController internal constructor(
         parameter("tag", "latest")
       }
     return result.map {
-      if (it.status == "1") "0.00"
-      else it.result
+      if (it.status == "1") {
+        "0.00"
+      } else {
+        it.result
+      }
     }
   }
 }

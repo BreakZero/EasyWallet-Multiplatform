@@ -6,7 +6,6 @@ import co.touchlab.sqliter.DatabaseConfiguration
 
 actual class DatabaseDriverFactory {
   actual fun createDriver(): app.cash.sqldelight.db.SqlDriver {
-
     val configuration = DatabaseConfiguration(
       name = "easywallet.db",
       version = EasyWalletDatabase.Schema.version.toInt(),

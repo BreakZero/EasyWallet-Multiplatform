@@ -14,14 +14,19 @@ import org.easy.wallet.feature.wallet.restore.WalletRestoreScreen
 data object WalletOptionRoute
 
 @Serializable
-data class SetPassCodeRoute(val isRestore: Boolean)
+data class SetPassCodeRoute(
+  val isRestore: Boolean
+)
 
 @Serializable
-data class GenerateSeedRoute(val passcode: String)
+data class GenerateSeedRoute(
+  val passcode: String
+)
 
 @Serializable
-data class WalletRestoreRoute(val passcode: String)
-
+data class WalletRestoreRoute(
+  val passcode: String
+)
 
 fun NavGraphBuilder.attachWalletGraph(navController: NavController) {
   composable<WalletOptionRoute> {

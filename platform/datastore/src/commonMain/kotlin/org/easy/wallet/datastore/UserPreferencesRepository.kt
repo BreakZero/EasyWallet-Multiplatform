@@ -12,7 +12,7 @@ import org.easy.wallet.datastore.model.UserPreferences
 
 class UserPreferencesRepository internal constructor(
   private val dataStore: DataStore<Preferences>
-): PreferencesRepository {
+) : PreferencesRepository {
   private object K {
     val PASS_CODE = stringPreferencesKey("user.passcode")
     val LANGUAGE = stringPreferencesKey("prefs.language")

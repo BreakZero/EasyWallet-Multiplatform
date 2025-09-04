@@ -50,7 +50,8 @@ private fun AccountTabScreen(uiState: AccountUiState, onEvent: () -> Unit) {
         is AccountUiState.Info -> {
           ListItem(
             modifier = Modifier
-              .fillMaxWidth().clickable(onClick = onEvent),
+              .fillMaxWidth()
+              .clickable(onClick = onEvent),
             headlineContent = {
               Text("Wallet")
             },

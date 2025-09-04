@@ -33,15 +33,20 @@ val dataModule = module {
 
   factory { NewsPagingSource(get()) }
 
-
   single { BitcoinAdapter(ChainId.BTC_MAINNET) } binds arrayOf(
-    BalanceService::class, Broadcaster::class,
-    FeeService::class, HistoryService::class, TransactionBuilder::class
+    BalanceService::class,
+    Broadcaster::class,
+    FeeService::class,
+    HistoryService::class,
+    TransactionBuilder::class
   )
 
   single { EvmAdapter(ChainId.EVM_MAINNET) } binds arrayOf(
-    BalanceService::class, Broadcaster::class,
-    FeeService::class, HistoryService::class, TransactionBuilder::class
+    BalanceService::class,
+    Broadcaster::class,
+    FeeService::class,
+    HistoryService::class,
+    TransactionBuilder::class
   )
 
   single {

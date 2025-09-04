@@ -15,7 +15,6 @@ class GenerateSeedViewModel internal constructor(
   private val accountRepository: AccountRepositoryImpl,
   private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
-
   private val _mnemonic = HDWallet(128, "").mnemonic
 
   val mnemonic = flow {
@@ -23,9 +22,10 @@ class GenerateSeedViewModel internal constructor(
   }.stateIn(viewModelScope, SharingStarted.Lazily, _mnemonic)
 
   fun createWallet(passcode: String, onResult: () -> Unit) {
-    viewModelScope.launch {
-      preferencesRepository.set(UserPreferences(passcode = passcode))
-      accountRepository.create("Wallet1", mnemonic = _mnemonic)
-    }.invokeOnCompletion { onResult() }
+    viewModelScope
+      .launch {
+        preferencesRepository.set(UserPreferences(passcode = passcode))
+        accountRepository.create("Wallet1", mnemonic = _mnemonic)
+      }.invokeOnCompletion { onResult() }
   }
 }

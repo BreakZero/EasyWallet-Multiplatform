@@ -8,5 +8,6 @@ import org.easy.wallet.model.TokenId
 
 interface BalanceService {
   suspend fun getBalance(account: Address, token: Token): BigInteger
+
   suspend fun streamBalances(accounts: List<Address>, tokens: List<Token>): Flow<Map<TokenId, BigInteger>>
 }

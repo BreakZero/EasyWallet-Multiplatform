@@ -47,7 +47,8 @@ fun EasyWalletApp(appState: EasyAppState) {
       ) {
         NavigationBar(
           modifier = Modifier
-            .fillMaxWidth().shadow(1.dp),
+            .fillMaxWidth()
+            .shadow(1.dp),
           containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.66f),
           tonalElevation = 3.dp
         ) {

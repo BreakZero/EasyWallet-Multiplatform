@@ -2,22 +2,16 @@ package org.easy.wallet.feature.account
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trustwallet.core.HDWallet
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.easy.wallet.data.repository.AccountRepositoryImpl
-import org.easy.wallet.data.repository.TokenRepository
-import org.easy.wallet.model.ChainId
-import org.easy.wallet.model.Token
-import org.easy.wallet.model.TokenStandard
 
 class AccountViewModel(
   private val accountRepository: AccountRepositoryImpl,
 ) : ViewModel() {
-
-//  init {
+  //  init {
 //    viewModelScope.launch {
 //      tokenRepository.upsert(
 //        Token(
@@ -46,7 +40,8 @@ class AccountViewModel(
     }
   }
 
-  val state = accountRepository.getCurrentAccount()
+  val state = accountRepository
+    .getCurrentAccount()
     .map { account ->
       account?.let {
         AccountUiState.Info(walletName = it.name)
