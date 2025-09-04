@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -16,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -46,6 +49,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun GenerateSeedScreen(
   passcode: String,
+  onComplete: () -> Unit,
   popBackStack: () -> Unit
 ) {
   val viewModel: GenerateSeedViewModel = koinViewModel()
@@ -56,7 +60,7 @@ fun GenerateSeedScreen(
     words = words,
     popBackStack = popBackStack,
     onAction = {
-      viewModel.createWallet(passcode)
+      viewModel.createWallet(passcode = passcode, onResult = onComplete)
     }
   )
 }
@@ -71,15 +75,20 @@ private fun GenerateSeedScreen(
   Scaffold(
     contentWindowInsets = WindowInsets(0),
     topBar = {
-      EasyTopAppBar(onBack = popBackStack)
+      EasyTopAppBar(
+        onBack = popBackStack,
+        backIcon = Icons.Default.Close
+      )
     },
     bottomBar = {
       Button(
         modifier = Modifier
-          .navigationBarsPadding()
           .fillMaxWidth()
-          .padding(horizontal = 16.dp)
-          .padding(bottom = 16.dp),
+          .navigationBarsPadding()
+          .imePadding()
+          .padding(bottom = 16.dp)
+          .height(56.dp)
+          .padding(horizontal = 16.dp),
         enabled = !hiddenWords,
         onClick = onAction
       ) {

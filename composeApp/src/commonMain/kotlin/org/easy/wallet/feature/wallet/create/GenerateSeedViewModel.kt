@@ -2,11 +2,8 @@ package org.easy.wallet.feature.wallet.create
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trustwallet.core.HDWallet
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -25,10 +22,10 @@ class GenerateSeedViewModel internal constructor(
     emit(_mnemonic)
   }.stateIn(viewModelScope, SharingStarted.Lazily, _mnemonic)
 
-  fun createWallet(passcode: String) {
+  fun createWallet(passcode: String, onResult: () -> Unit) {
     viewModelScope.launch {
       preferencesRepository.set(UserPreferences(passcode = passcode))
       accountRepository.create("Wallet1", mnemonic = _mnemonic)
-    }
+    }.invokeOnCompletion { onResult() }
   }
 }
