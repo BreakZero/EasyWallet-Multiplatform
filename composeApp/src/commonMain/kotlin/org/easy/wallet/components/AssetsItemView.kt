@@ -46,7 +46,7 @@ fun AssetsItemView(
       )
       Spacer(modifier = Modifier.weight(1.0f))
       Text(
-        text = "${asset.balance} ${asset.symbol}",
+        text = "${asset.displayBalance()} ${asset.symbol}",
         style = MaterialTheme.typography.titleLarge
       )
     }

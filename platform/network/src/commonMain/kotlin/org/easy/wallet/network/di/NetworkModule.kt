@@ -72,7 +72,7 @@ val networkModule = module {
           protocol = URLProtocol.HTTPS
           host = "api.etherscan.io"
 //        host = "api-sepolia.etherscan.io"
-          path("api/")
+          path("v2/api/")
           // TODO add api key
           parameters.append("apikey", "")
         }

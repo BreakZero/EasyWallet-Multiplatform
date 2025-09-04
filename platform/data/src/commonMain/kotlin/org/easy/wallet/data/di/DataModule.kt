@@ -33,7 +33,7 @@ val dataModule = module {
 
   factory { NewsPagingSource(get()) }
 
-  single { BitcoinAdapter(ChainId.BTC_MAINNET) } binds arrayOf(
+  single { BitcoinAdapter() } binds arrayOf(
     BalanceService::class,
     Broadcaster::class,
     FeeService::class,
@@ -41,7 +41,7 @@ val dataModule = module {
     TransactionBuilder::class
   )
 
-  single { EvmAdapter(ChainId.EVM_MAINNET) } binds arrayOf(
+  single { EvmAdapter(provider = get()) } binds arrayOf(
     BalanceService::class,
     Broadcaster::class,
     FeeService::class,

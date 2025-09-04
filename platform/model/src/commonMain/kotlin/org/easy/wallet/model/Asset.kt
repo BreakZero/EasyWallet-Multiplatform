@@ -1,5 +1,7 @@
 package org.easy.wallet.model
 
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.ionspin.kotlin.bignum.integer.BigInteger
 
 interface Asset {
@@ -29,9 +31,19 @@ data class Balance(
   override val decimals: Int,
   override val contractAddress: String? = null,
   override val logoUrl: String? = null,
-  override val displayDecimals: Int = decimals,
+  override val displayDecimals: Int = 8,
   val balance: BigInteger = BigInteger.ZERO
-) : Asset
+) : Asset {
+  fun displayBalance(): String {
+    val scaleFactor = BigDecimal.TEN.pow(decimals.toLong())
+
+    return BigDecimal
+      .fromBigInteger(balance)
+      .divide(scaleFactor)
+      .roundToDigitPositionAfterDecimalPoint(displayDecimals.toLong(), RoundingMode.ROUND_HALF_FLOOR)
+      .toPlainString()
+  }
+}
 
 fun Asset.toBalance(balance: BigInteger = BigInteger.ZERO): Balance = Balance(
   id = this.id,
