@@ -33,9 +33,10 @@ class WalletRestoreViewModel internal constructor(
   fun restoreWallet(passcode: String, onResult: () -> Unit) {
     val mnemonic = mnemonicTextField.text.toString()
 
-    viewModelScope.launch {
-      preferencesRepository.set(UserPreferences(passcode = passcode))
-      accountRepository.create("Wallet1", mnemonic = mnemonic)
-    }.invokeOnCompletion { onResult() }
+    viewModelScope
+      .launch {
+        preferencesRepository.set(UserPreferences(passcode = passcode))
+        accountRepository.create("Wallet1", mnemonic = mnemonic)
+      }.invokeOnCompletion { onResult() }
   }
 }

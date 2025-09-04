@@ -15,13 +15,9 @@ data object AssetsBaseRoute
 @Serializable
 data object AssetsRoute
 
-fun NavController.navigateToAssets(navOptions: NavOptions) =
-  navigate(route = AssetsRoute, navOptions)
+fun NavController.navigateToAssets(navOptions: NavOptions) = navigate(route = AssetsRoute, navOptions)
 
-fun NavGraphBuilder.assetsSection(
-  navController: NavController,
-  assertNestedGraph: NavGraphBuilder.() -> Unit,
-) {
+fun NavGraphBuilder.assetsSection(navController: NavController, assertNestedGraph: NavGraphBuilder.() -> Unit,) {
   navigation<AssetsBaseRoute>(startDestination = AssetsRoute) {
     composable<AssetsRoute> {
       AssetsScreen(

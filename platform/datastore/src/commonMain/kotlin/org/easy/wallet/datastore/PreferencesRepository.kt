@@ -7,8 +7,10 @@ internal const val USER_PREFERENCES_NAME = "user_prefs.preferences_pb"
 
 interface PreferencesRepository {
   val preferences: Flow<UserPreferences>
+
   suspend fun update(transform: (UserPreferences) -> UserPreferences)
+
   suspend fun set(prefs: UserPreferences)
+
   suspend fun clear()
 }
-

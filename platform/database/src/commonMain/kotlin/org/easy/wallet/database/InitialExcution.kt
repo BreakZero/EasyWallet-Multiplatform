@@ -36,7 +36,7 @@ fun init(database: EasyWalletDatabase) {
       updated_at = 0
     )
 
-    // ---- Ethereum ERC-20（合约统一小写）----
+    // ---- Ethereum ERC-20（lower case）----
     q.upsertToken(
       token_id = "evm:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7",
       chain_id = "evm:1",
@@ -234,5 +234,4 @@ fun init(database: EasyWalletDatabase) {
       updated_at = 0
     )
   }
-
 }

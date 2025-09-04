@@ -3,10 +3,10 @@ package org.easy.wallet.model
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import kotlin.jvm.JvmInline
 
-
-
 @JvmInline
-value class ChainId(val value: String) {
+value class ChainId(
+  val value: String
+) {
   companion object {
     val EVM_MAINNET = ChainId("evm:1")
     val Polygon_MAINNET = ChainId("evm:137")
@@ -14,10 +14,16 @@ value class ChainId(val value: String) {
     val BTC_MAINNET = ChainId("btc:main")
   }
 }
+
 @JvmInline
-value class Address(val value: String)
+value class Address(
+  val value: String
+)
+
 @JvmInline
-value class TokenId(val value: String)
+value class TokenId(
+  val value: String
+)
 
 enum class TokenStandard { NATIVE, ERC20, ERC721, SPL, TRC20 }
 
@@ -36,8 +42,15 @@ data class Token(
   val updatedAt: Long
 )
 
-sealed class TxStatus { object Pending: TxStatus(); object Success: TxStatus(); data class Failed(val reason:String?): TxStatus() }
+sealed class TxStatus {
+  object Pending : TxStatus()
 
+  object Success : TxStatus()
+
+  data class Failed(
+    val reason: String?
+  ) : TxStatus()
+}
 
 data class Transfer(
   val txHash: String,
@@ -61,15 +74,15 @@ data class FeePolicy(
 )
 
 data class UnsignedTx(
-  val chainId: ChainId,                   // 哪条链
-  val from: Address,                      // 发起人
-  val to: Address?,                       // 接收人（某些合约交互可能为空）
-  val tokenId: TokenId,                   // 涉及的资产
-  val amount: BigInteger?,                // 金额（原子单位）
-  val fee: FeePolicy?,                    // 费用策略
-  val nonce: Long? = null,                // 部分链需要 (EVM)
-  val rawMessage: ByteArray? = null,      // 用于直接签名的序列化结果（EVM RLP、BTC PSBT、Solana Message…）
-  val metadata: Map<String, Any?> = emptyMap() // 链特定额外字段
+  val chainId: ChainId,
+  val from: Address,
+  val to: Address?,
+  val tokenId: TokenId,
+  val amount: BigInteger?,
+  val fee: FeePolicy?,
+  val nonce: Long? = null,
+  val rawMessage: ByteArray? = null,
+  val metadata: Map<String, Any?> = emptyMap()
 ) {
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

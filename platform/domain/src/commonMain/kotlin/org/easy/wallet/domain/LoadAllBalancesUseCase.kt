@@ -24,8 +24,8 @@ class LoadAllBalancesUseCase internal constructor(
     val allToken = tokenRepository.allTokens()
     val balanceJob = coroutineScope {
       allToken.map { token ->
-      val address = hdWallet.address(token)
-      val balanceService = balanceServices[token.chainId.value]
+        val address = hdWallet.address(token)
+        val balanceService = balanceServices[token.chainId.value]
         async {
           val balance = balanceService?.getBalance(account = address, token = token) ?: BigInteger.ZERO
           Balance(
@@ -44,17 +44,17 @@ class LoadAllBalancesUseCase internal constructor(
   }
 }
 
-private fun HDWallet.address(token: Token): Address {
-  return when (token.standard) {
-    TokenStandard.NATIVE -> {
-      when (token.chainId) {
-        ChainId.EVM_MAINNET, ChainId.Polygon_MAINNET, ChainId.Arbitrum_MAINNET -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Ethereum))
-        ChainId.BTC_MAINNET -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Bitcoin))
-        else -> throw IllegalArgumentException("Unsupported chain")
-      }
+private fun HDWallet.address(token: Token): Address = when (token.standard) {
+  TokenStandard.NATIVE -> {
+    when (token.chainId) {
+      ChainId.EVM_MAINNET, ChainId.Polygon_MAINNET, ChainId.Arbitrum_MAINNET -> Address(
+        getAddressForCoin(com.trustwallet.core.CoinType.Ethereum)
+      )
+      ChainId.BTC_MAINNET -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Bitcoin))
+      else -> throw IllegalArgumentException("Unsupported chain")
     }
-
-    TokenStandard.ERC20, TokenStandard.ERC721 -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Ethereum))
-    else -> throw IllegalArgumentException("Unsupported chain")
   }
+
+  TokenStandard.ERC20, TokenStandard.ERC721 -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Ethereum))
+  else -> throw IllegalArgumentException("Unsupported chain")
 }

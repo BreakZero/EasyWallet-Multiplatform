@@ -15,15 +15,19 @@ class AssetsViewModel(
   val accountRepository: AccountRepositoryImpl,
   val allBalancesUseCase: LoadAllBalancesUseCase
 ) : ViewModel() {
-  val state = accountRepository.getCurrentAccount().map { account ->
-    if (account != null) {
-      val balances = allBalancesUseCase(account)
-      AssetsUiState.WalletAssets(
-        walletName = account.name,
-        assets = balances
-      )
-    } else AssetsUiState.EmptyWallet
-  }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3_000), AssetsUiState.Fetching)
+  val state = accountRepository
+    .getCurrentAccount()
+    .map { account ->
+      if (account != null) {
+        val balances = allBalancesUseCase(account)
+        AssetsUiState.WalletAssets(
+          walletName = account.name,
+          assets = balances
+        )
+      } else {
+        AssetsUiState.EmptyWallet
+      }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3_000), AssetsUiState.Fetching)
 }
 
 sealed interface AssetsUiState {

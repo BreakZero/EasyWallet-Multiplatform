@@ -16,19 +16,12 @@ import org.easy.wallet.model.UnsignedTx
 
 class BitcoinAdapter(
   override val chainId: ChainId
-): IChainAdapter {
+) : IChainAdapter {
   override val supportedStandards = setOf(TokenStandard.NATIVE)
-  override suspend fun getBalance(
-    account: Address,
-    token: Token
-  ): BigInteger {
-    return BigInteger.ONE
-  }
 
-  override suspend fun streamBalances(
-    accounts: List<Address>,
-    tokens: List<Token>
-  ): Flow<Map<TokenId, BigInteger>> {
+  override suspend fun getBalance(account: Address, token: Token): BigInteger = BigInteger.ONE
+
+  override suspend fun streamBalances(accounts: List<Address>, tokens: List<Token>): Flow<Map<TokenId, BigInteger>> {
     TODO("Not yet implemented")
   }
 
@@ -52,10 +45,7 @@ class BitcoinAdapter(
     TODO("Not yet implemented")
   }
 
-  override suspend fun signAndBroadcast(
-    unsigned: UnsignedTx,
-    coinType: CoinType
-  ): String {
+  override suspend fun signAndBroadcast(unsigned: UnsignedTx, coinType: CoinType): String {
     TODO("Not yet implemented")
   }
 

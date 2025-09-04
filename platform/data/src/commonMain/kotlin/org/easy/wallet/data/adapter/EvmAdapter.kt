@@ -16,19 +16,12 @@ import org.easy.wallet.model.UnsignedTx
 
 class EvmAdapter(
   override val chainId: ChainId
-): IChainAdapter {
+) : IChainAdapter {
   override val supportedStandards: Set<TokenStandard> = setOf(TokenStandard.NATIVE, TokenStandard.ERC20)
-  override suspend fun getBalance(
-    account: Address,
-    token: Token
-  ): BigInteger {
-    return BigInteger.TEN
-  }
 
-  override suspend fun streamBalances(
-    accounts: List<Address>,
-    tokens: List<Token>
-  ): Flow<Map<TokenId, BigInteger>> {
+  override suspend fun getBalance(account: Address, token: Token): BigInteger = BigInteger.TEN
+
+  override suspend fun streamBalances(accounts: List<Address>, tokens: List<Token>): Flow<Map<TokenId, BigInteger>> {
     TODO("Not yet implemented")
   }
 
@@ -52,10 +45,7 @@ class EvmAdapter(
     TODO("Not yet implemented")
   }
 
-  override suspend fun signAndBroadcast(
-    unsigned: UnsignedTx,
-    coinType: CoinType
-  ): String {
+  override suspend fun signAndBroadcast(unsigned: UnsignedTx, coinType: CoinType): String {
     TODO("Not yet implemented")
   }
 

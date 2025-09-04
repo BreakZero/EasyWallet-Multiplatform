@@ -32,10 +32,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun CreatePassCodeScreen(
-  popBackStack: () -> Unit,
-  toNext: (String) -> Unit
-) {
+fun CreatePassCodeScreen(popBackStack: () -> Unit, toNext: (String) -> Unit) {
   val viewModel: CreatePassCodeViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
   Scaffold(
@@ -52,7 +49,8 @@ fun CreatePassCodeScreen(
     }
   ) {
     Column(
-      modifier = Modifier.fillMaxSize()
+      modifier = Modifier
+        .fillMaxSize()
         .padding(it)
         .padding(bottom = 24.dp),
       verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),

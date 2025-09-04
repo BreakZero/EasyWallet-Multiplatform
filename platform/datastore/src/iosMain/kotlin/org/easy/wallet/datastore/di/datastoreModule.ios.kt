@@ -20,7 +20,6 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 
-
 @OptIn(ExperimentalForeignApi::class)
 private fun documentsPath(filename: String): String {
   val dir = NSFileManager.defaultManager.URLForDirectory(
@@ -46,7 +45,6 @@ internal actual val platformDataStoreModule: Module = module {
       )
       requireNotNull(documentDirectory).path + "/$DATA_STORE_FILE_NAME"
     }
-
   }
 
   single<DataStore<Preferences>> {

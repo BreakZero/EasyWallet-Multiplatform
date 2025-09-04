@@ -6,5 +6,10 @@ import org.easy.wallet.model.FeePolicy
 import org.easy.wallet.model.Token
 
 interface FeeService {
-  suspend fun estimateTransferFee(from: Address, to: Address, token: Token, amount: BigInteger): FeePolicy
+  suspend fun estimateTransferFee(
+    from: Address,
+    to: Address,
+    token: Token,
+    amount: BigInteger
+  ): FeePolicy
 }

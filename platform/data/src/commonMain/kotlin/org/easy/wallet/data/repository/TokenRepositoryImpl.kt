@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import org.easy.wallet.data.mapper.toExternal
 import org.easy.wallet.database.DatabaseDriverFactory
 import org.easy.wallet.database.EasyWalletDatabase
@@ -21,14 +20,14 @@ class TokenRepositoryImpl internal constructor(
 ) : TokenRepository {
   private val database = EasyWalletDatabase(driverFactory.createDriver())
   private val tokenQueries = database.tokensQueries
-  override suspend fun allTokens(): List<Token> {
-    return tokenQueries.selectAllTokens().executeAsList().map { it.toExternal() }
-  }
 
-  override fun streamTokens(): Flow<List<Token>> {
-    return tokenQueries.selectAllTokens().asFlow().mapToList(Dispatchers.IO)
-      .map { it.map { it.toExternal() } }
-  }
+  override suspend fun allTokens(): List<Token> = tokenQueries.selectAllTokens().executeAsList().map { it.toExternal() }
+
+  override fun streamTokens(): Flow<List<Token>> = tokenQueries
+    .selectAllTokens()
+    .asFlow()
+    .mapToList(Dispatchers.IO)
+    .map { it.map { it.toExternal() } }
 
   override suspend fun upsert(token: Token) {
     tokenQueries.upsertToken(
@@ -43,7 +42,7 @@ class TokenRepositoryImpl internal constructor(
       enabled = if (token.enabled) 1 else 0,
       sort_order = token.sortOrder.toLong(),
       created_at = token.createdAt,
-      updated_at = token.updatedAt,
+      updated_at = token.updatedAt
     )
   }
 
@@ -62,33 +61,28 @@ class TokenRepositoryImpl internal constructor(
           enabled = if (token.enabled) 1 else 0,
           sort_order = token.sortOrder.toLong(),
           created_at = token.createdAt,
-          updated_at = token.updatedAt,
+          updated_at = token.updatedAt
         )
       }
     }
   }
 
-  override suspend fun getById(tokenId: String): Token? =
-    tokenQueries.selectTokenById(tokenId).executeAsOneOrNull()?.toExternal()
+  override suspend fun getById(tokenId: String): Token? = tokenQueries.selectTokenById(tokenId).executeAsOneOrNull()?.toExternal()
 
-  override suspend fun getByChain(
-    chainId: String,
-    onlyEnabled: Boolean
-  ): List<Token> {
-    return if (onlyEnabled)
-      tokenQueries.selectEnabledByChain(chainId).executeAsList().map { it.toExternal() }
-    else
-      tokenQueries.selectByChain(chainId).executeAsList().map { it.toExternal() }
+  override suspend fun getByChain(chainId: String, onlyEnabled: Boolean): List<Token> = if (onlyEnabled) {
+    tokenQueries.selectEnabledByChain(chainId).executeAsList().map { it.toExternal() }
+  } else {
+    tokenQueries.selectByChain(chainId).executeAsList().map { it.toExternal() }
   }
 
   override suspend fun getByContract(
     chainId: String,
     standard: TokenStandard,
     contract: String
-  ): Token? {
-    return tokenQueries.selectByContract(chainId, standard.name, contract.lowercase())
-      .executeAsOneOrNull()?.toExternal()
-  }
+  ): Token? = tokenQueries
+    .selectByContract(chainId, standard.name, contract.lowercase())
+    .executeAsOneOrNull()
+    ?.toExternal()
 
   override suspend fun setEnabled(tokenId: String, enabled: Boolean) {
     tokenQueries.updateTokenEnabled(
