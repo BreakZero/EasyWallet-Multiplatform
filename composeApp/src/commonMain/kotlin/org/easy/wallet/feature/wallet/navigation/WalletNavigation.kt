@@ -53,10 +53,16 @@ fun NavGraphBuilder.attachWalletGraph(navController: NavController) {
     GenerateSeedScreen(
       passcode = passcode,
       popBackStack = navController::popBackStack,
+      onComplete = { navController.popBackStack() }
     )
   }
 
   composable<WalletRestoreRoute> {
-    WalletRestoreScreen()
+    val passcode = it.toRoute<WalletRestoreRoute>().passcode
+    WalletRestoreScreen(
+      passcode = passcode,
+      popBackStack = navController::popBackStack,
+      onComplete = { navController.popBackStack() }
+    )
   }
 }

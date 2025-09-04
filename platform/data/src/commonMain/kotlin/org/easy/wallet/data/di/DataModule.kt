@@ -47,6 +47,8 @@ val dataModule = module {
   single {
     mapOf(
       ChainId.EVM_MAINNET.value to get<EvmAdapter>(),
+      ChainId.Polygon_MAINNET.value to get<EvmAdapter>(),
+      ChainId.Arbitrum_MAINNET.value to get<EvmAdapter>(),
       ChainId.BTC_MAINNET.value to get<BitcoinAdapter>()
     )
   }

@@ -9,6 +9,8 @@ import kotlin.jvm.JvmInline
 value class ChainId(val value: String) {
   companion object {
     val EVM_MAINNET = ChainId("evm:1")
+    val Polygon_MAINNET = ChainId("evm:137")
+    val Arbitrum_MAINNET = ChainId("evm:42161")
     val BTC_MAINNET = ChainId("btc:main")
   }
 }

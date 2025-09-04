@@ -19,15 +19,13 @@ class LoadAllBalancesUseCase internal constructor(
   private val balanceServices: Map<String, BalanceService>
 ) {
   suspend operator fun invoke(walletAccount: WalletAccount): List<Balance> {
-    println("===== $walletAccount")
     val hdWallet = HDWallet(walletAccount.mnemonic, "")
 
     val allToken = tokenRepository.allTokens()
-    val balanceJob = allToken.map { token ->
+    val balanceJob = coroutineScope {
+      allToken.map { token ->
       val address = hdWallet.address(token)
       val balanceService = balanceServices[token.chainId.value]
-
-      coroutineScope {
         async {
           val balance = balanceService?.getBalance(account = address, token = token) ?: BigInteger.ZERO
           Balance(
@@ -50,7 +48,7 @@ private fun HDWallet.address(token: Token): Address {
   return when (token.standard) {
     TokenStandard.NATIVE -> {
       when (token.chainId) {
-        ChainId.EVM_MAINNET -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Ethereum))
+        ChainId.EVM_MAINNET, ChainId.Polygon_MAINNET, ChainId.Arbitrum_MAINNET -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Ethereum))
         ChainId.BTC_MAINNET -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Bitcoin))
         else -> throw IllegalArgumentException("Unsupported chain")
       }
