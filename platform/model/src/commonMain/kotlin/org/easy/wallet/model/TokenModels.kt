@@ -3,8 +3,15 @@ package org.easy.wallet.model
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import kotlin.jvm.JvmInline
 
+
+
 @JvmInline
-value class ChainId(val value: String)
+value class ChainId(val value: String) {
+  companion object {
+    val EVM_MAINNET = ChainId("evm:1")
+    val BTC_MAINNET = ChainId("btc:main")
+  }
+}
 @JvmInline
 value class Address(val value: String)
 @JvmInline
@@ -14,7 +21,7 @@ enum class TokenStandard { NATIVE, ERC20, ERC721, SPL, TRC20 }
 
 data class Token(
   val tokenId: String,
-  val chainId: String,
+  val chainId: ChainId,
   val standard: TokenStandard,
   val contract: String?,
   val symbol: String,

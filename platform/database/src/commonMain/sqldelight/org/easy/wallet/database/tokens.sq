@@ -71,3 +71,6 @@ UPDATE tokens SET sort_order = ?, updated_at = ? WHERE token_id = ?;
 
 deleteToken:
 DELETE FROM tokens WHERE token_id = ?;
+
+selectAllTokens:
+SELECT * FROM tokens ORDER BY chain_id ASC, enabled DESC, sort_order ASC, UPPER(symbol) ASC;

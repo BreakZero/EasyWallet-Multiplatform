@@ -22,7 +22,7 @@ class EvmAdapter(
     account: Address,
     token: Token
   ): BigInteger {
-    TODO("Not yet implemented")
+    return BigInteger.TEN
   }
 
   override suspend fun streamBalances(

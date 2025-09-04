@@ -1,5 +1,12 @@
 package org.easy.wallet.data.di
 
+import org.easy.wallet.data.adapter.BitcoinAdapter
+import org.easy.wallet.data.adapter.EvmAdapter
+import org.easy.wallet.data.interfaces.BalanceService
+import org.easy.wallet.data.interfaces.Broadcaster
+import org.easy.wallet.data.interfaces.FeeService
+import org.easy.wallet.data.interfaces.HistoryService
+import org.easy.wallet.data.interfaces.TransactionBuilder
 import org.easy.wallet.data.paging.NewsPagingSource
 import org.easy.wallet.data.repository.AccountRepositoryImpl
 import org.easy.wallet.data.repository.AllAssetsRepository
@@ -14,8 +21,10 @@ import org.easy.wallet.data.repository.WalletRepository
 import org.easy.wallet.data.repository.WalletRepositoryImpl
 import org.easy.wallet.database.di.databaseModules
 import org.easy.wallet.datastore.di.storeModules
+import org.easy.wallet.model.ChainId
 import org.easy.wallet.network.di.networkModule
 import org.koin.dsl.bind
+import org.koin.dsl.binds
 import org.koin.dsl.module
 
 val dataModule = module {
@@ -30,7 +39,25 @@ val dataModule = module {
 
   single { AccountRepositoryImpl(driverFactory = get(), keyStorePort = get()) }
 
-  single { TokenRepositoryImpl(driverFactory = get())  } bind TokenRepository::class
+  single { TokenRepositoryImpl(driverFactory = get()) } bind TokenRepository::class
 
   factory { NewsPagingSource(get()) }
+
+
+  single { BitcoinAdapter(ChainId.BTC_MAINNET) } binds arrayOf(
+    BalanceService::class, Broadcaster::class,
+    FeeService::class, HistoryService::class, TransactionBuilder::class
+  )
+
+  single { EvmAdapter(ChainId.EVM_MAINNET) } binds arrayOf(
+    BalanceService::class, Broadcaster::class,
+    FeeService::class, HistoryService::class, TransactionBuilder::class
+  )
+
+  single {
+    mapOf(
+      ChainId.EVM_MAINNET.value to get<EvmAdapter>(),
+      ChainId.BTC_MAINNET.value to get<BitcoinAdapter>()
+    )
+  }
 }

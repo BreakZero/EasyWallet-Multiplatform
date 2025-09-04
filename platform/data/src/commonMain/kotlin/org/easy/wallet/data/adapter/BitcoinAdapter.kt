@@ -22,7 +22,7 @@ class BitcoinAdapter(
     account: Address,
     token: Token
   ): BigInteger {
-    TODO("Not yet implemented")
+    return BigInteger.ONE
   }
 
   override suspend fun streamBalances(
