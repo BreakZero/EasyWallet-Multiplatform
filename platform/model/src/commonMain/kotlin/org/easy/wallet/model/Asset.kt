@@ -1,5 +1,7 @@
 package org.easy.wallet.model
 
+import com.ionspin.kotlin.bignum.integer.BigInteger
+
 interface Asset {
   val id: String
   val coinName: String
@@ -28,10 +30,10 @@ data class Balance(
   override val contractAddress: String? = null,
   override val logoUrl: String? = null,
   override val displayDecimals: Int = decimals,
-  val balance: String = "0.0"
+  val balance: BigInteger = BigInteger.ZERO
 ) : Asset
 
-fun Asset.toBalance(balance: String = "0.0"): Balance = Balance(
+fun Asset.toBalance(balance: BigInteger = BigInteger.ZERO): Balance = Balance(
   id = this.id,
   coinName = this.coinName,
   symbol = this.symbol,

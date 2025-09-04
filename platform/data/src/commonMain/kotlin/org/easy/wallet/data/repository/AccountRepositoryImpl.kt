@@ -2,6 +2,13 @@
 
 package org.easy.wallet.data.repository
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToOneNotNull
+import app.cash.sqldelight.coroutines.mapToOneOrNull
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.easy.wallet.database.DatabaseDriverFactory
 import org.easy.wallet.database.EasyWalletDatabase
 import org.easy.wallet.datastore.KeyStorePort
@@ -28,6 +35,24 @@ class AccountRepositoryImpl internal constructor(
         mnemonic = mnemonic
       )
     }
+
+  fun getCurrentAccount(): Flow<WalletAccount?> {
+    return accountsQueries
+      .firstAccount()
+      .asFlow()
+      .mapToOneOrNull(Dispatchers.IO)
+      .map { account ->
+        account?.let {
+          val alias = it.alias
+          val mnemonic = keyStorePort.load(alias).decodeToString()
+          WalletAccount(
+            id = it.id,
+            name = it.name,
+            mnemonic = mnemonic
+          )
+        }
+      }
+  }
 
   suspend fun create(name: String, mnemonic: String): WalletAccount {
     val id = Uuid.random().toString()

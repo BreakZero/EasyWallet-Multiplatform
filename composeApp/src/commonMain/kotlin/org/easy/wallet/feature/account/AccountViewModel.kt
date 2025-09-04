@@ -10,6 +10,9 @@ import kotlinx.coroutines.launch
 import org.easy.wallet.data.repository.AccountRepositoryImpl
 import org.easy.wallet.data.repository.TokenRepository
 import org.easy.wallet.data.repository.WalletRepository
+import org.easy.wallet.model.ChainId
+import org.easy.wallet.model.Token
+import org.easy.wallet.model.TokenStandard
 
 class AccountViewModel(
   walletRepository: WalletRepository,
@@ -19,10 +22,22 @@ class AccountViewModel(
 
   init {
     viewModelScope.launch {
-      tokenRepository.getByChain("evm:1", onlyEnabled = false)
-        .onEach {
-          println("====== $it")
-        }
+//      tokenRepository.upsert(
+//        Token(
+//          tokenId = "btc:main/native",
+//          chainId = ChainId.BTC_MAINNET,
+//          standard = TokenStandard.NATIVE,
+//          contract = null,
+//          symbol = "BTC",
+//          name = "Bitcoin",
+//          decimals = 8,
+//          iconUrl = "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png",
+//          enabled = true,
+//          sortOrder = 1,
+//          createdAt = 0,
+//          updatedAt = 0
+//        )
+//      )
     }
   }
 

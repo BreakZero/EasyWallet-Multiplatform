@@ -1,9 +1,12 @@
 package org.easy.wallet.data.repository
 
+import kotlinx.coroutines.flow.Flow
 import org.easy.wallet.model.Token
 import org.easy.wallet.model.TokenStandard
 
 interface TokenRepository {
+  suspend fun allTokens(): List<Token>
+  fun streamTokens(): Flow<List<Token>>
   suspend fun upsert(token: Token)
   suspend fun upsertAll(tokens: List<Token>)
   suspend fun getById(tokenId: String): Token?

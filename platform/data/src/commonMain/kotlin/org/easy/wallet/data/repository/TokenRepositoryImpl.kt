@@ -1,5 +1,12 @@
 package org.easy.wallet.data.repository
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import org.easy.wallet.data.mapper.toExternal
 import org.easy.wallet.database.DatabaseDriverFactory
 import org.easy.wallet.database.EasyWalletDatabase
@@ -14,11 +21,19 @@ class TokenRepositoryImpl internal constructor(
 ) : TokenRepository {
   private val database = EasyWalletDatabase(driverFactory.createDriver())
   private val tokenQueries = database.tokensQueries
+  override suspend fun allTokens(): List<Token> {
+    return tokenQueries.selectAllTokens().executeAsList().map { it.toExternal() }
+  }
+
+  override fun streamTokens(): Flow<List<Token>> {
+    return tokenQueries.selectAllTokens().asFlow().mapToList(Dispatchers.IO)
+      .map { it.map { it.toExternal() } }
+  }
 
   override suspend fun upsert(token: Token) {
     tokenQueries.upsertToken(
       token_id = token.tokenId,
-      chain_id = token.chainId,
+      chain_id = token.chainId.value,
       standard = token.standard.name,
       contract = token.contract,
       symbol = token.symbol,
@@ -37,7 +52,7 @@ class TokenRepositoryImpl internal constructor(
       tokens.forEach { token ->
         tokenQueries.upsertToken(
           token_id = token.tokenId,
-          chain_id = token.chainId,
+          chain_id = token.chainId.value,
           standard = token.standard.name,
           contract = token.contract,
           symbol = token.symbol,
@@ -84,7 +99,11 @@ class TokenRepositoryImpl internal constructor(
   }
 
   override suspend fun setSortOrder(tokenId: String, sortOrder: Int) {
-    tokenQueries.updateTokenSort(sortOrder.toLong(), Clock.System.now().toEpochMilliseconds(), tokenId)
+    tokenQueries.updateTokenSort(
+      sortOrder.toLong(),
+      Clock.System.now().toEpochMilliseconds(),
+      tokenId
+    )
   }
 
   override suspend fun delete(tokenId: String) {

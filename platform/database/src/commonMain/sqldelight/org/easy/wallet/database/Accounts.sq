@@ -8,6 +8,9 @@ CREATE TABLE accounts (
 selectAllAccounts:
 SELECT * FROM accounts;
 
+firstAccount:
+SELECT * FROM accounts LIMIT 1;
+
 selectAccountById:
 SELECT * FROM accounts WHERE id = ?;
 
