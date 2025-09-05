@@ -45,7 +45,7 @@ class EtherScanController internal constructor(
     page: Int,
     offset: Int,
     sort: String = "asc"
-  ): List<Transfer> {
+  ): Result<List<Transfer>> {
     val chainid = chainId.value.split(":").last()
 
     val result = httpClient
@@ -59,7 +59,7 @@ class EtherScanController internal constructor(
         parameter("sort", sort)
       }
     println("===== $result")
-    return emptyList()
+    return Result.success(emptyList())
   }
 
   suspend fun tokenTransfer(
@@ -69,7 +69,7 @@ class EtherScanController internal constructor(
     page: Int,
     offset: Int,
     sort: String = "asc"
-  ): List<Transfer> {
+  ): Result<List<Transfer>> {
     val chainid = chainId.value.split(":").last()
     val result = httpClient
       .safeGet<EtherScanBaseResponse<List<EvmTransactionDTO>>>("") {
@@ -83,6 +83,6 @@ class EtherScanController internal constructor(
         parameter("sort", sort)
       }
     println("===== $result")
-    return emptyList()
+    return Result.success(emptyList())
   }
 }

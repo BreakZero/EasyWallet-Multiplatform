@@ -16,17 +16,19 @@ internal class NewsPagingSource(
 
   override suspend fun load(params: LoadParams<Int>): LoadResult<Int, News> {
     val offset = params.key ?: 0
-    val result = blockChairController.loadNews(limit = PAGE_SIZE, offset = offset)
+    val loadSize = params.loadSize
+
+    val result = blockChairController.loadNews(limit = loadSize, offset = offset)
 
     return result.fold(
       onFailure = {
         LoadResult.Error(throwable = it)
       },
-      onSuccess = {
+      onSuccess = { data ->
         LoadResult.Page(
-          data = it,
-          prevKey = if (offset <= 0) null else offset - PAGE_SIZE,
-          nextKey = if (it.isEmpty()) null else offset + PAGE_SIZE
+          data = data,
+          prevKey = if (offset <= 0) null else offset - loadSize,
+          nextKey = if (data.size < loadSize) null else offset + loadSize
         )
       }
     )

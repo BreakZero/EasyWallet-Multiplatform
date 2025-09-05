@@ -28,7 +28,10 @@ class LoadAllBalancesUseCase internal constructor(
         val balanceService = balanceServices[token.chainId.value]
         async {
           val balance =
-            balanceService?.getBalance(account = Address("0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae"), token = token) ?: BigInteger.ZERO
+            balanceService?.getBalance(
+              account = Address("0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae"),
+              contract = token.contract
+            ) ?: BigInteger.ZERO
           Balance(
             id = token.tokenId,
             coinName = token.name,
@@ -51,6 +54,7 @@ private fun HDWallet.address(token: Token): Address = when (token.standard) {
       ChainId.EVM_MAINNET, ChainId.Polygon_MAINNET, ChainId.Arbitrum_MAINNET -> Address(
         getAddressForCoin(com.trustwallet.core.CoinType.Ethereum)
       )
+
       ChainId.BTC_MAINNET -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Bitcoin))
       else -> throw IllegalArgumentException("Unsupported chain")
     }
