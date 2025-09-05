@@ -1,6 +1,7 @@
 package org.easy.wallet.data.adapter
 
-import androidx.paging.PagingSource
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.trustwallet.core.CoinType
 import org.easy.wallet.data.interfaces.IChainAdapter
@@ -63,15 +64,19 @@ class EvmAdapter(
     TODO("Not yet implemented")
   }
 
-  override suspend fun getTransfers(
+  override fun getTransfers(
     account: Address,
-    cursor: String?,
     pageSize: Int
-  ): PagingSource<Int, Transfer> {
-    return TransactionPagingSource(
-      ethereumController = provider,
-      address = account,
-      chainId = chainId
+  ): Pager<Int, Transfer> {
+    return Pager(
+      config = PagingConfig(pageSize, prefetchDistance = 2),
+      pagingSourceFactory = {
+        TransactionPagingSource(
+          ethereumController = provider,
+          address = account,
+          chainId = chainId
+        )
+      }
     )
   }
 }

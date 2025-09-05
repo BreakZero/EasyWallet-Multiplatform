@@ -1,6 +1,6 @@
 package org.easy.wallet.data.adapter
 
-import androidx.paging.PagingSource
+import androidx.paging.Pager
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.trustwallet.core.CoinType
 import org.easy.wallet.data.interfaces.IChainAdapter
@@ -43,11 +43,10 @@ class BitcoinAdapter(
     TODO("Not yet implemented")
   }
 
-  override suspend fun getTransfers(
+  override fun getTransfers(
     account: Address,
-    cursor: String?,
     pageSize: Int
-  ): PagingSource<Int, Transfer> {
+  ): Pager<Int, Transfer> {
     TODO("Not yet implemented")
   }
 }

@@ -23,15 +23,15 @@ class LoadAllBalancesUseCase internal constructor(
 
     val allToken = tokenRepository.allTokens()
     val balanceJob = coroutineScope {
-      allToken.take(6).map { token ->
+      allToken.take(2).map { token ->
         val address = hdWallet.address(token)
         val balanceService = balanceServices[token.chainId.value]
         async {
-          val balance =
-            balanceService?.getBalance(
-              account = Address("0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae"),
-              contract = token.contract
-            ) ?: BigInteger.ZERO
+          val balance = balanceService?.getBalance(
+            account = address,
+            contract = token.contract
+          ) ?: BigInteger.ZERO
+
           Balance(
             id = token.tokenId,
             coinName = token.name,
