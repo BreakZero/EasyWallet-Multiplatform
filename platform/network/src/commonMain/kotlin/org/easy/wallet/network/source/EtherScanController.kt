@@ -3,7 +3,9 @@ package org.easy.wallet.network.source
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
 import org.easy.wallet.model.ChainId
+import org.easy.wallet.model.Transfer
 import org.easy.wallet.network.model.dto.EtherScanBaseResponse
+import org.easy.wallet.network.model.dto.EvmTransactionDTO
 import org.easy.wallet.network.safeGet
 
 class EtherScanController internal constructor(
@@ -35,5 +37,52 @@ class EtherScanController internal constructor(
         "0.00"
       }
     }
+  }
+
+  suspend fun listNormalTransfer(
+    address: String,
+    chainId: ChainId,
+    page: Int,
+    offset: Int,
+    sort: String = "asc"
+  ): List<Transfer> {
+    val chainid = chainId.value.split(":").last()
+
+    val result = httpClient
+      .safeGet<EtherScanBaseResponse<List<EvmTransactionDTO>>>("") {
+        parameter("module", "account")
+        parameter("action", "txlist")
+        parameter("chainid", chainid)
+        parameter("address", address)
+        parameter("page", page)
+        parameter("offset", offset)
+        parameter("sort", sort)
+      }
+    println("===== $result")
+    return emptyList()
+  }
+
+  suspend fun tokenTransfer(
+    address: String,
+    chainId: ChainId,
+    contract: String,
+    page: Int,
+    offset: Int,
+    sort: String = "asc"
+  ): List<Transfer> {
+    val chainid = chainId.value.split(":").last()
+    val result = httpClient
+      .safeGet<EtherScanBaseResponse<List<EvmTransactionDTO>>>("") {
+        parameter("module", "account")
+        parameter("action", "tokentx")
+        parameter("chainid", chainid)
+        parameter("address", address)
+        parameter("contractaddress", contract)
+        parameter("page", page)
+        parameter("offset", offset)
+        parameter("sort", sort)
+      }
+    println("===== $result")
+    return emptyList()
   }
 }

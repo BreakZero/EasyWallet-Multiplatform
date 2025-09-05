@@ -62,8 +62,7 @@ data class Transfer(
   val amount: BigInteger,
   val feePaid: BigInteger?,
   val status: TxStatus,
-  val memo: String? = null,
-  val blockHeight: Long? = null
+  val memo: String? = null
 )
 
 data class FeePolicy(
