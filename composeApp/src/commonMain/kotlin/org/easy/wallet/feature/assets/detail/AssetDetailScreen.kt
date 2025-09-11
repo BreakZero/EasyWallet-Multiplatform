@@ -1,4 +1,4 @@
-package org.easy.wallet.feature.assets.transaction
+package org.easy.wallet.feature.assets.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,37 +29,66 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import easywallet.composeapp.generated.resources.Res
+import easywallet.composeapp.generated.resources.action_copy
+import easywallet.composeapp.generated.resources.action_receive
+import easywallet.composeapp.generated.resources.action_send
+import easywallet.composeapp.generated.resources.action_to_explorer
+import easywallet.composeapp.generated.resources.label_to_explorer
+import easywallet.composeapp.generated.resources.text_recipient
+import easywallet.composeapp.generated.resources.text_transfer_history
 import org.easy.wallet.components.EasyTopAppBar
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TransactionScreen() {
-  TransactionScreen("")
+fun AssetDetailScreen(
+  popup: () -> Unit
+) {
+  AssetDetailScreen(
+    "18.8ETH",
+    onEvent = { event ->
+      when (event) {
+        AssetDetailEvent.Popup -> popup()
+        AssetDetailEvent.OnReceive -> Unit
+        AssetDetailEvent.OnSend -> Unit
+      }
+    }
+  )
 }
 
 @Composable
-private fun TransactionScreen(balance: String) {
+private fun AssetDetailScreen(balance: String, onEvent: (AssetDetailEvent) -> Unit) {
   Scaffold(
     modifier = Modifier.fillMaxSize(),
     topBar = {
-      EasyTopAppBar { }
+      EasyTopAppBar(
+        onBack = { onEvent(AssetDetailEvent.Popup) }
+      )
     }
   ) {
     Column(
       modifier = Modifier.fillMaxSize().padding(it),
       verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-      Text(text = balance, style = MaterialTheme.typography.displayMedium)
+      Text(
+        text = balance, style = MaterialTheme.typography.displayMedium,
+        modifier = Modifier.padding(horizontal = 16.dp)
+      )
       ActionRow(
-        onSend = {},
-        onReceive = {}
+        onSend = { onEvent(AssetDetailEvent.OnSend) },
+        onReceive = { onEvent(AssetDetailEvent.OnReceive) }
       )
       HorizontalDivider(thickness = Dp.Hairline)
       Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
       ) {
-        Text("收款地址", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+        Text(
+          stringResource(Res.string.text_recipient),
+          style = MaterialTheme.typography.bodyMedium,
+          fontWeight = FontWeight.Bold
+        )
         Row(
           modifier = Modifier.fillMaxWidth(),
           verticalAlignment = Alignment.CenterVertically,
@@ -78,7 +107,7 @@ private fun TransactionScreen(balance: String) {
               .padding(horizontal = 8.dp, vertical = 4.dp)
           ) {
             Text(
-              text = "复制",
+              text = stringResource(Res.string.action_copy),
               style = MaterialTheme.typography.labelSmall,
               color = MaterialTheme.colorScheme.onPrimary
             )
@@ -88,7 +117,7 @@ private fun TransactionScreen(balance: String) {
       HorizontalDivider(thickness = Dp.Hairline)
 
       Text(
-        text = "交易历史",
+        text = stringResource(Res.string.text_transfer_history),
         style = MaterialTheme.typography.bodyMedium,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -99,9 +128,9 @@ private fun TransactionScreen(balance: String) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.CenterVertically)
       ) {
-        Text("更多交易历史，可前往浏览器查看")
+        Text(text = stringResource(Res.string.label_to_explorer))
         OutlinedButton(onClick = {}) {
-          Text(text = "前往浏览器")
+          Text(text = stringResource(Res.string.action_to_explorer))
         }
       }
     }
@@ -133,7 +162,7 @@ private fun ActionRow(
           tint = MaterialTheme.colorScheme.onTertiary
         )
       }
-      Text("Send")
+      Text(stringResource(Res.string.action_send))
     }
 
     Column(
@@ -150,7 +179,7 @@ private fun ActionRow(
           tint = MaterialTheme.colorScheme.onTertiary
         )
       }
-      Text("Receive")
+      Text(stringResource(Res.string.action_receive))
     }
   }
 }
@@ -158,5 +187,5 @@ private fun ActionRow(
 @Preview
 @Composable
 private fun TransactionScreenPreview() {
-  TransactionScreen("12.88")
+  AssetDetailScreen("12.88", onEvent = {})
 }

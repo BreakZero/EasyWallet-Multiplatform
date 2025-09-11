@@ -41,6 +41,7 @@ import easywallet.composeapp.generated.resources.Res
 import easywallet.composeapp.generated.resources.button_continue
 import easywallet.composeapp.generated.resources.create_wallet_secure_write_down_seed
 import easywallet.composeapp.generated.resources.create_wallet_secure_write_down_seed_desc
+import easywallet.composeapp.generated.resources.tips_reveal_seed
 import org.easy.wallet.components.EasyTopAppBar
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -148,7 +149,7 @@ private fun GenerateSeedScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
           ) {
             Icon(imageVector = Icons.Default.Share, contentDescription = null)
-            Text(text = "Tap to reveal your seed phrase")
+            Text(text = stringResource(Res.string.tips_reveal_seed))
           }
         }
       }

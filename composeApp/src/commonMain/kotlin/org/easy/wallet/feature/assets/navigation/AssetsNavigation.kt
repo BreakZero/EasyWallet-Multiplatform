@@ -4,11 +4,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.assets.AssetsScreen
-import org.easy.wallet.feature.assets.transaction.TransactionScreen
+import org.easy.wallet.feature.assets.detail.AssetDetailScreen
 import org.easy.wallet.feature.wallet.navigation.SetPassCodeRoute
 import org.easy.wallet.model.TokenId
 
@@ -39,7 +38,9 @@ fun NavGraphBuilder.assetsSection(navController: NavController, assertNestedGrap
     }
 
     composable<AssetDetailRoute> {
-      TransactionScreen()
+      AssetDetailScreen(
+        popup = navController::popBackStack
+      )
     }
     assertNestedGraph()
   }

@@ -16,7 +16,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import easywallet.composeapp.generated.resources.Res
-import easywallet.composeapp.generated.resources.tab_account
+import easywallet.composeapp.generated.resources.create_wallet
+import easywallet.composeapp.generated.resources.text_account
+import easywallet.composeapp.generated.resources.text_wallet
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -38,7 +40,7 @@ private fun AccountTabScreen(uiState: AccountUiState, onEvent: () -> Unit) {
     topBar = {
       TopAppBar(
         title = {
-          Text(stringResource(Res.string.tab_account), style = MaterialTheme.typography.titleLarge)
+          Text(stringResource(Res.string.text_account), style = MaterialTheme.typography.titleLarge)
         }
       )
     }
@@ -53,7 +55,7 @@ private fun AccountTabScreen(uiState: AccountUiState, onEvent: () -> Unit) {
               .fillMaxWidth()
               .clickable(onClick = onEvent),
             headlineContent = {
-              Text("Wallet")
+              Text(stringResource(Res.string.text_wallet))
             },
             trailingContent = {
               Text(uiState.walletName.orEmpty())
@@ -68,7 +70,7 @@ private fun AccountTabScreen(uiState: AccountUiState, onEvent: () -> Unit) {
               .clickable(onClick = onEvent),
             headlineContent = {
               if (uiState is AccountUiState.NoSetup) {
-                Text("Create Wallet")
+                Text(stringResource(Res.string.create_wallet))
               }
             }
           )

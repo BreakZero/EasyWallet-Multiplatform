@@ -31,7 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import easywallet.composeapp.generated.resources.Res
+import easywallet.composeapp.generated.resources.action_parse
+import easywallet.composeapp.generated.resources.button_confirm
+import easywallet.composeapp.generated.resources.general_hint
+import easywallet.composeapp.generated.resources.restore_wallet
 import org.easy.wallet.components.EasyTopAppBar
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +54,7 @@ fun WalletRestoreScreen(
     modifier = Modifier.fillMaxSize(),
     topBar = {
       EasyTopAppBar(
-        title = { Text("Restore Wallet") },
+        title = { Text(stringResource(Res.string.restore_wallet)) },
         onBack = popBackStack,
         backIcon = Icons.Default.Close
       )
@@ -67,7 +73,7 @@ fun WalletRestoreScreen(
         },
         enabled = isValid
       ) {
-        Text(text = "Confirm")
+        Text(text = stringResource(Res.string.button_confirm))
       }
     }
   ) { innerPaddings ->
@@ -89,7 +95,7 @@ fun WalletRestoreScreen(
             innerTextField = innerTextField,
             enabled = true,
             singleLine = false,
-            placeholder = { Text("Enter text…") },
+            placeholder = { Text(stringResource(Res.string.general_hint)) },
             interactionSource = remember { MutableInteractionSource() },
             visualTransformation = VisualTransformation.None
           )
@@ -104,7 +110,7 @@ fun WalletRestoreScreen(
           horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
           Icon(imageVector = Icons.Default.Call, contentDescription = null)
-          Text("粘贴")
+          Text(stringResource(Res.string.action_parse))
         }
       }
     }
