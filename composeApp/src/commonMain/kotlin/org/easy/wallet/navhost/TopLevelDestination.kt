@@ -7,6 +7,7 @@ import easywallet.composeapp.generated.resources.ic_tab_news
 import easywallet.composeapp.generated.resources.tab_account
 import easywallet.composeapp.generated.resources.tab_assets
 import easywallet.composeapp.generated.resources.tab_news
+import org.easy.wallet.feature.account.navigation.AccountBaseRoute
 import org.easy.wallet.feature.account.navigation.AccountRoute
 import org.easy.wallet.feature.assets.navigation.AssetsBaseRoute
 import org.easy.wallet.feature.assets.navigation.AssetsRoute
@@ -46,6 +47,7 @@ enum class TopLevelDestination(
     selectedIcon = Res.drawable.ic_tab_account,
     unselectedIcon = Res.drawable.ic_tab_account,
     titleTextId = Res.string.tab_account,
-    route = AccountRoute::class
+    route = AccountRoute::class,
+    baseRoute = AccountBaseRoute::class
   ),
 }

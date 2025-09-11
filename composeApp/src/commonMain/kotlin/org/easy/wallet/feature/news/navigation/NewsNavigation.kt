@@ -9,18 +9,12 @@ import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.news.NewsScreen
 
 @Serializable
-data object NewsBaseRoute
-
-@Serializable
 data object NewsRoute
 
 fun NavController.navigateToNews(navOptions: NavOptions) = navigate(route = NewsRoute, navOptions)
 
-fun NavGraphBuilder.newsSection(newsNestedGraph: NavGraphBuilder.() -> Unit,) {
-  navigation<NewsBaseRoute>(startDestination = NewsRoute) {
+fun NavGraphBuilder.newsSection() {
     composable<NewsRoute> {
       NewsScreen()
     }
-    newsNestedGraph()
-  }
 }
