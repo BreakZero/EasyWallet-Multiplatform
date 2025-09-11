@@ -56,7 +56,7 @@ fun AssetsScreen(
 
 @Composable
 private fun AssetsScreen(state: AssetsUiState, onEvent: (AssetEvent) -> Unit = {}) {
-  Scaffold(modifier = Modifier.fillMaxSize()) {
+  Scaffold(modifier = Modifier.fillMaxSize()) { it ->
     when (state) {
       AssetsUiState.Fetching -> {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -114,7 +114,7 @@ private fun AssetsScreen(state: AssetsUiState, onEvent: (AssetEvent) -> Unit = {
               Text(text = state.walletName, style = MaterialTheme.typography.titleLarge)
             }
           }
-          items(state.assets, key = { it.id }) { asset ->
+          items(state.assets, key = { it.id.value }) { asset ->
             AssetsItemView(
               asset = asset,
               modifier = Modifier.fillMaxWidth(),

@@ -12,7 +12,7 @@ import org.easy.wallet.model.Balance
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AssetsViewModel(
-  val accountRepository: AccountRepositoryImpl,
+  accountRepository: AccountRepositoryImpl,
   val allBalancesUseCase: LoadAllBalancesUseCase
 ) : ViewModel() {
   val state = accountRepository

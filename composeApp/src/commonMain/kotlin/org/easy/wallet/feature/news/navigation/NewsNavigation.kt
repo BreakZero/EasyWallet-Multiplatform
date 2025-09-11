@@ -14,7 +14,7 @@ data object NewsRoute
 fun NavController.navigateToNews(navOptions: NavOptions) = navigate(route = NewsRoute, navOptions)
 
 fun NavGraphBuilder.newsSection() {
-    composable<NewsRoute> {
-      NewsScreen()
-    }
+  composable<NewsRoute> {
+    NewsScreen()
+  }
 }

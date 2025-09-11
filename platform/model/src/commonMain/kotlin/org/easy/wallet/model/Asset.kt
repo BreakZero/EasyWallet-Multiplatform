@@ -5,7 +5,7 @@ import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.ionspin.kotlin.bignum.integer.BigInteger
 
 interface Asset {
-  val id: String
+  val id: TokenId
   val coinName: String
   val symbol: String
   val decimals: Int
@@ -15,7 +15,7 @@ interface Asset {
 }
 
 data class BasicAsset(
-  override val id: String,
+  override val id: TokenId,
   override val coinName: String,
   override val symbol: String,
   override val decimals: Int,
@@ -25,7 +25,7 @@ data class BasicAsset(
 ) : Asset
 
 data class Balance(
-  override val id: String,
+  override val id: TokenId,
   override val coinName: String,
   override val symbol: String,
   override val decimals: Int,

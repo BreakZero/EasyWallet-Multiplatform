@@ -11,8 +11,7 @@ class TransactionPagingSource(
   private val ethereumController: EtherScanController,
   private val address: Address,
   private val chainId: ChainId
-): PagingSource<Int, Transfer>() {
-
+) : PagingSource<Int, Transfer>() {
   override fun getRefreshKey(state: PagingState<Int, Transfer>): Int? = null
 
   override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transfer> {

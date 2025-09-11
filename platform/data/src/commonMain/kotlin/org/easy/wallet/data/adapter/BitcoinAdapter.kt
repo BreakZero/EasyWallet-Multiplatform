@@ -43,10 +43,7 @@ class BitcoinAdapter(
     TODO("Not yet implemented")
   }
 
-  override fun getTransfers(
-    account: Address,
-    pageSize: Int
-  ): Pager<Int, Transfer> {
+  override fun getTransfers(account: Address, pageSize: Int): Pager<Int, Transfer> {
     TODO("Not yet implemented")
   }
 }

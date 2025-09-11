@@ -52,10 +52,10 @@ val dataModule = module {
 
   single {
     mapOf(
-      ChainId.EVM_MAINNET.value to get<EvmAdapter>() { parametersOf(ChainId.EVM_MAINNET) },
-      ChainId.Polygon_MAINNET.value to get<EvmAdapter>() { parametersOf(ChainId.Polygon_MAINNET) },
-      ChainId.Arbitrum_MAINNET.value to get<EvmAdapter>() { parametersOf(ChainId.Arbitrum_MAINNET) },
-      ChainId.BTC_MAINNET.value to get<BitcoinAdapter>() { parametersOf(ChainId.BTC_MAINNET) }
+      ChainId.EVM_MAINNET.value to get<EvmAdapter> { parametersOf(ChainId.EVM_MAINNET) },
+      ChainId.Polygon_MAINNET.value to get<EvmAdapter> { parametersOf(ChainId.Polygon_MAINNET) },
+      ChainId.Arbitrum_MAINNET.value to get<EvmAdapter> { parametersOf(ChainId.Arbitrum_MAINNET) },
+      ChainId.BTC_MAINNET.value to get<BitcoinAdapter> { parametersOf(ChainId.BTC_MAINNET) }
     )
   }
 }

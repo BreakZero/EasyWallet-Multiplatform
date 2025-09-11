@@ -31,7 +31,7 @@ class TokenRepositoryImpl internal constructor(
 
   override suspend fun upsert(token: Token) {
     tokenQueries.upsertToken(
-      token_id = token.tokenId,
+      token_id = token.tokenId.value,
       chain_id = token.chainId.value,
       standard = token.standard.name,
       contract = token.contract,
@@ -50,7 +50,7 @@ class TokenRepositoryImpl internal constructor(
     database.transaction {
       tokens.forEach { token ->
         tokenQueries.upsertToken(
-          token_id = token.tokenId,
+          token_id = token.tokenId.value,
           chain_id = token.chainId.value,
           standard = token.standard.name,
           contract = token.contract,

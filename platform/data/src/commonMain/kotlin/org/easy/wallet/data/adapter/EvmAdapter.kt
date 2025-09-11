@@ -64,19 +64,14 @@ class EvmAdapter(
     TODO("Not yet implemented")
   }
 
-  override fun getTransfers(
-    account: Address,
-    pageSize: Int
-  ): Pager<Int, Transfer> {
-    return Pager(
-      config = PagingConfig(pageSize, prefetchDistance = 2),
-      pagingSourceFactory = {
-        TransactionPagingSource(
-          ethereumController = provider,
-          address = account,
-          chainId = chainId
-        )
-      }
-    )
-  }
+  override fun getTransfers(account: Address, pageSize: Int): Pager<Int, Transfer> = Pager(
+    config = PagingConfig(pageSize, prefetchDistance = 2),
+    pagingSourceFactory = {
+      TransactionPagingSource(
+        ethereumController = provider,
+        address = account,
+        chainId = chainId
+      )
+    }
+  )
 }
