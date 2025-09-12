@@ -34,6 +34,16 @@ class AccountRepositoryImpl internal constructor(
     )
   }
 
+  suspend fun activeAccount(): WalletAccount? = accountsQueries.firstAccount().executeAsOneOrNull()?.let {
+    val alias = it.alias
+    val mnemonic = keyStorePort.load(alias).decodeToString()
+    WalletAccount(
+      id = it.id,
+      name = it.name,
+      mnemonic = mnemonic
+    )
+  }
+
   fun getCurrentAccount(): Flow<WalletAccount?> = accountsQueries
     .firstAccount()
     .asFlow()

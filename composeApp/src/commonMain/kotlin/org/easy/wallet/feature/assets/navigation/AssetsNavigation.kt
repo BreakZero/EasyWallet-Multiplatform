@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.assets.AssetsScreen
 import org.easy.wallet.feature.assets.detail.AssetDetailScreen
@@ -38,7 +39,9 @@ fun NavGraphBuilder.assetsSection(navController: NavController, assertNestedGrap
     }
 
     composable<AssetDetailRoute> {
+      val route = it.toRoute<AssetDetailRoute>()
       AssetDetailScreen(
+        tokenId = TokenId(route.tokenId),
         popup = navController::popBackStack
       )
     }

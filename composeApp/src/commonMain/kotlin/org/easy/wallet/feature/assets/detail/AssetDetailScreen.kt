@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -29,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import easywallet.composeapp.generated.resources.Res
 import easywallet.composeapp.generated.resources.action_copy
 import easywallet.composeapp.generated.resources.action_receive
@@ -38,15 +40,19 @@ import easywallet.composeapp.generated.resources.label_to_explorer
 import easywallet.composeapp.generated.resources.text_recipient
 import easywallet.composeapp.generated.resources.text_transfer_history
 import org.easy.wallet.components.EasyTopAppBar
+import org.easy.wallet.model.TokenId
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun AssetDetailScreen(
-  popup: () -> Unit
-) {
+fun AssetDetailScreen(tokenId: TokenId, popup: () -> Unit) {
+  val viewModel: AssetDetailViewModel = koinViewModel { parametersOf(tokenId) }
+  val state by viewModel.state.collectAsStateWithLifecycle()
+
   AssetDetailScreen(
-    "18.8ETH",
+    state = state,
     onEvent = { event ->
       when (event) {
         AssetDetailEvent.Popup -> popup()
@@ -58,7 +64,7 @@ fun AssetDetailScreen(
 }
 
 @Composable
-private fun AssetDetailScreen(balance: String, onEvent: (AssetDetailEvent) -> Unit) {
+private fun AssetDetailScreen(state: AssetDetailUiState, onEvent: (AssetDetailEvent) -> Unit) {
   Scaffold(
     modifier = Modifier.fillMaxSize(),
     topBar = {
@@ -72,7 +78,8 @@ private fun AssetDetailScreen(balance: String, onEvent: (AssetDetailEvent) -> Un
       verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
       Text(
-        text = balance, style = MaterialTheme.typography.displayMedium,
+        text = state.tokenHolding?.amount?.format() ?: "0.00",
+        style = MaterialTheme.typography.displayMedium,
         modifier = Modifier.padding(horizontal = 16.dp)
       )
       ActionRow(
@@ -95,7 +102,10 @@ private fun AssetDetailScreen(balance: String, onEvent: (AssetDetailEvent) -> Un
           horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
           Text(
-            text = "123456789\n134546576u",
+            text = state.tokenHolding
+              ?.address
+              ?.value
+              .orEmpty(),
             modifier = Modifier.weight(1f).alpha(0.66f),
             style = MaterialTheme.typography.bodySmall
           )
@@ -187,5 +197,5 @@ private fun ActionRow(
 @Preview
 @Composable
 private fun TransactionScreenPreview() {
-  AssetDetailScreen("12.88", onEvent = {})
+  AssetDetailScreen(state = AssetDetailUiState(), onEvent = {})
 }

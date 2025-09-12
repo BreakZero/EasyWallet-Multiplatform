@@ -16,14 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.easy.wallet.model.Balance
+import org.easy.wallet.model.TokenHolding
 
 @Composable
 fun AssetsItemView(
-  asset: Balance,
+  tokenHolding: TokenHolding,
   modifier: Modifier = Modifier,
   onItemClick: () -> Unit
 ) {
+  val assetMeta = tokenHolding.asset
   Card(
     modifier = modifier,
     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
@@ -42,17 +43,17 @@ fun AssetsItemView(
         modifier = Modifier
           .size(48.dp)
           .clip(CircleShape),
-        imageUrl = asset.logoUrl,
-        contentDescription = asset.coinName
+        imageUrl = assetMeta.logoUrl,
+        contentDescription = assetMeta.name
       )
       Text(
         modifier = Modifier.padding(start = 12.dp),
-        text = asset.coinName,
+        text = assetMeta.name,
         style = MaterialTheme.typography.titleMedium
       )
       Spacer(modifier = Modifier.weight(1.0f))
       Text(
-        text = "${asset.displayBalance()} ${asset.symbol}",
+        text = "${tokenHolding.amount.format()} ${assetMeta.symbol}",
         style = MaterialTheme.typography.titleLarge
       )
     }
