@@ -16,8 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
+import easywallet.composeapp.generated.resources.Res
+import easywallet.composeapp.generated.resources.power_by
 import org.easy.wallet.components.PullToRefreshPagingColumn
 import org.easy.wallet.model.News
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -37,7 +40,7 @@ private fun NewsTabScreen(newsPagingItems: LazyPagingItems<News>) {
       TopAppBar(
         title = {
           Text(
-            text = "Power by Blockchair",
+            text = stringResource(Res.string.power_by, "Blockchair"),
             style = MaterialTheme.typography.bodySmall
           )
         }

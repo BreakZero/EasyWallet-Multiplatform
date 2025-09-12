@@ -8,9 +8,12 @@ import kotlinx.coroutines.coroutineScope
 import org.easy.wallet.data.interfaces.BalanceService
 import org.easy.wallet.data.repository.TokenRepository
 import org.easy.wallet.model.Address
-import org.easy.wallet.model.Balance
+import org.easy.wallet.model.Amount
 import org.easy.wallet.model.ChainId
+import org.easy.wallet.model.FungibleTokenMeta
+import org.easy.wallet.model.NativeTokenMeta
 import org.easy.wallet.model.Token
+import org.easy.wallet.model.TokenHolding
 import org.easy.wallet.model.TokenStandard
 import org.easy.wallet.model.WalletAccount
 
@@ -18,24 +21,40 @@ class LoadAllBalancesUseCase internal constructor(
   private val tokenRepository: TokenRepository,
   private val balanceServices: Map<String, BalanceService>
 ) {
-  suspend operator fun invoke(walletAccount: WalletAccount): List<Balance> {
+  suspend operator fun invoke(walletAccount: WalletAccount): List<TokenHolding> {
     val hdWallet = HDWallet(walletAccount.mnemonic, "")
 
     val allToken = tokenRepository.allTokens()
     val balanceJob = coroutineScope {
-      allToken.map { token ->
+      allToken.take(2).map { token ->
         val address = hdWallet.address(token)
         val balanceService = balanceServices[token.chainId.value]
         async {
-          val balance = balanceService?.getBalance(account = address, token = token) ?: BigInteger.ZERO
-          Balance(
+          val balance = balanceService?.getBalance(
+            account = address,
+            contract = token.contract
+          ) ?: BigInteger.ZERO
+
+          val metaData = token.contract?.let {
+            FungibleTokenMeta(
+              id = token.tokenId,
+              name = token.name,
+              symbol = token.symbol,
+              decimals = token.decimals,
+              contract = Address(it),
+              logoUrl = token.iconUrl
+            )
+          } ?: NativeTokenMeta(
             id = token.tokenId,
-            coinName = token.name,
+            name = token.name,
             symbol = token.symbol,
             decimals = token.decimals,
-            contractAddress = token.contract,
-            logoUrl = token.iconUrl,
-            balance = balance
+            logoUrl = token.iconUrl
+          )
+
+          TokenHolding(
+            asset = metaData,
+            amount = Amount(raw = balance, decimals = metaData.decimals)
           )
         }
       }
@@ -44,12 +63,13 @@ class LoadAllBalancesUseCase internal constructor(
   }
 }
 
-private fun HDWallet.address(token: Token): Address = when (token.standard) {
+fun HDWallet.address(token: Token): Address = when (token.standard) {
   TokenStandard.NATIVE -> {
     when (token.chainId) {
       ChainId.EVM_MAINNET, ChainId.Polygon_MAINNET, ChainId.Arbitrum_MAINNET -> Address(
         getAddressForCoin(com.trustwallet.core.CoinType.Ethereum)
       )
+
       ChainId.BTC_MAINNET -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Bitcoin))
       else -> throw IllegalArgumentException("Unsupported chain")
     }

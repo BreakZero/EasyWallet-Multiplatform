@@ -28,7 +28,7 @@ value class TokenId(
 enum class TokenStandard { NATIVE, ERC20, ERC721, SPL, TRC20 }
 
 data class Token(
-  val tokenId: String,
+  val tokenId: TokenId,
   val chainId: ChainId,
   val standard: TokenStandard,
   val contract: String?,
@@ -62,8 +62,7 @@ data class Transfer(
   val amount: BigInteger,
   val feePaid: BigInteger?,
   val status: TxStatus,
-  val memo: String? = null,
-  val blockHeight: Long? = null
+  val memo: String? = null
 )
 
 data class FeePolicy(

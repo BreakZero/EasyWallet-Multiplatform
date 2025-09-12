@@ -11,27 +11,6 @@ import org.easy.wallet.data.repository.AccountRepositoryImpl
 class AccountViewModel(
   private val accountRepository: AccountRepositoryImpl,
 ) : ViewModel() {
-  //  init {
-//    viewModelScope.launch {
-//      tokenRepository.upsert(
-//        Token(
-//          tokenId = "btc:main/native",
-//          chainId = ChainId.BTC_MAINNET,
-//          standard = TokenStandard.NATIVE,
-//          contract = null,
-//          symbol = "BTC",
-//          name = "Bitcoin",
-//          decimals = 8,
-//          iconUrl = "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png",
-//          enabled = true,
-//          sortOrder = 1,
-//          createdAt = 0,
-//          updatedAt = 0
-//        )
-//      )
-//    }
-//  }
-
   fun listAccounts() {
     viewModelScope.launch {
       accountRepository.listAccounts().onEach {

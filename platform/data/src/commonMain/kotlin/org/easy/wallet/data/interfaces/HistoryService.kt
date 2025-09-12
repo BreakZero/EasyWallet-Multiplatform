@@ -1,13 +1,9 @@
 package org.easy.wallet.data.interfaces
 
-import androidx.paging.PagingSource
+import androidx.paging.Pager
 import org.easy.wallet.model.Address
 import org.easy.wallet.model.Transfer
 
 interface HistoryService {
-  suspend fun getTransfers(
-    account: Address,
-    cursor: String? = null,
-    pageSize: Int = 50
-  ): PagingSource<Int, Transfer>
+  fun getTransfers(account: Address, pageSize: Int = 50): Pager<Int, Transfer>
 }

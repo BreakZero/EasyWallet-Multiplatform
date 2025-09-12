@@ -1,44 +1,68 @@
 package org.easy.wallet.model
 
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.ionspin.kotlin.bignum.integer.BigInteger
 
-interface Asset {
-  val id: String
-  val coinName: String
+sealed interface TokenMeta {
+  val id: TokenId
+  val name: String
   val symbol: String
   val decimals: Int
-  val contractAddress: String?
   val logoUrl: String?
-  val displayDecimals: Int
 }
 
-data class BasicAsset(
-  override val id: String,
-  override val coinName: String,
+data class NativeTokenMeta(
+  override val id: TokenId,
+  override val name: String,
   override val symbol: String,
   override val decimals: Int,
-  override val contractAddress: String? = null,
-  override val logoUrl: String? = null,
-  override val displayDecimals: Int = decimals
-) : Asset
+  override val logoUrl: String? = null
+) : TokenMeta
 
-data class Balance(
-  override val id: String,
-  override val coinName: String,
+data class FungibleTokenMeta(
+  override val id: TokenId,
+  override val name: String,
   override val symbol: String,
   override val decimals: Int,
-  override val contractAddress: String? = null,
-  override val logoUrl: String? = null,
-  override val displayDecimals: Int = decimals,
-  val balance: BigInteger = BigInteger.ZERO
-) : Asset
+  val contract: Address,
+  override val logoUrl: String? = null
+) : TokenMeta
 
-fun Asset.toBalance(balance: BigInteger = BigInteger.ZERO): Balance = Balance(
-  id = this.id,
-  coinName = this.coinName,
-  symbol = this.symbol,
-  decimals = this.decimals,
-  contractAddress = this.contractAddress,
-  logoUrl = this.logoUrl,
-  balance = balance
+data class Amount(
+  val raw: BigInteger,
+  val decimals: Int
+) {
+  init {
+    require(decimals >= 0)
+  }
+
+  fun format(displayDecimals: Int = minOf(8, decimals), rounding: RoundingMode = RoundingMode.ROUND_HALF_FLOOR): String =
+    AmountFormatter.formatBaseUnits(raw, decimals, displayDecimals, rounding)
+
+  fun isZero() = raw == BigInteger.ZERO
+}
+
+data class TokenHolding(
+  val asset: TokenMeta,
+  val amount: Amount,
+  val address: Address? = null
 )
+
+fun TokenMeta.zero(): TokenHolding = TokenHolding(this, Amount(BigInteger.ZERO, decimals))
+
+object AmountFormatter {
+  fun formatBaseUnits(
+    raw: BigInteger,
+    decimals: Int,
+    displayDecimals: Int = minOf(8, decimals),
+    rounding: RoundingMode = RoundingMode.ROUND_HALF_FLOOR
+  ): String {
+    val scale = BigDecimal.TEN.pow(decimals.toLong())
+    return BigDecimal
+      .fromBigInteger(raw)
+      .divide(scale)
+      .roundToDigitPositionAfterDecimalPoint(displayDecimals.toLong(), rounding)
+      .toPlainString()
+  }
+}

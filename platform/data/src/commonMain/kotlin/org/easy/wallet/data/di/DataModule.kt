@@ -17,6 +17,7 @@ import org.easy.wallet.database.di.databaseModules
 import org.easy.wallet.datastore.di.storeModules
 import org.easy.wallet.model.ChainId
 import org.easy.wallet.network.di.networkModule
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.module
@@ -33,7 +34,7 @@ val dataModule = module {
 
   factory { NewsPagingSource(get()) }
 
-  single { BitcoinAdapter(ChainId.BTC_MAINNET) } binds arrayOf(
+  single { (chainId: ChainId) -> BitcoinAdapter(chainId) } binds arrayOf(
     BalanceService::class,
     Broadcaster::class,
     FeeService::class,
@@ -41,7 +42,7 @@ val dataModule = module {
     TransactionBuilder::class
   )
 
-  single { EvmAdapter(ChainId.EVM_MAINNET) } binds arrayOf(
+  single { (chainId: ChainId) -> EvmAdapter(chainId = chainId, provider = get()) } binds arrayOf(
     BalanceService::class,
     Broadcaster::class,
     FeeService::class,
@@ -51,10 +52,10 @@ val dataModule = module {
 
   single {
     mapOf(
-      ChainId.EVM_MAINNET.value to get<EvmAdapter>(),
-      ChainId.Polygon_MAINNET.value to get<EvmAdapter>(),
-      ChainId.Arbitrum_MAINNET.value to get<EvmAdapter>(),
-      ChainId.BTC_MAINNET.value to get<BitcoinAdapter>()
+      ChainId.EVM_MAINNET.value to get<EvmAdapter> { parametersOf(ChainId.EVM_MAINNET) },
+      ChainId.Polygon_MAINNET.value to get<EvmAdapter> { parametersOf(ChainId.Polygon_MAINNET) },
+      ChainId.Arbitrum_MAINNET.value to get<EvmAdapter> { parametersOf(ChainId.Arbitrum_MAINNET) },
+      ChainId.BTC_MAINNET.value to get<BitcoinAdapter> { parametersOf(ChainId.BTC_MAINNET) }
     )
   }
 }

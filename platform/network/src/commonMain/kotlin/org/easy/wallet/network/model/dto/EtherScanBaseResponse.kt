@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class EtherScanBaseResponse<T>(
+internal data class EtherScanBaseResponse<T>(
   @SerialName("message")
   val message: String,
   @SerialName("result")
