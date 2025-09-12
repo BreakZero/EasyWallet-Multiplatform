@@ -2,4 +2,4 @@ package org.easy.wallet.feature.send
 
 import androidx.lifecycle.ViewModel
 
-class SendViewModel: ViewModel()
+class SendFlowViewModel: ViewModel()

@@ -18,6 +18,7 @@ import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import easywallet.composeapp.generated.resources.Res
 import easywallet.composeapp.generated.resources.power_by
+import org.easy.wallet.common.WebManager
 import org.easy.wallet.components.PullToRefreshPagingColumn
 import org.easy.wallet.model.News
 import org.jetbrains.compose.resources.stringResource
@@ -60,7 +61,13 @@ private fun NewsTabScreen(newsPagingItems: LazyPagingItems<News>) {
       verticalArrangement = Arrangement.spacedBy(12.dp),
       itemKey = { index -> newsPagingItems[index]!!.hash },
       itemContainer = { news ->
-        NewsItemView(modifier = Modifier.fillMaxWidth(), news = news, itemClick = {})
+        NewsItemView(
+          modifier = Modifier.fillMaxWidth(),
+          news = news,
+          itemClick = { news ->
+            WebManager.openInBrowser(news.link)
+          }
+        )
       }
     )
   }

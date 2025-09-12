@@ -14,16 +14,23 @@ internal fun Project.configureMultiplatformLibrary() {
       }
     }
 
-    listOf(
-      iosX64(),
-      iosArm64(),
-      iosSimulatorArm64()
-    ).forEach { iosTarget ->
-      iosTarget.binaries.framework {
-        baseName = "composeApp"
-        isStatic = true
-      }
-    }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+//    listOf(
+//      iosX64(),
+//      iosArm64(),
+//      iosSimulatorArm64()
+//    ).forEach { iosTarget ->
+//      val isDb = project.path.contains(":database") ||
+//        project.name.contains("database", ignoreCase = true)
+//
+//      iosTarget.binaries.framework {
+//        baseName = "composeApp"
+//        compilerOptions.freeCompilerArgs.addAll("-linker-options", "-lsqlite3")
+//      }
+//    }
   }
 }
 
@@ -41,7 +48,7 @@ internal fun Project.configureMultiplatformAndroid() {
       iosSimulatorArm64()
     ).forEach { iosTarget ->
       iosTarget.binaries.framework {
-        baseName = "composeApp"
+        baseName = project.name.replace("-", "_")
         isStatic = true
       }
     }

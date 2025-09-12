@@ -30,6 +30,18 @@ kotlin {
     }
   }
 
+  listOf(
+    iosX64(),
+    iosArm64(),
+    iosSimulatorArm64()
+  ).forEach { iosTarget ->
+    iosTarget.binaries.framework {
+      baseName = "composeApp"
+      isStatic = true
+      compilerOptions.freeCompilerArgs.addAll("-linker-options", "-lsqlite3")
+    }
+  }
+
   sourceSets {
     androidMain.dependencies {
       implementation(compose.preview)
@@ -70,6 +82,8 @@ kotlin {
       implementation(libs.koin.composeVM)
 
       implementation(libs.lifecycle.viewmodel.compose)
+
+      implementation(libs.qr.kit)
     }
   }
 }

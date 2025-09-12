@@ -37,6 +37,7 @@ sqldelight {
       schemaOutputDirectory.set(file("src/commonMain/sqldelight/schemas"))
     }
   }
+  linkSqlite.set(true)
 }
 
 android {
