@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import org.easy.wallet.data.repository.AccountRepositoryImpl
@@ -18,6 +19,7 @@ class AssetsViewModel(
   val state = accountRepository
     .getCurrentAccount()
     .map { account ->
+      println("===== $account")
       if (account != null) {
         val balances = allBalancesUseCase(account)
         AssetsUiState.WalletAssets(
@@ -27,6 +29,8 @@ class AssetsViewModel(
       } else {
         AssetsUiState.EmptyWallet
       }
+    }.catch {
+      emit(AssetsUiState.EmptyWallet)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3_000), AssetsUiState.Fetching)
 }
 

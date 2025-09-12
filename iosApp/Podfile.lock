@@ -1,21 +1,21 @@
 PODS:
   - composeApp (1.0.0):
     - TrustWalletCore
-  - SwiftProtobuf (1.28.2)
-  - TrustWalletCore (4.2.3):
-    - TrustWalletCore/Core (= 4.2.3)
-  - TrustWalletCore/Core (4.2.3):
+  - TrustWalletCore (4.3.9):
+    - TrustWalletCore/Core (= 4.3.9)
+  - TrustWalletCore/Core (4.3.9):
     - TrustWalletCore/Types
-  - TrustWalletCore/Types (4.2.3):
-    - SwiftProtobuf
+  - TrustWalletCore/Types (4.3.9):
+    - WalletCoreSwiftProtobuf
+  - WalletCoreSwiftProtobuf (1.29.0)
 
 DEPENDENCIES:
   - composeApp (from `../composeApp`)
 
 SPEC REPOS:
   trunk:
-    - SwiftProtobuf
     - TrustWalletCore
+    - WalletCoreSwiftProtobuf
 
 EXTERNAL SOURCES:
   composeApp:
@@ -23,9 +23,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   composeApp: 18b3bc0f165ba3807b304afc1b8244909f9b2f07
-  SwiftProtobuf: 4dbaffec76a39a8dc5da23b40af1a5dc01a4c02d
-  TrustWalletCore: 4fd68f4df0428532a13cefaec1a3e403273c0869
+  TrustWalletCore: f3423fa79df3c4904fbda4be83a0c9c183bb4d5f
+  WalletCoreSwiftProtobuf: a4798576a2d309511fc45f81843d348732ec571d
 
-PODFILE CHECKSUM: 3ab1e46fbe778bad5e61c4e5683c3d1d6f4170f0
+PODFILE CHECKSUM: b1e038e2fb1987e034fc956876a858d0f7b58327
 
 COCOAPODS: 1.16.2
