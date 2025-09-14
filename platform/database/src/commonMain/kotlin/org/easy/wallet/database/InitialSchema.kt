@@ -1,6 +1,19 @@
 package org.easy.wallet.database
 
-fun init(database: EasyWalletDatabase) {
+import app.cash.sqldelight.db.QueryResult
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlSchema
+
+object InitialSchema : SqlSchema<QueryResult.Value<Unit>> by EasyWalletDatabase.Schema {
+  override fun create(driver: SqlDriver): QueryResult.Value<Unit> {
+    val result = EasyWalletDatabase.Schema.create(driver)
+    val database = EasyWalletDatabase(driver)
+    initLocalDatabase(database)
+    return result
+  }
+}
+
+fun initLocalDatabase(database: EasyWalletDatabase) {
   database.transaction {
     val q = database.tokensQueries
 

@@ -1,26 +1,24 @@
+@file:OptIn(ExperimentalForeignApi::class)
+
 package org.easy.wallet.datastore
 
+import io.ktor.utils.io.core.toByteArray
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.memScoped
 
-@OptIn(ExperimentalForeignApi::class)
 class IOSKeyStorePort : KeyStorePort {
   override suspend fun store(alias: String, plaintext: ByteArray) {
-    TODO("Not yet implemented")
+    delete(alias)
   }
 
-  override suspend fun load(alias: String): ByteArray {
-    TODO("Not yet implemented")
+  override suspend fun load(alias: String): ByteArray = memScoped {
+    "".toByteArray()
   }
 
   override suspend fun delete(alias: String) {
-    TODO("Not yet implemented")
   }
 
-  override suspend fun encryptEphemeral(plaintext: ByteArray): EncryptedBlob {
-    TODO("Not yet implemented")
-  }
+  override suspend fun encryptEphemeral(plaintext: ByteArray): EncryptedBlob = EncryptedBlob(byteArrayOf(), byteArrayOf())
 
-  override suspend fun decryptEphemeral(blob: EncryptedBlob): ByteArray {
-    TODO("Not yet implemented")
-  }
+  override suspend fun decryptEphemeral(blob: EncryptedBlob): ByteArray = byteArrayOf()
 }
