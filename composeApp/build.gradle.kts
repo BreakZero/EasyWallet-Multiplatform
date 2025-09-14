@@ -38,7 +38,7 @@ kotlin {
     iosTarget.binaries.framework {
       baseName = "composeApp"
       isStatic = true
-      compilerOptions.freeCompilerArgs.addAll("-linker-options", "-lsqlite3")
+      freeCompilerArgs += listOf("-linker-options", "-lsqlite3")
     }
   }
 
