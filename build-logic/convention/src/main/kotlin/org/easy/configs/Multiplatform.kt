@@ -17,20 +17,6 @@ internal fun Project.configureMultiplatformLibrary() {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-
-//    listOf(
-//      iosX64(),
-//      iosArm64(),
-//      iosSimulatorArm64()
-//    ).forEach { iosTarget ->
-//      val isDb = project.path.contains(":database") ||
-//        project.name.contains("database", ignoreCase = true)
-//
-//      iosTarget.binaries.framework {
-//        baseName = "composeApp"
-//        compilerOptions.freeCompilerArgs.addAll("-linker-options", "-lsqlite3")
-//      }
-//    }
   }
 }
 

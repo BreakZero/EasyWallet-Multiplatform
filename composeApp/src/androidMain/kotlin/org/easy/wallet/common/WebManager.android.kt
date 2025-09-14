@@ -16,8 +16,10 @@ actual object WebManager {
     val result = try {
       appContext.startActivity(
         Intent(
-          Intent.ACTION_VIEW, url.toUri()
-        ).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
+          Intent.ACTION_VIEW,
+          url.toUri()
+        ).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+      )
       true
     } catch (_: ActivityNotFoundException) {
       false

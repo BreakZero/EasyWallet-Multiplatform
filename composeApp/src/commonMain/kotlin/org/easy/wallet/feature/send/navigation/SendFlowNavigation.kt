@@ -17,8 +17,7 @@ private data object EnterAmountRoute
 fun NavGraphBuilder.sendFlowSection() {
   navigation<SendFlowEntryPoint>(startDestination = RecipientAddressRoute) {
     composable<RecipientAddressRoute> {
-
     }
-    composable<EnterAmountRoute> {  }
+    composable<EnterAmountRoute> { }
   }
 }

@@ -11,9 +11,11 @@ import platform.Foundation.data
 import platform.Foundation.dataWithBytes
 import platform.posix.memcpy
 
-internal fun ByteArray.toNSData(): NSData =
-  if (isEmpty()) NSData.data()
-  else usePinned { NSData.dataWithBytes(it.addressOf(0), size.convert()) }
+internal fun ByteArray.toNSData(): NSData = if (isEmpty()) {
+  NSData.data()
+} else {
+  usePinned { NSData.dataWithBytes(it.addressOf(0), size.convert()) }
+}
 
 internal fun NSData.toByteArray(): ByteArray {
   val len = length.toInt()

@@ -161,8 +161,10 @@ private fun AssetDetailScreen(state: AssetDetailUiState, onEvent: (AssetDetailEv
     }
     if (showModal) {
       ModalBottomSheet(onDismissRequest = { showModal = false }) {
-
-        val address = state.tokenHolding?.address?.value.orEmpty()
+        val address = state.tokenHolding
+          ?.address
+          ?.value
+          .orEmpty()
         val painter = rememberQrKitPainter(data = address)
         Column(
           modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(vertical = 56.dp),
@@ -179,7 +181,7 @@ private fun AssetDetailScreen(state: AssetDetailUiState, onEvent: (AssetDetailEv
           )
           Text(
             text = address,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium
           )
         }
       }
