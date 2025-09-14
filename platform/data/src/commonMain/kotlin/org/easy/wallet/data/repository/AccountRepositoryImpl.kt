@@ -49,6 +49,7 @@ class AccountRepositoryImpl internal constructor(
     .asFlow()
     .mapToOneOrNull(Dispatchers.IO)
     .map { account ->
+      println("===== $account")
       account?.let {
         val alias = it.alias
         val mnemonic = keyStorePort.load(alias).decodeToString()

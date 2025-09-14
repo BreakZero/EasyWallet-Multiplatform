@@ -30,6 +30,7 @@ class AssetsViewModel(
         AssetsUiState.EmptyWallet
       }
     }.catch {
+      println("===== $it")
       emit(AssetsUiState.EmptyWallet)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3_000), AssetsUiState.Fetching)
 }
