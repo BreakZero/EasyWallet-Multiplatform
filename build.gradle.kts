@@ -19,10 +19,8 @@ subprojects {
     filter {
       include("**/kotlin/**")
 //      exclude("**/generated/**")
-      exclude { element ->
-        val path = element.file.path
-        path.contains("\\generated\\") || path.contains("/generated/")
-      }
+      exclude { element -> element.file.path.contains("generated/") }
+      exclude { element -> element.file.path.contains("build/") }
       exclude("**.kts")
     }
   }
