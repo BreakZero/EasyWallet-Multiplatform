@@ -1,6 +1,9 @@
 import org.easy.configs.configureFlavors
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+import java.io.FileInputStream
+import java.io.InputStreamReader
+import java.util.Properties
 
 plugins {
   id("easy.multiplatform.application")
@@ -97,7 +100,42 @@ android {
     versionCode = 1
     versionName = "1.0"
   }
+
+  signingConfigs {
+    create("release") {
+      with(keyStoreProperties()) {
+        storeFile = rootProject.file(getProperty("storeFile"))
+        storePassword = getProperty("storePassword")
+        keyAlias = getProperty("keyAlias")
+        keyPassword = getProperty("keyPassword")
+      }
+    }
+  }
+  buildTypes {
+    debug {
+      isMinifyEnabled = false
+      applicationIdSuffix = ".debug"
+    }
+    release {
+      isMinifyEnabled = true
+      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+      signingConfig = signingConfigs.getByName("release")
+    }
+  }
+
   configureFlavors(this)
+}
+
+private fun keyStoreProperties(): Properties {
+  val properties = Properties()
+  val keyProperties = rootProject.file("keystore/keystore.properties")
+
+  if (keyProperties.isFile) {
+    InputStreamReader(FileInputStream(keyProperties), Charsets.UTF_8).use { reader ->
+      properties.load(reader)
+    }
+  }
+  return properties
 }
 
 dependencies {

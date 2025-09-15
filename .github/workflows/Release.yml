@@ -31,10 +31,10 @@ jobs:
       - name: Copy CI gradle.properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
-      - name: Copy apikey.properties from secrets
+      - name: Copy apikeys.properties from secrets
         run: |
-          cd . > keystore/apikey.properties
-          echo ${{ secrets.APIKEY_PROPERTIES }} | base64 --decode > keystore/apikey.properties
+          cd . > configs/apikeys.properties
+          echo ${{ secrets.APIKEY_PROPERTIES }} | base64 --decode > configs/apikeys.properties
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -64,4 +64,4 @@ jobs:
         with:
           generate_release_notes: true
           files: |
-            Wallet-Android/app/build/outputs/apk/**/release/*.apk
+            composeApp/build/outputs/apk/**/release/*.apk
