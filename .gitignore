@@ -54,6 +54,5 @@ iosApp/iosApp.xcworkspace/*
 /keystore/*
 !/keystore/keystore.jks
 !/keystore/keystore.properties
-github_token.properties
 
 !.idea/codeStyles/**

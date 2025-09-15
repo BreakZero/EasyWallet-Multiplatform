@@ -1,6 +1,12 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import java.io.FileInputStream
+import java.io.InputStreamReader
+import java.util.Properties
+
 plugins {
   id("easy.multiplatform.library")
   kotlin("plugin.serialization") version libs.versions.kotlin
+  id("com.codingfeline.buildkonfig") version "0.17.1"
 }
 
 kotlin {
@@ -34,4 +40,28 @@ kotlin {
 
 android {
   namespace = "org.easy.wallet.network"
+}
+
+buildkonfig {
+  packageName = "org.easy.wallet.network"
+
+  defaultConfigs {
+    with(readLocalKeys()) {
+      buildConfigField(STRING, "ETHERSCAN_KEY", getProperty("etherscan"))
+    }
+  }
+}
+
+private fun readLocalKeys(): Properties {
+  val properties = Properties()
+  val localProperties = File(rootDir, "configs/apikeys.properties")
+
+  if (localProperties.isFile) {
+    InputStreamReader(
+      FileInputStream(localProperties)
+    ).use { reader ->
+      properties.load(reader)
+    }
+  }
+  return properties
 }

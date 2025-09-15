@@ -14,6 +14,7 @@ import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
+import org.easy.wallet.network.BuildKonfig
 import org.easy.wallet.network.httpClient
 import org.easy.wallet.network.source.BlockChairController
 import org.easy.wallet.network.source.EtherScanController
@@ -74,7 +75,7 @@ val networkModule = module {
 //        host = "api-sepolia.etherscan.io"
           path("v2/api/")
           // TODO add api key
-          parameters.append("apikey", "")
+          parameters.append("apikey", BuildKonfig.ETHERSCAN_KEY)
         }
         header("Content-Type", "application/json")
       }

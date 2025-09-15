@@ -40,7 +40,7 @@ dependencyResolutionManagement {
 
 private fun tokenProperty(): java.util.Properties {
   val properties = java.util.Properties()
-  val localProperties = File(rootDir, "github_token.properties")
+  val localProperties = File(rootDir, "configs/package_read.properties")
 
   if (localProperties.isFile) {
     java.io.InputStreamReader(
