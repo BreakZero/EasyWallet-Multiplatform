@@ -13,33 +13,27 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Setup Gradle (includes wrapper validation)
+        uses: gradle/actions/setup-gradle@v4
         with:
-          submodules: 'true'
-          fetch-depth: 0
+          cache-read-only: false
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v2
-
-      - name: Echo
+      - name: Copy apikeys.properties from secrets
         run: |
-          echo Mock Success
+          cd . > keystore/apikey.properties
+          echo ${{ secrets.APIKEY_PROPERTIES }} | base64 --decode > configs/apikeys.properties
 
-#      - name: Copy apikey.properties from secrets
-#        run: |
-#          cd . > keystore/apikey.properties
-#          echo ${{ secrets.APIKEY_PROPERTIES }} | base64 --decode > keystore/apikey.properties
-#
-#      - name: Copy CI gradle.properties
-#        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
-#
-#      - name: Set up JDK
-#        uses: actions/setup-java@v4
-#        with:
-#          distribution: 'zulu'
-#          java-version: 17
-#          cache: 'gradle'
-#
-#      - name: Check Code Style
-#        run: ./gradlew --no-build-cache ktlintCheck
+      - name: Copy CI gradle.properties
+        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: Check Code Style
+        run: ./gradlew --no-build-cache ktlintCheck
