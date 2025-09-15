@@ -1,7 +1,7 @@
 -- 1.sqm  —— tokens schema + seed initial data
 
 -- ========== TABLE ==========
-CREATE TABLE tokens (
+CREATE TABLE IF NOT EXISTS tokens (
   token_id   TEXT NOT NULL PRIMARY KEY,           -- 统一主键，如 evm:1/native 或 evm:1/erc20:<addr>
   chain_id   TEXT NOT NULL,                       -- "evm:1", "btc:main", "evm:137", ...
   standard   TEXT NOT NULL,                       -- "NATIVE","ERC20","ERC721","SPL",...
@@ -18,18 +18,18 @@ CREATE TABLE tokens (
 
 -- ========= RECOMMENDED INDEXES =========
 -- 合约在同链/同标准唯一（排除 NATIVE）
-CREATE UNIQUE INDEX idx_tokens_unique_contract
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tokens_unique_contract
   ON tokens(chain_id, standard, contract)
   WHERE contract IS NOT NULL;
 
 -- 每条链仅一个 NATIVE
-CREATE UNIQUE INDEX idx_tokens_single_native
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tokens_single_native
   ON tokens(chain_id, standard)
   WHERE standard = 'NATIVE';
 
-CREATE INDEX idx_tokens_chain_enabled ON tokens(chain_id, enabled);
-CREATE INDEX idx_tokens_symbol        ON tokens(symbol);
-CREATE INDEX idx_tokens_contract      ON tokens(contract);
+CREATE INDEX IF NOT EXISTS  idx_tokens_chain_enabled ON tokens(chain_id, enabled);
+CREATE INDEX IF NOT EXISTS  idx_tokens_symbol        ON tokens(symbol);
+CREATE INDEX IF NOT EXISTS  idx_tokens_contract      ON tokens(contract);
 
 -- ========= INITIAL DATA =========
 -- ---- Bitcoin mainnet (native) ----

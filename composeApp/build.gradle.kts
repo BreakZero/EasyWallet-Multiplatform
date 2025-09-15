@@ -17,6 +17,7 @@ kotlin {
 
     framework {
       baseName = "composeApp"
+      isStatic = true
     }
     xcodeConfigurationToNativeBuildType["CUSTOM_DEBUG"] = NativeBuildType.DEBUG
     xcodeConfigurationToNativeBuildType["CUSTOM_RELEASE"] = NativeBuildType.RELEASE
@@ -38,7 +39,7 @@ kotlin {
     iosTarget.binaries.framework {
       baseName = "composeApp"
       isStatic = true
-      freeCompilerArgs += listOf("-linker-options", "-lsqlite3")
+      linkerOpts("-lsqlite3")
     }
   }
 
