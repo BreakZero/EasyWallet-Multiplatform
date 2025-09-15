@@ -1,6 +1,7 @@
 # EasyWallet - 多平台去中心化钱包
 
-[![Github Release](https://github.com/BreakZero/EasyWallet-KMP/actions/workflows/Release.yml/badge.svg)](https://github.com/BreakZero/EasyWallet-KMP/actions/workflows/Release.yml)
+[![Github Release](https://github.com/BreakZero/EasyWallet-Multiplatform/actions/workflows/Release.yml/badge.svg)](https://github.com/BreakZero/EasyWallet-Multiplatform/actions/workflows/Release.yml)
+[![Check Code Style](https://github.com/BreakZero/EasyWallet-Multiplatform/actions/workflows/CheckCodeStyle.yml/badge.svg)](https://github.com/BreakZero/EasyWallet-Multiplatform/actions/workflows/CheckCodeStyle.yml)
 
 ## 项目简介
 
