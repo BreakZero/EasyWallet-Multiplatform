@@ -13,7 +13,7 @@ object InitialSchema : SqlSchema<QueryResult.Value<Unit>> by EasyWalletDatabase.
   }
 }
 
-fun initLocalDatabase(database: EasyWalletDatabase) {
+internal fun initLocalDatabase(database: EasyWalletDatabase) {
   database.transaction {
     val q = database.tokensQueries
 
