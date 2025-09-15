@@ -21,5 +21,5 @@ internal fun documentsPath(filename: String): String {
 }
 
 internal fun createDataStore(): DataStore<Preferences> = createDataStore(
-  producePath = { documentsPath(dataStoreFileName) }
+  producePath = { documentsPath(DATA_STORE_FILENAME) }
 )

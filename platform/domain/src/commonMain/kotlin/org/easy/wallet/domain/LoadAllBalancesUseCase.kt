@@ -26,7 +26,7 @@ class LoadAllBalancesUseCase internal constructor(
 
     val allToken = tokenRepository.allTokens()
     val balanceJob = coroutineScope {
-      allToken.take(2).map { token ->
+      allToken.take(5).map { token ->
         val address = hdWallet.address(token)
         val balanceService = balanceServices[token.chainId.value]
         async {
