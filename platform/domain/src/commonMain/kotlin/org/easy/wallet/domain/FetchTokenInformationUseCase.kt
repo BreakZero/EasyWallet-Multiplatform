@@ -1,6 +1,5 @@
 package org.easy.wallet.domain
 
-import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.trustwallet.core.HDWallet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -13,6 +12,7 @@ import org.easy.wallet.model.FungibleTokenMeta
 import org.easy.wallet.model.NativeTokenMeta
 import org.easy.wallet.model.TokenHolding
 import org.easy.wallet.model.TokenId
+import org.easy.wallet.model.zero
 
 class FetchTokenInformationUseCase(
   private val accountRepository: AccountRepositoryImpl,
@@ -48,13 +48,7 @@ class FetchTokenInformationUseCase(
       decimals = token.decimals,
       logoUrl = token.iconUrl
     )
-    emit(
-      TokenHolding(
-        asset = meta,
-        amount = Amount(raw = BigInteger.ZERO, decimals = meta.decimals),
-        address = address
-      )
-    )
+    emit(value = meta.zero(address = address))
 
     val balance = adapter.getBalance(
       account = address,

@@ -55,7 +55,7 @@ data class TokenHolding(
   val address: Address? = null
 )
 
-fun TokenMeta.zero(): TokenHolding = TokenHolding(this, Amount(BigInteger.ZERO, decimals))
+fun TokenMeta.zero(address: Address? = null): TokenHolding = TokenHolding(this, Amount(BigInteger.ZERO, decimals), address = address)
 
 object AmountFormatter {
   fun formatBaseUnits(

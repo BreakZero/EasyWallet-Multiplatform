@@ -15,6 +15,7 @@ import org.easy.wallet.model.FungibleTokenMeta
 import org.easy.wallet.model.NativeTokenMeta
 import org.easy.wallet.model.TokenHolding
 import org.easy.wallet.model.WalletAccount
+import org.easy.wallet.model.zero
 
 class LoadAllBalancesUseCase internal constructor(
   private val tokenRepository: TokenRepository,
@@ -49,14 +50,7 @@ class LoadAllBalancesUseCase internal constructor(
       meta
     }
 
-    emit(
-      assetMetas.map {
-        TokenHolding(
-          asset = it,
-          amount = Amount(raw = BigInteger.ZERO, decimals = it.decimals)
-        )
-      }
-    )
+    emit(value = assetMetas.map { it.zero() })
 
     val balanceJob = coroutineScope {
       assetMetas.take(5).map { meta ->
