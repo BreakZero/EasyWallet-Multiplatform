@@ -1,6 +1,9 @@
 package org.easy.wallet.domain
 
+import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.trustwallet.core.HDWallet
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.easy.wallet.data.interfaces.IChainAdapter
 import org.easy.wallet.data.repository.AccountRepositoryImpl
 import org.easy.wallet.data.repository.TokenRepository
@@ -16,22 +19,20 @@ class FetchTokenInformationUseCase(
   private val tokenRepository: TokenRepository,
   private val chainAdapters: Map<String, IChainAdapter>
 ) {
-  suspend operator fun invoke(tokenId: TokenId): TokenHolding? {
-    val account = accountRepository.activeAccount() ?: return null
-    val token = tokenRepository.getById(tokenId = tokenId.value) ?: return null
+  operator fun invoke(tokenId: TokenId): Flow<TokenHolding?> = flow {
+    val account = accountRepository.activeAccount() ?: return@flow
+    val token = tokenRepository.getById(tokenId = tokenId.value) ?: return@flow
 
-    val adapter = chainAdapters[token.chainId.value] ?: return null
+    val adapter = chainAdapters[token.chainId.value] ?: return@flow
 
     val hdWallet = HDWallet(account.mnemonic, "")
-    val address = hdWallet.address(token)
-    val balance = adapter.getBalance(
-      account = address,
-      contract = token.contract
-    )
+    val address = hdWallet.address(token.chainId)
 
     val meta = token.contract?.let {
       FungibleTokenMeta(
         id = token.tokenId,
+        chainId = token.chainId,
+        standard = token.standard,
         name = token.name,
         symbol = token.symbol,
         decimals = token.decimals,
@@ -40,16 +41,32 @@ class FetchTokenInformationUseCase(
       )
     } ?: NativeTokenMeta(
       id = token.tokenId,
+      chainId = token.chainId,
+      standard = token.standard,
       name = token.name,
       symbol = token.symbol,
       decimals = token.decimals,
       logoUrl = token.iconUrl
     )
+    emit(
+      TokenHolding(
+        asset = meta,
+        amount = Amount(raw = BigInteger.ZERO, decimals = meta.decimals),
+        address = address
+      )
+    )
 
-    return TokenHolding(
-      asset = meta,
-      amount = Amount(raw = balance, decimals = meta.decimals),
-      address = address
+    val balance = adapter.getBalance(
+      account = address,
+      contract = token.contract
+    )
+
+    emit(
+      value = TokenHolding(
+        asset = meta,
+        amount = Amount(raw = balance, decimals = meta.decimals),
+        address = address
+      )
     )
   }
 }

@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transformLatest
 import org.easy.wallet.data.repository.AccountRepositoryImpl
 import org.easy.wallet.domain.LoadAllBalancesUseCase
 import org.easy.wallet.model.TokenHolding
@@ -16,23 +19,29 @@ class AssetsViewModel(
   accountRepository: AccountRepositoryImpl,
   val allBalancesUseCase: LoadAllBalancesUseCase
 ) : ViewModel() {
-  val state = accountRepository
-    .getCurrentAccount()
-    .map { account ->
-      println("===== $account")
-      if (account != null) {
-        val balances = allBalancesUseCase(account)
-        AssetsUiState.WalletAssets(
-          walletName = account.name,
-          assetTokenHoldings = balances
-        )
-      } else {
-        AssetsUiState.EmptyWallet
-      }
-    }.catch {
-      println("===== $it")
-      emit(AssetsUiState.EmptyWallet)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(3_000), AssetsUiState.Fetching)
+  val state: StateFlow<AssetsUiState> =
+    accountRepository
+      .getCurrentAccount()
+      .transformLatest { account ->
+        if (account == null) {
+          emit(AssetsUiState.EmptyWallet)
+        } else {
+          emitAll(
+            allBalancesUseCase(account)
+              .map { balances ->
+                AssetsUiState.WalletAssets(
+                  walletName = account.name,
+                  assetTokenHoldings = balances
+                )
+              }
+          )
+        }
+      }.catch { emit(AssetsUiState.EmptyWallet) }
+      .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(3_000),
+        initialValue = AssetsUiState.Fetching
+      )
 }
 
 sealed interface AssetsUiState {

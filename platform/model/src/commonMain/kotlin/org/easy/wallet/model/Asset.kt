@@ -6,6 +6,8 @@ import com.ionspin.kotlin.bignum.integer.BigInteger
 
 sealed interface TokenMeta {
   val id: TokenId
+  val chainId: ChainId
+  val standard: TokenStandard
   val name: String
   val symbol: String
   val decimals: Int
@@ -14,6 +16,8 @@ sealed interface TokenMeta {
 
 data class NativeTokenMeta(
   override val id: TokenId,
+  override val chainId: ChainId,
+  override val standard: TokenStandard,
   override val name: String,
   override val symbol: String,
   override val decimals: Int,
@@ -22,6 +26,8 @@ data class NativeTokenMeta(
 
 data class FungibleTokenMeta(
   override val id: TokenId,
+  override val chainId: ChainId,
+  override val standard: TokenStandard,
   override val name: String,
   override val symbol: String,
   override val decimals: Int,

@@ -5,76 +5,80 @@ import com.trustwallet.core.HDWallet
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.easy.wallet.data.interfaces.BalanceService
 import org.easy.wallet.data.repository.TokenRepository
 import org.easy.wallet.model.Address
 import org.easy.wallet.model.Amount
-import org.easy.wallet.model.ChainId
 import org.easy.wallet.model.FungibleTokenMeta
 import org.easy.wallet.model.NativeTokenMeta
-import org.easy.wallet.model.Token
 import org.easy.wallet.model.TokenHolding
-import org.easy.wallet.model.TokenStandard
 import org.easy.wallet.model.WalletAccount
 
 class LoadAllBalancesUseCase internal constructor(
   private val tokenRepository: TokenRepository,
   private val balanceServices: Map<String, BalanceService>
 ) {
-  suspend operator fun invoke(walletAccount: WalletAccount): List<TokenHolding> {
+  operator fun invoke(walletAccount: WalletAccount): Flow<List<TokenHolding>> = flow {
     val hdWallet = HDWallet(walletAccount.mnemonic, "")
 
     val allToken = tokenRepository.allTokens()
+
+    val assetMetas = allToken.map { token ->
+      val meta = token.contract?.let {
+        FungibleTokenMeta(
+          id = token.tokenId,
+          chainId = token.chainId,
+          standard = token.standard,
+          name = token.name,
+          symbol = token.symbol,
+          decimals = token.decimals,
+          contract = Address(it),
+          logoUrl = token.iconUrl
+        )
+      } ?: NativeTokenMeta(
+        id = token.tokenId,
+        chainId = token.chainId,
+        standard = token.standard,
+        name = token.name,
+        symbol = token.symbol,
+        decimals = token.decimals,
+        logoUrl = token.iconUrl
+      )
+      meta
+    }
+
+    emit(
+      assetMetas.map {
+        TokenHolding(
+          asset = it,
+          amount = Amount(raw = BigInteger.ZERO, decimals = it.decimals)
+        )
+      }
+    )
+
     val balanceJob = coroutineScope {
-      allToken.take(5).map { token ->
-        val address = hdWallet.address(token)
-        val balanceService = balanceServices[token.chainId.value]
+      assetMetas.take(5).map { meta ->
+        val address = hdWallet.address(meta.chainId)
+        val balanceService = balanceServices[meta.chainId.value]
         async {
+          val contractAddress = when (meta) {
+            is FungibleTokenMeta -> meta.contract.value
+            else -> null
+          }
           val balance = balanceService?.getBalance(
             account = address,
-            contract = token.contract
+            contract = contractAddress
           ) ?: BigInteger.ZERO
 
-          val metaData = token.contract?.let {
-            FungibleTokenMeta(
-              id = token.tokenId,
-              name = token.name,
-              symbol = token.symbol,
-              decimals = token.decimals,
-              contract = Address(it),
-              logoUrl = token.iconUrl
-            )
-          } ?: NativeTokenMeta(
-            id = token.tokenId,
-            name = token.name,
-            symbol = token.symbol,
-            decimals = token.decimals,
-            logoUrl = token.iconUrl
-          )
-
           TokenHolding(
-            asset = metaData,
-            amount = Amount(raw = balance, decimals = metaData.decimals)
+            asset = meta,
+            amount = Amount(raw = balance, decimals = meta.decimals)
           )
         }
       }
     }
-    return balanceJob.awaitAll()
+    emit(balanceJob.awaitAll())
   }
-}
-
-fun HDWallet.address(token: Token): Address = when (token.standard) {
-  TokenStandard.NATIVE -> {
-    when (token.chainId) {
-      ChainId.EVM_MAINNET, ChainId.Polygon_MAINNET, ChainId.Arbitrum_MAINNET -> Address(
-        getAddressForCoin(com.trustwallet.core.CoinType.Ethereum)
-      )
-
-      ChainId.BTC_MAINNET -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Bitcoin))
-      else -> throw IllegalArgumentException("Unsupported chain")
-    }
-  }
-
-  TokenStandard.ERC20, TokenStandard.ERC721 -> Address(getAddressForCoin(com.trustwallet.core.CoinType.Ethereum))
-  else -> throw IllegalArgumentException("Unsupported chain")
 }
