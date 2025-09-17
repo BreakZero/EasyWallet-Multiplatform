@@ -20,10 +20,19 @@ class FetchTokenInformationUseCase(
   private val chainAdapters: Map<String, IChainAdapter>
 ) {
   operator fun invoke(tokenId: TokenId): Flow<TokenHolding?> = flow {
-    val account = accountRepository.activeAccount() ?: return@flow
-    val token = tokenRepository.getById(tokenId = tokenId.value) ?: return@flow
+    val account = accountRepository.activeAccount() ?: run {
+      emit(null)
+      return@flow
+    }
+    val token = tokenRepository.getById(tokenId = tokenId.value) ?: run {
+      emit(null)
+      return@flow
+    }
 
-    val adapter = chainAdapters[token.chainId.value] ?: return@flow
+    val adapter = chainAdapters[token.chainId.value] ?: run {
+      emit(null)
+      return@flow
+    }
 
     val hdWallet = HDWallet(account.mnemonic, "")
     val address = hdWallet.address(token.chainId)
