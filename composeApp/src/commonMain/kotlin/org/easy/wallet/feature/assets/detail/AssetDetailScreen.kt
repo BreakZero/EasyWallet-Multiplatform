@@ -56,7 +56,11 @@ import org.koin.core.parameter.parametersOf
 import qrgenerator.qrkitpainter.rememberQrKitPainter
 
 @Composable
-fun AssetDetailScreen(tokenId: TokenId, popup: () -> Unit) {
+fun AssetDetailScreen(
+  tokenId: TokenId,
+  onSend: (TokenId) -> Unit,
+  onPopBack: () -> Unit
+) {
   val viewModel: AssetDetailViewModel = koinViewModel { parametersOf(tokenId) }
   val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -64,9 +68,11 @@ fun AssetDetailScreen(tokenId: TokenId, popup: () -> Unit) {
     state = state,
     onEvent = { event ->
       when (event) {
-        AssetDetailEvent.Popup -> popup()
+        AssetDetailEvent.OnPopBack -> onPopBack()
         AssetDetailEvent.OnReceive -> Unit
-        AssetDetailEvent.OnSend -> Unit
+        is AssetDetailEvent.OnSend -> {
+          onSend(event.tokenId)
+        }
       }
     }
   )
@@ -75,14 +81,15 @@ fun AssetDetailScreen(tokenId: TokenId, popup: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AssetDetailScreen(state: AssetDetailUiState, onEvent: (AssetDetailEvent) -> Unit) {
-  val meta = state.tokenHolding?.asset
+  val meta = state.tokenHolding?.asset ?: return
+
   Scaffold(
     modifier = Modifier.fillMaxSize(),
     topBar = {
       EasyTopAppBar(
-        onBack = { onEvent(AssetDetailEvent.Popup) },
+        onBack = { onEvent(AssetDetailEvent.OnPopBack) },
         title = {
-          Text(meta?.name.orEmpty(), style = MaterialTheme.typography.titleLarge)
+          Text(meta.name, style = MaterialTheme.typography.titleLarge)
         }
       )
     }
@@ -93,12 +100,12 @@ private fun AssetDetailScreen(state: AssetDetailUiState, onEvent: (AssetDetailEv
       verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
       Text(
-        text = state.tokenHolding?.amount?.format() ?: "0.00",
+        text = state.tokenHolding.amount.format(),
         style = MaterialTheme.typography.displayMedium,
         modifier = Modifier.padding(horizontal = 16.dp)
       )
       ActionRow(
-        onSend = { onEvent(AssetDetailEvent.OnSend) },
+        onSend = { onEvent(AssetDetailEvent.OnSend(tokenId = meta.id)) },
         onReceive = { showModal = true }
       )
       HorizontalDivider(thickness = Dp.Hairline)

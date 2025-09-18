@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.assets.AssetsScreen
 import org.easy.wallet.feature.assets.detail.AssetDetailScreen
+import org.easy.wallet.feature.send.navigation.navigateToSendFlow
 import org.easy.wallet.feature.wallet.navigation.SetPassCodeRoute
 import org.easy.wallet.model.TokenId
 
@@ -42,7 +43,8 @@ fun NavGraphBuilder.assetsSection(navController: NavController, assertNestedGrap
       val route = it.toRoute<AssetDetailRoute>()
       AssetDetailScreen(
         tokenId = TokenId(route.tokenId),
-        popup = navController::popBackStack
+        onSend = { tokenId -> navController.navigateToSendFlow(tokenId) },
+        onPopBack = navController::popBackStack
       )
     }
     assertNestedGraph()
