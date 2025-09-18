@@ -1,9 +1,13 @@
 package org.easy.wallet.feature.assets.detail
 
-sealed interface AssetDetailEvent {
-  data object Popup : AssetDetailEvent
+import org.easy.wallet.model.TokenId
 
-  data object OnSend : AssetDetailEvent
+sealed interface AssetDetailEvent {
+  data object OnPopBack : AssetDetailEvent
+
+  data class OnSend(
+    val tokenId: TokenId
+  ) : AssetDetailEvent
 
   data object OnReceive : AssetDetailEvent
 }

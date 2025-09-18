@@ -36,6 +36,6 @@ fun WalletNavHost(
         )
       }
     )
-    sendFlowSection()
+    sendFlowSection(navController)
   }
 }
