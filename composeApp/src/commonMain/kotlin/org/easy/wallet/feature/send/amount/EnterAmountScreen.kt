@@ -112,21 +112,19 @@ fun EnterAmountScreen(
 
       Button(
         onClick = {
-          try {
+          runCatching {
             val amountBigDecimal = BigDecimal.parseString(amount)
             onAmountConfirmed(amountBigDecimal)
-          } catch (e: Exception) {
-            // Handle invalid amount
           }
         },
         modifier = Modifier.fillMaxWidth(),
         enabled = amount.isNotBlank() &&
-          try {
+          runCatching {
             BigDecimal.parseString(amount)
-            true
-          } catch (e: Exception) {
-            false
-          }
+          }.fold(
+            onSuccess = { true },
+            onFailure = { false }
+          )
       ) {
         Text("Review Transaction")
       }

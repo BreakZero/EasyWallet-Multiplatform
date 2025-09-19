@@ -2,6 +2,7 @@ package org.easy.wallet.feature.assets.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,7 @@ import easywallet.composeapp.generated.resources.action_to_explorer
 import easywallet.composeapp.generated.resources.label_to_explorer
 import easywallet.composeapp.generated.resources.text_recipient
 import easywallet.composeapp.generated.resources.text_transfer_history
+import org.easy.wallet.common.ClipboardManager
 import org.easy.wallet.components.EasyTopAppBar
 import org.easy.wallet.model.TokenId
 import org.jetbrains.compose.resources.stringResource
@@ -82,6 +84,7 @@ fun AssetDetailScreen(
 @Composable
 private fun AssetDetailScreen(state: AssetDetailUiState, onEvent: (AssetDetailEvent) -> Unit) {
   val meta = state.tokenHolding?.asset ?: return
+  val address = state.tokenHolding.address?.value ?: return
 
   Scaffold(
     modifier = Modifier.fillMaxSize(),
@@ -124,10 +127,7 @@ private fun AssetDetailScreen(state: AssetDetailUiState, onEvent: (AssetDetailEv
           horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
           Text(
-            text = state.tokenHolding
-              ?.address
-              ?.value
-              .orEmpty(),
+            text = address,
             modifier = Modifier.weight(1f).alpha(0.66f),
             style = MaterialTheme.typography.bodySmall
           )
@@ -137,6 +137,9 @@ private fun AssetDetailScreen(state: AssetDetailUiState, onEvent: (AssetDetailEv
               .clip(RoundedCornerShape(50))
               .background(MaterialTheme.colorScheme.primary)
               .padding(horizontal = 8.dp, vertical = 4.dp)
+              .clickable {
+                ClipboardManager.copyToClipboard(address)
+              }
           ) {
             Text(
               text = stringResource(Res.string.action_copy),
@@ -168,10 +171,6 @@ private fun AssetDetailScreen(state: AssetDetailUiState, onEvent: (AssetDetailEv
     }
     if (showModal) {
       ModalBottomSheet(onDismissRequest = { showModal = false }) {
-        val address = state.tokenHolding
-          ?.address
-          ?.value
-          .orEmpty()
         val painter = rememberQrKitPainter(data = address)
         Column(
           modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(vertical = 56.dp),
