@@ -75,78 +75,58 @@ EasyWallet-Multiplatform/
 - 使用DataStore进行轻量级数据存储
 - 存储用户偏好设置和应用配置
 
-#### 2. ComposeApp模块 (Android应用)
-
-**架构模式**: MVI (Model-View-Intent)
-- **Model**: 来自platform层的数据模型
-- **View**: Jetpack Compose UI组件
-- **Intent**: 用户操作和状态管理
-
-**主要特性**:
-- 使用Jetpack Compose构建现代化UI
-- 集成Koin进行依赖注入
-- 支持Material Design 3
-- 使用Navigation Compose进行页面导航
-
-#### 3. iOSApp模块 (iOS应用)
-
-**架构模式**: MVVM (Model-View-ViewModel)
-- 使用SwiftUI构建用户界面
-- 通过Kotlin Multiplatform共享业务逻辑
-- 目前处于开发阶段，功能有限
-
 ## 技术栈与第三方库
 
 ### 核心框架
 
-| 技术 | 版本 | 用途 |
-|------|------|------|
-| Kotlin Multiplatform | 2.2.10 | 跨平台开发框架 |
-| Jetpack Compose | 1.8.2 | Android UI框架 |
-| SwiftUI | - | iOS UI框架 |
-| Kotlin Coroutines | 1.10.2 | 异步编程 |
+| 技术                   | 版本     | 用途           |
+|----------------------|--------|--------------|
+| Kotlin Multiplatform | 2.2.10 | 跨平台开发框架      |
+| Jetpack Compose      | 1.8.2  | Android UI框架 |
+| SwiftUI              | -      | iOS UI框架     |
+| Kotlin Coroutines    | 1.10.2 | 异步编程         |
 
 ### 网络与数据
 
-| 库名 | 版本 | 用途 |
-|------|------|------|
-| Ktor | 3.3.0 | HTTP客户端 |
-| Kotlinx Serialization | 1.9.0 | JSON序列化 |
-| SQLDelight | 2.1.0 | 本地数据库 |
-| DataStore | 1.1.7 | 轻量级数据存储 |
-| Paging3 | 3.3.0-alpha02 | 分页加载 |
+| 库名                    | 版本            | 用途      |
+|-----------------------|---------------|---------|
+| Ktor                  | 3.3.0         | HTTP客户端 |
+| Kotlinx Serialization | 1.9.0         | JSON序列化 |
+| SQLDelight            | 2.1.0         | 本地数据库   |
+| DataStore             | 1.1.7         | 轻量级数据存储 |
+| Paging3               | 3.3.0-alpha02 | 分页加载    |
 
 ### 依赖注入与架构
 
-| 库名 | 版本 | 用途 |
-|------|------|------|
-| Koin | 4.1.1 | 依赖注入框架 |
-| Navigation Compose | 2.9.0-rc02 | 页面导航 |
-| Lifecycle ViewModel | 2.9.3 | 生命周期管理 |
+| 库名                  | 版本         | 用途     |
+|---------------------|------------|--------|
+| Koin                | 4.1.1      | 依赖注入框架 |
+| Navigation Compose  | 2.9.0-rc02 | 页面导航   |
+| Lifecycle ViewModel | 2.9.3      | 生命周期管理 |
 
 ### UI与图像
 
-| 库名 | 版本 | 用途 |
-|------|------|------|
-| Coil | 3.3.0 | 图像加载 |
-| Vico | 2.1.3 | 图表绘制 |
-| QR Kit | 3.1.3 | 二维码生成/扫描 |
-| Haze | 1.6.10 | 视觉效果 |
+| 库名     | 版本     | 用途       |
+|--------|--------|----------|
+| Coil   | 3.3.0  | 图像加载     |
+| Vico   | 2.1.3  | 图表绘制     |
+| QR Kit | 3.1.3  | 二维码生成/扫描 |
+| Haze   | 1.6.10 | 视觉效果     |
 
 ### 区块链与加密
 
-| 库名 | 版本 | 用途 |
-|------|------|------|
-| Wallet Core | 4.3.9 | 区块链钱包核心功能 |
-| BigNum | 0.3.10 | 大数运算 |
+| 库名          | 版本     | 用途        |
+|-------------|--------|-----------|
+| Wallet Core | 4.3.9  | 区块链钱包核心功能 |
+| BigNum      | 0.3.10 | 大数运算      |
 
 ### 开发工具
 
-| 工具 | 版本 | 用途 |
-|------|------|------|
-| Ktlint | 13.1.0 | 代码格式化 |
+| 工具          | 版本     | 用途     |
+|-------------|--------|--------|
+| Ktlint      | 13.1.0 | 代码格式化  |
 | BuildKonfig | 0.17.1 | 构建配置生成 |
-| Kermit | 2.0.8 | 日志记录 |
+| Kermit      | 2.0.8  | 日志记录   |
 
 ## 项目结构详解
 
@@ -276,10 +256,6 @@ cd iosApp && pod install
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
 5. 创建Pull Request
 
-## 许可证
-
-本项目采用MIT许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
 ## 致谢
 
 - [Trust Wallet Core](https://github.com/trustwallet/wallet-core) - 区块链钱包核心功能
@@ -288,12 +264,4 @@ cd iosApp && pod install
 - [CoinGecko](https://www.coingecko.com/) - 加密货币行情数据
 - [BlockChair](https://blockchair.com/) - 区块链数据服务
 
-## 联系方式
-
-- 项目链接: [https://github.com/BreakZero/EasyWallet-KMP](https://github.com/BreakZero/EasyWallet-KMP)
-- 问题反馈: [Issues](https://github.com/BreakZero/EasyWallet-KMP/issues)
-
 ---
-
-**注意**: 本项目仍在开发中，部分功能可能不稳定。请在生产环境中谨慎使用。
-EOF
