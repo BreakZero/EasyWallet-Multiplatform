@@ -3,6 +3,7 @@ package org.easy.wallet.feature.assets
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -23,6 +24,7 @@ class AssetsViewModel(
     accountRepository
       .getCurrentAccount()
       .transformLatest { account ->
+        delay(2_000)
         if (account == null) {
           emit(AssetsUiState.EmptyWallet)
         } else {

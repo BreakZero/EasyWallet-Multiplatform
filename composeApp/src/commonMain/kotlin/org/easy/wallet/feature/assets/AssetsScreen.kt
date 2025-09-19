@@ -59,7 +59,10 @@ private fun AssetsScreen(state: AssetsUiState, onEvent: (AssetEvent) -> Unit = {
   Scaffold(modifier = Modifier.fillMaxSize()) { it ->
     when (state) {
       AssetsUiState.Fetching -> {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(
+          modifier = Modifier.fillMaxSize(),
+          contentAlignment = Alignment.Center
+        ) {
           OverlayLoadingWheel(contentDesc = "")
         }
       }
