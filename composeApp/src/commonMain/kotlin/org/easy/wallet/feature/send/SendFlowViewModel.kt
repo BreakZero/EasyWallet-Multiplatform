@@ -1,5 +1,6 @@
 package org.easy.wallet.feature.send
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +24,7 @@ class SendFlowViewModel(
 ) : ViewModel() {
   init {
     println("=====$tokenId")
+    Color.Transparent
   }
 
   private val _uiState = MutableStateFlow(SendFlowUiState())

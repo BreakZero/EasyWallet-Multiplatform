@@ -76,13 +76,13 @@ fun CreatePassCodeScreen(popBackStack: () -> Unit, toNext: (String) -> Unit) {
             contentAlignment = Alignment.Center,
             modifier = Modifier
               .size(24.dp)
-              .border(1.dp, Color.Gray, CircleShape)
+              .border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
           ) {
             if (index < len) {
               Box(
                 modifier = Modifier
                   .size(12.dp)
-                  .background(Color.Black, CircleShape)
+                  .background(MaterialTheme.colorScheme.primary, CircleShape)
               )
             }
           }

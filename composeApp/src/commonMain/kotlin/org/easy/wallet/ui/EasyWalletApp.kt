@@ -34,49 +34,51 @@ import kotlin.reflect.KClass
 fun EasyWalletApp(appState: EasyAppState) {
   val currentDestination = appState.currentDestination
 
-  Scaffold(
-    modifier = Modifier.fillMaxSize(),
-    containerColor = Color.Transparent,
-    contentWindowInsets = WindowInsets(0, 0, 0, 0),
-    bottomBar = {
-      AnimatedVisibility(
-        modifier = Modifier.fillMaxWidth(),
-        visible = appState.currentTopLevelDestination != null,
-        enter = slideInVertically { it },
-        exit = slideOutVertically { it }
-      ) {
-        NavigationBar(
-          modifier = Modifier
-            .fillMaxWidth()
-            .shadow(1.dp),
-          containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.66f),
-          tonalElevation = 3.dp
+  EasyWalletTheme {
+    Scaffold(
+      modifier = Modifier.fillMaxSize(),
+      containerColor = Color.Transparent,
+      contentWindowInsets = WindowInsets(0, 0, 0, 0),
+      bottomBar = {
+        AnimatedVisibility(
+          modifier = Modifier.fillMaxWidth(),
+          visible = appState.currentTopLevelDestination != null,
+          enter = slideInVertically { it },
+          exit = slideOutVertically { it }
         ) {
-          appState.topLevelDestinations.forEach { destination ->
-            val selected = currentDestination
-              .isRouteInHierarchy(destination.baseRoute)
-            NavigationBarItem(
-              selected = selected,
-              onClick = { appState.navigateToTopLevelDestination(destination) },
-              label = { Text(stringResource(destination.titleTextId)) },
-              icon = {
-                Icon(
-                  modifier = Modifier.size(24.dp),
-                  painter = painterResource(destination.selectedIcon),
-                  contentDescription = null
-                )
-              }
-            )
+          NavigationBar(
+            modifier = Modifier
+              .fillMaxWidth()
+              .shadow(1.dp),
+            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.66f),
+            tonalElevation = 3.dp
+          ) {
+            appState.topLevelDestinations.forEach { destination ->
+              val selected = currentDestination
+                .isRouteInHierarchy(destination.baseRoute)
+              NavigationBarItem(
+                selected = selected,
+                onClick = { appState.navigateToTopLevelDestination(destination) },
+                label = { Text(stringResource(destination.titleTextId)) },
+                icon = {
+                  Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(destination.selectedIcon),
+                    contentDescription = null
+                  )
+                }
+              )
+            }
           }
         }
       }
+    ) {
+      WalletNavHost(
+        modifier = Modifier.fillMaxSize().padding(it),
+        navController = appState.navController,
+        startDestination = AssetsBaseRoute
+      )
     }
-  ) {
-    WalletNavHost(
-      modifier = Modifier.fillMaxSize().padding(it),
-      navController = appState.navController,
-      startDestination = AssetsBaseRoute
-    )
   }
 }
 
