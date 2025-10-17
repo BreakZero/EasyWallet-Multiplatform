@@ -121,7 +121,8 @@ android {
       applicationIdSuffix = ".debug"
     }
     release {
-      isMinifyEnabled = true
+      isMinifyEnabled = providers.gradleProperty("minifyWithR8")
+        .map(String::toBooleanStrict).getOrElse(true)
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
       signingConfig = signingConfigs.getByName("release")
     }
@@ -144,6 +145,5 @@ private fun keyStoreProperties(): Properties {
 
 dependencies {
   implementation(libs.androidx.foundation.android)
-  implementation(libs.androidx.compose.material)
   debugImplementation(compose.uiTooling)
 }

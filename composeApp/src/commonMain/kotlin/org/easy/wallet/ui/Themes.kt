@@ -37,7 +37,6 @@ val EasyWallet_Dark_Tertiary = Color(0xFFEFB8C8)
 val EasyWallet_Dark_Error = Color(0xFFF2B8B5)
 val EasyWallet_Dark_Outline = Color(0xFF938F99)
 
-
 val EasyWalletLightColorScheme = lightColorScheme(
   primary = EasyWallet_Light_Primary,
   onPrimary = EasyWallet_Light_OnPrimary,
@@ -72,15 +71,11 @@ val EasyWalletDarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun EasyWalletTheme(
-  darkTheme: Boolean = isSystemInDarkTheme(),
-  content: @Composable () -> Unit
-) {
+fun EasyWalletTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
   val colorScheme = when {
     darkTheme -> EasyWalletDarkColorScheme
     else -> EasyWalletLightColorScheme
   }
-
   MaterialTheme(
     colorScheme = colorScheme,
     content = content
