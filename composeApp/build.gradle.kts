@@ -1,4 +1,5 @@
 import org.easy.configs.configureFlavors
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import java.io.FileInputStream
@@ -46,6 +47,10 @@ kotlin {
     }
   }
 
+  compilerOptions {
+    optIn.add("androidx.compose.material3.ExperimentalMaterial3ExpressiveApi")
+  }
+
   sourceSets {
     androidMain.dependencies {
       implementation(compose.preview)
@@ -62,13 +67,15 @@ kotlin {
       implementation(projects.platform.model)
       implementation(projects.platform.datastore)
 
+      implementation("org.jetbrains.compose.material3:material3:1.9.0-alpha04")
+
       implementation(libs.haze)
 
       implementation(libs.coil.compose)
       implementation(libs.coil.network.ktor3)
 
       implementation(compose.runtime)
-      implementation(compose.material3)
+//      implementation(compose.material3)
       implementation(compose.materialIconsExtended)
       implementation(compose.ui)
       implementation(compose.components.resources)

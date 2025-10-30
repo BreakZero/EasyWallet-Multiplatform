@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -29,7 +30,6 @@ import easywallet.composeapp.generated.resources.home_tips
 import easywallet.composeapp.generated.resources.home_tips_desc
 import easywallet.composeapp.generated.resources.restore_wallet
 import org.easy.wallet.components.AssetsItemView
-import org.easy.wallet.components.OverlayLoadingWheel
 import org.easy.wallet.model.TokenMeta
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -63,7 +63,7 @@ private fun AssetsScreen(state: AssetsUiState, onEvent: (AssetEvent) -> Unit = {
           modifier = Modifier.fillMaxSize(),
           contentAlignment = Alignment.Center
         ) {
-          OverlayLoadingWheel(contentDesc = "")
+          LoadingIndicator()
         }
       }
 
