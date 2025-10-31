@@ -1,34 +1,27 @@
 package org.easy.wallet.feature.send
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import org.easy.wallet.domain.FetchTokenInformationUseCase
-import org.easy.wallet.model.TokenHolding
 import org.easy.wallet.model.TokenId
-
-data class SendFlowUiState(
-  val tokenHolding: TokenHolding? = null,
-  val isLoading: Boolean = true,
-  val error: String? = null
-)
 
 class SendFlowViewModel(
   private val fetchTokenInformationUseCase: FetchTokenInformationUseCase,
   private val tokenId: TokenId
 ) : ViewModel() {
-  init {
-    println("=====$tokenId")
-    Color.Transparent
-  }
+  private val eventChannel = Channel<SendFlowEvent>()
+  val event = eventChannel.receiveAsFlow()
 
-  private val _uiState = MutableStateFlow(SendFlowUiState())
-  val uiState: StateFlow<SendFlowUiState> = _uiState.asStateFlow()
+  private val _uiState = MutableStateFlow(SendFlowState())
+  val uiState: StateFlow<SendFlowState> = _uiState.asStateFlow()
 
   init {
     loadTokenInformation()
@@ -45,11 +38,20 @@ class SendFlowViewModel(
       }.launchIn(viewModelScope)
   }
 
-  fun getAvailableBalance(): String = _uiState.value.tokenHolding
-    ?.amount
-    ?.format() ?: "0.00"
+  fun handleAction(action: SendFlowAction) {
+    when (action) {
+      is SendFlowAction.OnRecipientChange -> {
+        _uiState.update { it.copy(recipientAddress = action.recipient) }
+      }
+      is SendFlowAction.OnSendAmountChange -> {
+        _uiState.update { it.copy(amount = action.amount) }
+      }
+      SendFlowAction.Popup -> {
+        eventChannel.trySend(SendFlowEvent.Popup)
+      }
 
-  fun getTokenSymbol(): String = _uiState.value.tokenHolding
-    ?.asset
-    ?.symbol ?: ""
+      is SendFlowAction.OnNext -> {
+      }
+    }
+  }
 }

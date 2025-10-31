@@ -1,5 +1,7 @@
 package org.easy.wallet.feature.send.navigation
 
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -69,14 +71,11 @@ fun NavGraphBuilder.sendFlowSection(navController: NavController) {
       val route = backStackEntry.toRoute<RecipientAddressRoute>()
       val tokenId = TokenId(route.tokenId)
       val viewModel: SendFlowViewModel = koinViewModel { parametersOf(tokenId) }
+      val state by viewModel.uiState.collectAsStateWithLifecycle()
 
       RecipientTypingScreen(
-        onAddressEntered = { address ->
-          navController.navigateToEnterAmount(
-            tokenId = tokenId
-          )
-        },
-        onBack = navController::popBackStack
+        state = state,
+        onAction = viewModel::handleAction
       )
     }
 
@@ -86,14 +85,11 @@ fun NavGraphBuilder.sendFlowSection(navController: NavController) {
       val tokenId = TokenId(route.tokenId)
       val viewModel: SendFlowViewModel = koinViewModel { parametersOf(tokenId) }
 
+      val state by viewModel.uiState.collectAsStateWithLifecycle()
+
       EnterAmountScreen(
-        recipientAddress = "",
-        tokenSymbol = viewModel.getTokenSymbol(),
-        availableBalance = viewModel.getAvailableBalance(),
-        onAmountConfirmed = { amount ->
-          // TODO: Implement transaction creation and signing
-        },
-        onBack = navController::popBackStack
+        state = state,
+        onAction = viewModel::handleAction
       )
     }
   }
