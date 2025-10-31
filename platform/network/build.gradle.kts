@@ -48,6 +48,7 @@ buildkonfig {
   defaultConfigs {
     with(readLocalKeys()) {
       buildConfigField(STRING, "ETHERSCAN_KEY", getProperty("etherscan"))
+      buildConfigField(STRING, "COINGECKO_KEY", getProperty("cg_api_key"))
     }
   }
 }

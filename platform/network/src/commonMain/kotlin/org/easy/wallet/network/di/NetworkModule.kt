@@ -18,12 +18,14 @@ import org.easy.wallet.network.BuildKonfig
 import org.easy.wallet.network.httpClient
 import org.easy.wallet.network.source.BlockChairController
 import org.easy.wallet.network.source.EtherScanController
+import org.easy.wallet.network.source.GeckoController
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 private enum class SourceQualifier {
   BLOCK_CHAIR,
-  ETHER_SCAN
+  ETHER_SCAN,
+  GECKO
 }
 
 private fun httpClientWithDefault(serializersModule: SerializersModule? = null, config: HttpClientConfig<*>.() -> Unit = {}): HttpClient =
@@ -74,8 +76,23 @@ val networkModule = module {
           host = "api.etherscan.io"
 //        host = "api-sepolia.etherscan.io"
           path("v2/api/")
-          // TODO add api key
           parameters.append("apikey", BuildKonfig.ETHERSCAN_KEY)
+        }
+        header("Content-Type", "application/json")
+      }
+    }
+  }
+
+  single(qualifier = named(SourceQualifier.GECKO)) {
+    // https://api.coingecko.com/api/v3/
+    httpClientWithDefault {
+      defaultRequest {
+        url {
+          protocol = URLProtocol.HTTPS
+          host = "api.coingecko.com"
+//        host = "api-sepolia.etherscan.io"
+          path("api/v3/")
+          parameters.append("x_cg_demo_api_key", BuildKonfig.COINGECKO_KEY)
         }
         header("Content-Type", "application/json")
       }
@@ -84,4 +101,5 @@ val networkModule = module {
 
   factory { BlockChairController(get(qualifier = named(SourceQualifier.BLOCK_CHAIR))) }
   factory { EtherScanController(get(qualifier = named(SourceQualifier.ETHER_SCAN))) }
+  factory { GeckoController(get(qualifier = named(SourceQualifier.GECKO))) }
 }
