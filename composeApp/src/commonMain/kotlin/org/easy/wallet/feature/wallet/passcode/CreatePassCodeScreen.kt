@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import easywallet.composeapp.generated.resources.Res
@@ -76,13 +75,13 @@ fun CreatePassCodeScreen(popBackStack: () -> Unit, toNext: (String) -> Unit) {
             contentAlignment = Alignment.Center,
             modifier = Modifier
               .size(24.dp)
-              .border(1.dp, Color.Gray, CircleShape)
+              .border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
           ) {
             if (index < len) {
               Box(
                 modifier = Modifier
                   .size(12.dp)
-                  .background(Color.Black, CircleShape)
+                  .background(MaterialTheme.colorScheme.primary, CircleShape)
               )
             }
           }

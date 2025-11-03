@@ -46,4 +46,8 @@
 
     <string name="text_account">Account</string>
     <string name="text_wallet">Wallet</string>
+
+    <string name="title_enter_recipient">Enter Recipient Address</string>
+    <string name="hint_enter_recipient">Enter wallet address or scan QR code</string>
+    <string name="label_recipient">Recipient Address</string>
 </resources>

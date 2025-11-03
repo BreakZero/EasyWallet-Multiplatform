@@ -26,22 +26,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import org.easy.wallet.components.EasyTopAppBar
+import org.easy.wallet.feature.send.SendFlowAction
+import org.easy.wallet.feature.send.SendFlowState
 
 @Composable
-fun EnterAmountScreen(
-  recipientAddress: String = "",
-  tokenSymbol: String = "ETH",
-  availableBalance: String = "0.00",
-  onAmountConfirmed: (BigDecimal) -> Unit = {},
-  onBack: () -> Unit = {}
-) {
-  var amount by remember { mutableStateOf("") }
+fun EnterAmountScreen(state: SendFlowState, onAction: (SendFlowAction) -> Unit) {
+  var amount by remember { mutableStateOf(state.amount.orEmpty()) }
+  val tokenHolding = state.tokenHolding ?: return
 
   Scaffold(
     modifier = Modifier.fillMaxSize(),
     topBar = {
       EasyTopAppBar(
-        onBack = onBack,
+        onBack = { onAction(SendFlowAction.Popup) },
         title = {
           Text("Send Amount", style = MaterialTheme.typography.titleLarge)
         }
@@ -56,7 +53,7 @@ fun EnterAmountScreen(
       verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
       // Recipient info card
-      if (recipientAddress.isNotEmpty()) {
+      if (!state.recipientAddress.isNullOrBlank()) {
         Card(
           modifier = Modifier.fillMaxWidth(),
           colors = CardDefaults.cardColors(
@@ -73,7 +70,7 @@ fun EnterAmountScreen(
               color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-              text = recipientAddress,
+              text = state.recipientAddress,
               style = MaterialTheme.typography.bodySmall,
               maxLines = 1,
               overflow = TextOverflow.Ellipsis
@@ -93,7 +90,7 @@ fun EnterAmountScreen(
           style = MaterialTheme.typography.bodyMedium
         )
         Text(
-          text = "$availableBalance $tokenSymbol",
+          text = "${tokenHolding.amount.format()} ${tokenHolding.asset.symbol}",
           style = MaterialTheme.typography.bodyMedium,
           color = MaterialTheme.colorScheme.primary
         )
@@ -101,32 +98,27 @@ fun EnterAmountScreen(
 
       // Amount input
       OutlinedTextField(
-        value = amount,
-        onValueChange = { amount = it },
+        value = state.amount.orEmpty(),
+        onValueChange = { onAction(SendFlowAction.OnSendAmountChange(it)) },
         modifier = Modifier.fillMaxWidth(),
         label = { Text("Amount") },
-        suffix = { Text(tokenSymbol) },
+        suffix = { Text(tokenHolding.asset.symbol) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         singleLine = true
       )
 
       Button(
         onClick = {
-          try {
-            val amountBigDecimal = BigDecimal.parseString(amount)
-            onAmountConfirmed(amountBigDecimal)
-          } catch (e: Exception) {
-            // Handle invalid amount
-          }
+          onAction(SendFlowAction.OnNext(""))
         },
         modifier = Modifier.fillMaxWidth(),
         enabled = amount.isNotBlank() &&
-          try {
-            BigDecimal.parseString(amount)
-            true
-          } catch (e: Exception) {
-            false
-          }
+          runCatching {
+            BigDecimal.parseString(state.amount.orEmpty())
+          }.fold(
+            onSuccess = { true },
+            onFailure = { false }
+          )
       ) {
         Text("Review Transaction")
       }

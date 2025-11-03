@@ -53,10 +53,7 @@ private fun Project.configureKotlin() {
       jvmTarget.set(JvmTarget.JVM_17)
       val warningsAsErrors: String? by project
       allWarningsAsErrors.set(warningsAsErrors.toBoolean())
-      freeCompilerArgs.add(
-        // Enable experimental coroutines APIs, including Flow
-        "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
-      )
+      optIn.add("kotlinx.coroutines.ExperimentalCoroutinesApi")
     }
   }
 }

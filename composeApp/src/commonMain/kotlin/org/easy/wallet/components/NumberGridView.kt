@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,7 +48,7 @@ fun NumberGridView(
   onDeleteClicked: () -> Unit
 ) {
   LazyVerticalGrid(
-    modifier = modifier.background(Color.Gray),
+    modifier = modifier.background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)),
     columns = GridCells.Fixed(3),
     contentPadding = WindowInsets.safeDrawing
       .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
@@ -58,7 +59,7 @@ fun NumberGridView(
         contentAlignment = Alignment.Center,
         modifier = Modifier
           .height(56.dp)
-          .border(Dp.Hairline, color = Color.Red)
+          .border(Dp.Hairline, color = MaterialTheme.colorScheme.onPrimaryContainer)
           .clickable(enabled = item.key != ' ') {
             when (item) {
               DigitKey.DELETE -> onDeleteClicked()
@@ -70,7 +71,7 @@ fun NumberGridView(
         Text(
           text = "${item.key}",
           fontSize = 24.sp,
-          color = if (item == DigitKey.EMPTY) Color.Transparent else Color.Black
+          color = if (item == DigitKey.EMPTY) Color.Transparent else MaterialTheme.colorScheme.onPrimaryContainer
         )
       }
     }

@@ -5,31 +5,38 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import easywallet.composeapp.generated.resources.Res
+import easywallet.composeapp.generated.resources.button_continue
+import easywallet.composeapp.generated.resources.hint_enter_recipient
+import easywallet.composeapp.generated.resources.label_recipient
+import easywallet.composeapp.generated.resources.title_enter_recipient
 import org.easy.wallet.components.EasyTopAppBar
+import org.easy.wallet.feature.send.SendFlowAction
+import org.easy.wallet.feature.send.SendFlowState
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun RecipientTypingScreen(onAddressEntered: (String) -> Unit = {}, onBack: () -> Unit = {}) {
-  var address by remember { mutableStateOf("") }
-
+fun RecipientTypingScreen(state: SendFlowState, onAction: (SendFlowAction) -> Unit) {
   Scaffold(
     modifier = Modifier.fillMaxSize(),
     topBar = {
       EasyTopAppBar(
-        onBack = onBack,
+        onBack = { onAction(SendFlowAction.Popup) },
         title = {
-          Text("Enter Recipient Address", style = MaterialTheme.typography.titleLarge)
+          Text(
+            text = stringResource(Res.string.title_enter_recipient),
+            style = MaterialTheme.typography.titleLarge
+          )
         }
       )
     }
@@ -42,24 +49,29 @@ fun RecipientTypingScreen(onAddressEntered: (String) -> Unit = {}, onBack: () ->
       verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
       Text(
-        text = "Recipient Address",
+        text = stringResource(Res.string.label_recipient),
         style = MaterialTheme.typography.bodyLarge
       )
 
       OutlinedTextField(
-        value = address,
-        onValueChange = { address = it },
+        value = state.recipientAddress.orEmpty(),
+        onValueChange = { onAction(SendFlowAction.OnRecipientChange(it)) },
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text("Enter wallet address or scan QR code") },
-        singleLine = true
+        placeholder = { Text(text = stringResource(Res.string.hint_enter_recipient)) },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+          keyboardType = KeyboardType.Text
+        )
       )
 
       Button(
-        onClick = { onAddressEntered(address) },
+        onClick = {
+          onAction(SendFlowAction.OnNext(route = "enter_amount"))
+        },
         modifier = Modifier.fillMaxWidth(),
-        enabled = address.isNotBlank()
+        enabled = !state.recipientAddress.isNullOrBlank()
       ) {
-        Text("Continue")
+        Text(text = stringResource(Res.string.button_continue))
       }
     }
   }

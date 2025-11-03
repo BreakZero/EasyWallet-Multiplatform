@@ -1,4 +1,5 @@
 import org.easy.configs.configureFlavors
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import java.io.FileInputStream
@@ -46,6 +47,10 @@ kotlin {
     }
   }
 
+  compilerOptions {
+    optIn.add("androidx.compose.material3.ExperimentalMaterial3ExpressiveApi")
+  }
+
   sourceSets {
     androidMain.dependencies {
       implementation(compose.preview)
@@ -62,13 +67,15 @@ kotlin {
       implementation(projects.platform.model)
       implementation(projects.platform.datastore)
 
+      implementation(libs.material3)
+
       implementation(libs.haze)
 
       implementation(libs.coil.compose)
       implementation(libs.coil.network.ktor3)
 
       implementation(compose.runtime)
-      implementation(compose.material3)
+//      implementation(compose.material3)
       implementation(compose.materialIconsExtended)
       implementation(compose.ui)
       implementation(compose.components.resources)
@@ -99,6 +106,10 @@ android {
     applicationId = "org.easy.wallet"
     versionCode = 1
     versionName = "1.0"
+    ndk {
+      //noinspection ChromeOsAbiSupport
+      abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+    }
   }
 
   signingConfigs {
@@ -117,7 +128,8 @@ android {
       applicationIdSuffix = ".debug"
     }
     release {
-      isMinifyEnabled = true
+      isMinifyEnabled = providers.gradleProperty("minifyWithR8")
+        .map(String::toBooleanStrict).getOrElse(true)
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
       signingConfig = signingConfigs.getByName("release")
     }
@@ -140,6 +152,5 @@ private fun keyStoreProperties(): Properties {
 
 dependencies {
   implementation(libs.androidx.foundation.android)
-  implementation(libs.androidx.compose.material)
   debugImplementation(compose.uiTooling)
 }
