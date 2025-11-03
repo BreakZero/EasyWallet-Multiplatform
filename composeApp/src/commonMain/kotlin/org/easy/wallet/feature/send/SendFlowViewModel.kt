@@ -43,14 +43,17 @@ class SendFlowViewModel(
       is SendFlowAction.OnRecipientChange -> {
         _uiState.update { it.copy(recipientAddress = action.recipient) }
       }
+
       is SendFlowAction.OnSendAmountChange -> {
         _uiState.update { it.copy(amount = action.amount) }
       }
+
       SendFlowAction.Popup -> {
         eventChannel.trySend(SendFlowEvent.Popup)
       }
 
       is SendFlowAction.OnNext -> {
+        eventChannel.trySend(SendFlowEvent.NavigateTo(route = action.route))
       }
     }
   }

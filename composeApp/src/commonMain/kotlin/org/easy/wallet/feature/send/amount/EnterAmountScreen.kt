@@ -90,7 +90,7 @@ fun EnterAmountScreen(state: SendFlowState, onAction: (SendFlowAction) -> Unit) 
           style = MaterialTheme.typography.bodyMedium
         )
         Text(
-          text = "${tokenHolding.amount} ${tokenHolding.asset.symbol}",
+          text = "${tokenHolding.amount.format()} ${tokenHolding.asset.symbol}",
           style = MaterialTheme.typography.bodyMedium,
           color = MaterialTheme.colorScheme.primary
         )

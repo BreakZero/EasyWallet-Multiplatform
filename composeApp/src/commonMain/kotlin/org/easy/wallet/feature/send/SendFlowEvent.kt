@@ -6,4 +6,8 @@ sealed interface SendFlowEvent {
   ) : SendFlowEvent
 
   data object Popup : SendFlowEvent
+
+  data class NavigateTo(
+    val route: String
+  ) : SendFlowEvent
 }

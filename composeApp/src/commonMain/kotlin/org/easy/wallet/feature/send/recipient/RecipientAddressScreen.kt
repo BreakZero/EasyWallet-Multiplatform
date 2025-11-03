@@ -61,7 +61,7 @@ fun RecipientTypingScreen(state: SendFlowState, onAction: (SendFlowAction) -> Un
 
       Button(
         onClick = {
-          onAction(SendFlowAction.OnNext(route = "amount"))
+          onAction(SendFlowAction.OnNext(route = "enter_amount"))
         },
         modifier = Modifier.fillMaxWidth(),
         enabled = !state.recipientAddress.isNullOrBlank()

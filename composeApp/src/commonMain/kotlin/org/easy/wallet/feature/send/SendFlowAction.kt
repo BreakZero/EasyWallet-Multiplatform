@@ -12,6 +12,6 @@ sealed interface SendFlowAction {
   ) : SendFlowAction
 
   data class OnNext(
-    val route: Any
+    val route: String
   ) : SendFlowAction
 }
