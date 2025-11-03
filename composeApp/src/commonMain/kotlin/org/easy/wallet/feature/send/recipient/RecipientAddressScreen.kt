@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -12,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import easywallet.composeapp.generated.resources.Res
 import easywallet.composeapp.generated.resources.button_continue
@@ -56,7 +58,10 @@ fun RecipientTypingScreen(state: SendFlowState, onAction: (SendFlowAction) -> Un
         onValueChange = { onAction(SendFlowAction.OnRecipientChange(it)) },
         modifier = Modifier.fillMaxWidth(),
         placeholder = { Text(text = stringResource(Res.string.hint_enter_recipient)) },
-        singleLine = true
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+          keyboardType = KeyboardType.Text
+        )
       )
 
       Button(
