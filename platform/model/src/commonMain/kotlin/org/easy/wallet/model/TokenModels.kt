@@ -80,7 +80,7 @@ data class UnsignedTx(
   val amount: BigInteger?,
   val fee: FeePolicy?,
   val nonce: Long? = null,
-  val rawMessage: ByteArray? = null,
+  val rawMessage: String? = null,
   val metadata: Map<String, Any?> = emptyMap()
 ) {
   override fun equals(other: Any?): Boolean {
@@ -96,7 +96,7 @@ data class UnsignedTx(
     if (tokenId != other.tokenId) return false
     if (amount != other.amount) return false
     if (fee != other.fee) return false
-    if (!rawMessage.contentEquals(other.rawMessage)) return false
+    if (!rawMessage.equals(other.rawMessage)) return false
     if (metadata != other.metadata) return false
 
     return true
@@ -110,7 +110,7 @@ data class UnsignedTx(
     result = 31 * result + tokenId.hashCode()
     result = 31 * result + (amount?.hashCode() ?: 0)
     result = 31 * result + (fee?.hashCode() ?: 0)
-    result = 31 * result + (rawMessage?.contentHashCode() ?: 0)
+    result = 31 * result + (rawMessage?.hashCode() ?: 0)
     result = 31 * result + metadata.hashCode()
     return result
   }

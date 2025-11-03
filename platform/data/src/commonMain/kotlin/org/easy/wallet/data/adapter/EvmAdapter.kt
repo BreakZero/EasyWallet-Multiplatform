@@ -3,9 +3,16 @@ package org.easy.wallet.data.adapter
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.ionspin.kotlin.bignum.integer.BigInteger
+import com.trustwallet.core.AnySigner
 import com.trustwallet.core.CoinType
+import com.trustwallet.core.PrivateKey
+import com.trustwallet.core.ethereum.SigningInput
+import com.trustwallet.core.ethereum.SigningOutput
+import com.trustwallet.core.ethereum.Transaction
+import com.trustwallet.core.sign
 import org.easy.wallet.data.interfaces.IChainAdapter
 import org.easy.wallet.data.paging.TransactionPagingSource
+import org.easy.wallet.data.util.asHex
 import org.easy.wallet.model.Address
 import org.easy.wallet.model.ChainId
 import org.easy.wallet.model.FeePolicy
@@ -14,6 +21,8 @@ import org.easy.wallet.model.TokenStandard
 import org.easy.wallet.model.Transfer
 import org.easy.wallet.model.UnsignedTx
 import org.easy.wallet.network.source.EtherScanController
+
+private const val ZERO_UINT = "0000000000000000000000000000000000000000000000000000000000000000"
 
 class EvmAdapter(
   override val chainId: ChainId,
@@ -45,23 +54,57 @@ class EvmAdapter(
     to: Address,
     token: Token,
     amount: BigInteger
-  ): FeePolicy {
-    TODO("Not yet implemented")
-  }
+  ): FeePolicy = FeePolicy(
+    gasLimit = BigInteger.ZERO,
+    gasPrice = BigInteger.ZERO,
+    feeAmount = BigInteger.ZERO,
+    priorityTip = BigInteger.ZERO
+  )
 
   override suspend fun buildTransferTx(
     from: Address,
     to: Address,
     token: Token,
     amount: BigInteger,
-    fee: FeePolicy?,
     memo: String?
   ): UnsignedTx {
-    TODO("Not yet implemented")
+    val feePolicy = estimateTransferFee(
+      from = from,
+      to = to,
+      token = token,
+      amount = amount
+    )
+    return UnsignedTx(
+      chainId = chainId,
+      from = from,
+      to = to,
+      amount = amount,
+      fee = feePolicy,
+      nonce = 0L,
+      tokenId = token.tokenId
+    )
   }
 
-  override suspend fun signAndBroadcast(unsigned: UnsignedTx, coinType: CoinType): String {
-    TODO("Not yet implemented")
+  override suspend fun signAndBroadcast(
+    unsigned: UnsignedTx,
+    privateKey: PrivateKey,
+    coinType: CoinType
+  ): String {
+    val signingInput = SigningInput(
+      private_key = privateKey.data.decodeToString().asHex(),
+      chain_id = unsigned.chainId.value.asHex(),
+      nonce = checkNotNull(unsigned.nonce).toString(16).asHex(),
+      gas_price = checkNotNull(unsigned.fee?.gasPrice).toString(16).asHex(),
+      gas_limit = checkNotNull(unsigned.fee?.gasLimit).toString(16).asHex(),
+      to_address = checkNotNull(unsigned.to).value,
+      transaction = Transaction(
+        transfer = Transaction.Transfer(
+          amount = checkNotNull(unsigned.amount).toString(16).asHex()
+        )
+      )
+    )
+    val output = AnySigner.sign(signingInput, coinType, SigningOutput.ADAPTER)
+    return "0x${output.encoded.hex()}"
   }
 
   override fun getTransfers(account: Address, pageSize: Int): Pager<Int, Transfer> = Pager(
