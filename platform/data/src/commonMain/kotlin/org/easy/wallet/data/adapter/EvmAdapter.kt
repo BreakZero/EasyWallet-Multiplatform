@@ -12,7 +12,7 @@ import com.trustwallet.core.ethereum.Transaction
 import com.trustwallet.core.sign
 import org.easy.wallet.data.interfaces.IChainAdapter
 import org.easy.wallet.data.paging.TransactionPagingSource
-import org.easy.wallet.data.util.asHex
+import org.easy.wallet.data.util.clearHexString
 import org.easy.wallet.model.Address
 import org.easy.wallet.model.ChainId
 import org.easy.wallet.model.FeePolicy
@@ -91,15 +91,15 @@ class EvmAdapter(
     coinType: CoinType
   ): String {
     val signingInput = SigningInput(
-      private_key = privateKey.data.decodeToString().asHex(),
-      chain_id = unsigned.chainId.value.asHex(),
-      nonce = checkNotNull(unsigned.nonce).toString(16).asHex(),
-      gas_price = checkNotNull(unsigned.fee?.gasPrice).toString(16).asHex(),
-      gas_limit = checkNotNull(unsigned.fee?.gasLimit).toString(16).asHex(),
+      private_key = privateKey.data.decodeToString().clearHexString(),
+      chain_id = unsigned.chainId.value.clearHexString(),
+      nonce = checkNotNull(unsigned.nonce).toString(16).clearHexString(),
+      gas_price = checkNotNull(unsigned.fee?.gasPrice).toString(16).clearHexString(),
+      gas_limit = checkNotNull(unsigned.fee?.gasLimit).toString(16).clearHexString(),
       to_address = checkNotNull(unsigned.to).value,
       transaction = Transaction(
         transfer = Transaction.Transfer(
-          amount = checkNotNull(unsigned.amount).toString(16).asHex()
+          amount = checkNotNull(unsigned.amount).toString(16).clearHexString()
         )
       )
     )

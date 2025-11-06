@@ -1,5 +1,4 @@
 import org.easy.configs.configureFlavors
-import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import java.io.FileInputStream

@@ -6,8 +6,8 @@ import com.trustwallet.core.AnySigner
 import com.trustwallet.core.BitcoinScript
 import com.trustwallet.core.CoinType
 import com.trustwallet.core.PrivateKey
-import com.trustwallet.core.bitcoin.SigningInput
 import com.trustwallet.core.bitcoin.OutPoint
+import com.trustwallet.core.bitcoin.SigningInput
 import com.trustwallet.core.bitcoin.SigningOutput
 import com.trustwallet.core.bitcoin.UnspentTransaction
 import com.trustwallet.core.sign
