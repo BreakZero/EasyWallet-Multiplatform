@@ -71,13 +71,12 @@ class SendFlowViewModel(
 
   private fun printInfo() {
     val input = SigningInput(
-      amount = 55_000,
+      amount = 335_790_000,
       hash_type = BitcoinSigHashType.All.value.toInt(),
       to_address = "1Bp9U1ogV3A14FMvKbRJms7ctyso4Z4Tcx",
       change_address = "1FQc5LdgGHMHEN9nwkjmz6tWkxhPpxBvBU",
-      byte_fee = 10
+      byte_fee = 1
     )
-    BitcoinScript.lockScriptForAddress("1Bp9U1ogV3A14FMvKbRJms7ctyso4Z4Tcx", CoinType.Bitcoin)
 
     val utxoKey0 = "bbc27228ddcb9209d7fd6f36b02f7dfa6252af40bb2f1cbc7a557da8027ff866".decodeHex()
     val utxoKey1 = "619c335025c7f4012e556c2a58b2506e30b8511b53ade95ea316fd8c3286feb9".decodeHex()
@@ -106,7 +105,6 @@ class SendFlowViewModel(
       out_point = output1,
       script = "00141d0f172a0ecb48aee1be1f2687d2963ae33f71a1".decodeHex()
     )
-
     val input2 = input1.copy(utxo = listOf(utxo0, utxo1))
 
     val output = AnySigner.sign(input2, CoinType.Bitcoin, SigningOutput.ADAPTER)
