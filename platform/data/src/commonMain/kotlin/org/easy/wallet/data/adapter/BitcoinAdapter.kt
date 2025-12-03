@@ -3,7 +3,7 @@ package org.easy.wallet.data.adapter
 import androidx.paging.Pager
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.trustwallet.core.AnySigner
-import com.trustwallet.core.BitcoinScript
+import com.trustwallet.core.BitcoinSigHashType
 import com.trustwallet.core.CoinType
 import com.trustwallet.core.PrivateKey
 import com.trustwallet.core.bitcoin.OutPoint
@@ -52,50 +52,57 @@ class BitcoinAdapter(
     privateKey: PrivateKey,
     coinType: CoinType
   ): String {
-    val input = SigningInput(
-      amount = 1L,
-      hash_type = BitcoinScript.hashTypeForCoin(CoinType.Bitcoin).toInt(),
-      to_address = "1Bp9U1ogV3A14FMvKbRJms7ctyso4Z4Tcx",
-      change_address = "1FQc5LdgGHMHEN9nwkjmz6tWkxhPpxBvBU",
-      byte_fee = 1
+    val input = buildTransactionInput()
+    val output = AnySigner.sign(input, CoinType.Bitcoin, SigningOutput.ADAPTER)
+
+    val encodedTransaction = output.encoded.toByteArray().toHexString()
+
+    return encodedTransaction.also {
+      println("===== Signed Transaction (Hex): $encodedTransaction")
+    }
+  }
+
+  private fun buildTransactionInput(): SigningInput {
+    val toAddress = "1Bp9U1ogV3A14FMvKbRJms7ctyso4Z4Tcx"
+    val changeAddress = "1FQc5LdgGHMHEN9nwkjmz6tWkxhPpxBvBU"
+    val amountToSend: Long = 335_790_000
+    val byteFee: Long = 1
+
+    val privateKeys = listOf(
+      "bbc27228ddcb9209d7fd6f36b02f7dfa6252af40bb2f1cbc7a557da8027ff866".decodeHex(),
+      "619c335025c7f4012e556c2a58b2506e30b8511b53ade95ea316fd8c3286feb9".decodeHex()
     )
 
-    val utxoKey0 = "bbc27228ddcb9209d7fd6f36b02f7dfa6252af40bb2f1cbc7a557da8027ff866".decodeHex()
-    val utxoKey1 = "619c335025c7f4012e556c2a58b2506e30b8511b53ade95ea316fd8c3286feb9".decodeHex()
-    input.copy(private_key = listOf(utxoKey0, utxoKey1))
-
-    val output0 = OutPoint(
-      hash = "fff7f7881a8099afa6940d42d1e7f6362bec38171ea3edf433541db4e4ad969f".decodeHex(),
-      index = 0,
-      sequence = Long.MAX_VALUE.toInt()
+    val utxos = listOf(
+      UnspentTransaction(
+        amount = 625_000_000,
+        script = "2103c9f4836b9a4f77fc0d81f7bcb01b7f1b35916864b9476c241ce9fc198bd25432ac".decodeHex(),
+        out_point = OutPoint(
+          hash = "fff7f7881a8099afa6940d42d1e7f6362bec38171ea3edf433541db4e4ad969f".decodeHex(),
+          index = 0,
+          sequence = UInt.MAX_VALUE.toInt() // 使用 UInt.MAX_VALUE 更符合意图
+        )
+      ),
+      UnspentTransaction(
+        amount = 600_000_000,
+        script = "00141d0f172a0ecb48aee1be1f2687d2963ae33f71a1".decodeHex(),
+        out_point = OutPoint(
+          hash = "ef51e1b804cc89d182d279655c3aa89e815b1b309fe287d9b2b55d57b90ec68a".decodeHex(),
+          index = 1,
+          sequence = UInt.MAX_VALUE.toInt()
+        )
+      )
     )
 
-    val utxo0 = UnspentTransaction(
-      amount = 625_000_000,
-      out_point = output0,
-      script = "2103c9f4836b9a4f77fc0d81f7bcb01b7f1b35916864b9476c241ce9fc198bd25432ac".decodeHex()
+    return SigningInput(
+      amount = amountToSend,
+      hash_type = BitcoinSigHashType.All.value.toInt(),
+      to_address = toAddress,
+      change_address = changeAddress,
+      byte_fee = byteFee,
+      private_key = privateKeys,
+      utxo = utxos
     )
-
-    val output1 = OutPoint(
-      hash = "ef51e1b804cc89d182d279655c3aa89e815b1b309fe287d9b2b55d57b90ec68a".decodeHex(),
-      index = 1,
-      sequence = Long.MAX_VALUE.toInt()
-    )
-
-    val utxo1 = UnspentTransaction(
-      amount = 600_000_000,
-      out_point = output1,
-      script = "00141d0f172a0ecb48aee1be1f2687d2963ae33f71a1".decodeHex()
-    )
-
-    input.copy(utxo = listOf(utxo0, utxo1))
-
-    val output = AnySigner.sign(input, coinType, SigningOutput.ADAPTER)
-
-    val signedTransaction = output.transaction
-    val encoded = output.encoded
-
-    return encoded.hex().also { println("===== $it") }
   }
 
   override fun getTransfers(account: Address, pageSize: Int): Pager<Int, Transfer> {
