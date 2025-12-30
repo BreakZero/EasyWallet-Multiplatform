@@ -31,7 +31,7 @@ jobs:
 
       - name: Copy apikeys.properties from secrets
         run: |
-          cd . > configs/apikeys.properties
+          mkdir -p configs
           echo "${{ secrets.APIKEY_PROPERTIES }}" | base64 --decode > configs/apikeys.properties
 
       - name: Copy CI gradle.properties
@@ -40,13 +40,13 @@ jobs:
       - name: Select Xcode version
         run: sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
 
+      - name: Generate dummy framework for CocoaPods
+        run: ./gradlew :composeApp:generateDummyFramework
+
       - name: Install CocoaPods dependencies
         run: |
           cd iosApp
           pod install --repo-update
-
-      - name: Build Kotlin Multiplatform shared module
-        run: ./gradlew :composeApp:compileKotlinIosArm64
 
       - name: Import signing certificate
         env:
@@ -87,8 +87,10 @@ jobs:
           xcodebuild -workspace iosApp.xcworkspace \
             -scheme iosApp \
             -configuration Debug \
+            -sdk iphoneos \
             -destination 'generic/platform=iOS' \
             -archivePath $RUNNER_TEMP/iosApp.xcarchive \
+            -allowProvisioningUpdates \
             archive
 
       - name: Export IPA
