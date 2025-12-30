@@ -12,6 +12,9 @@ value class ChainId(
     val Polygon_MAINNET = ChainId("evm:137")
     val Arbitrum_MAINNET = ChainId("evm:42161")
     val BTC_MAINNET = ChainId("btc:main")
+    val SOLANA_MAINNET = ChainId("solana:mainnet")
+    val SOLANA_DEVNET = ChainId("solana:devnet")
+    val SOLANA_TESTNET = ChainId("solana:testnet")
   }
 }
 

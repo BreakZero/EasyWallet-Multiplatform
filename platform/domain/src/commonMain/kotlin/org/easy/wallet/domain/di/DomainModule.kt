@@ -1,11 +1,15 @@
 package org.easy.wallet.domain.di
 
-import org.easy.wallet.domain.FetchTokenInformationUseCase
-import org.easy.wallet.domain.LoadAllBalancesUseCase
-import org.koin.core.module.dsl.singleOf
+import org.easy.wallet.domain.usecase.ConnectDAppUseCase
+import org.easy.wallet.domain.usecase.EstimateTransactionFeeUseCase
+import org.easy.wallet.domain.usecase.GetTransactionHistoryUseCase
+import org.easy.wallet.domain.usecase.SendTokenUseCase
 import org.koin.dsl.module
 
 val domainModule = module {
-  singleOf(::LoadAllBalancesUseCase)
-  singleOf(::FetchTokenInformationUseCase)
+  // Use cases
+  single { GetTransactionHistoryUseCase(transactionService = get()) }
+  single { SendTokenUseCase(transactionService = get()) }
+  single { EstimateTransactionFeeUseCase(transactionService = get()) }
+  single { ConnectDAppUseCase(web3InjectionService = get(), chainContextManager = get()) }
 }
