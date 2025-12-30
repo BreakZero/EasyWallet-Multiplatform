@@ -15,14 +15,19 @@ import org.easy.wallet.model.TokenStandard
  */
 class AdapterRegistry(
   private val adapters: Map<String, IChainAdapter>,
-  private val tokenRepository: TokenRepository
+  private val tokenRepository: TokenRepository,
+  private val chainRouter: ChainRouter
 ) {
   /**
    * Get adapter by ChainId.
+   * Uses ChainRouter to automatically route to the correct network (mainnet/testnet).
    * @throws IllegalArgumentException if no adapter found for the chain
    */
-  fun getAdapter(chainId: ChainId): IChainAdapter = adapters[chainId.value]
-    ?: throw IllegalArgumentException("No adapter registered for chain: ${chainId.value}")
+  fun getAdapter(chainId: ChainId): IChainAdapter {
+    val routedChainId = chainRouter.route(chainId)
+    return adapters[routedChainId.value]
+      ?: throw IllegalArgumentException("No adapter registered for chain: ${routedChainId.value}")
+  }
 
   /**
    * Get adapter by TokenId.

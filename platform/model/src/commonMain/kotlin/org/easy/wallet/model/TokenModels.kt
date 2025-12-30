@@ -8,6 +8,7 @@ value class ChainId(
   val value: String
 ) {
   companion object {
+    // Mainnet ChainIds
     val EVM_MAINNET = ChainId("evm:1")
     val Polygon_MAINNET = ChainId("evm:137")
     val Arbitrum_MAINNET = ChainId("evm:42161")
@@ -15,6 +16,38 @@ value class ChainId(
     val SOLANA_MAINNET = ChainId("solana:mainnet")
     val SOLANA_DEVNET = ChainId("solana:devnet")
     val SOLANA_TESTNET = ChainId("solana:testnet")
+
+    // Testnet ChainIds
+    val EVM_SEPOLIA = ChainId("evm:11155111")
+    val Polygon_AMOY = ChainId("evm:80002")
+    val Arbitrum_SEPOLIA = ChainId("evm:421614")
+    val BTC_TESTNET = ChainId("btc:test")
+
+    /**
+     * Get the testnet variant of a mainnet ChainId.
+     * Returns null if the chain doesn't have a testnet variant or is already a testnet.
+     */
+    fun getTestnetVariant(mainnetChainId: ChainId): ChainId? = when (mainnetChainId) {
+      EVM_MAINNET -> EVM_SEPOLIA
+      Polygon_MAINNET -> Polygon_AMOY
+      Arbitrum_MAINNET -> Arbitrum_SEPOLIA
+      BTC_MAINNET -> BTC_TESTNET
+      SOLANA_MAINNET -> SOLANA_TESTNET
+      else -> null
+    }
+
+    /**
+     * Get the mainnet variant of a ChainId.
+     * If the chain is already mainnet, returns it as-is.
+     */
+    fun getMainnetVariant(chainId: ChainId): ChainId = when (chainId) {
+      EVM_SEPOLIA -> EVM_MAINNET
+      Polygon_AMOY -> Polygon_MAINNET
+      Arbitrum_SEPOLIA -> Arbitrum_MAINNET
+      BTC_TESTNET -> BTC_MAINNET
+      SOLANA_TESTNET, SOLANA_DEVNET -> SOLANA_MAINNET
+      else -> chainId
+    }
   }
 }
 

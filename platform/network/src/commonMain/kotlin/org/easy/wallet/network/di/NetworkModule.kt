@@ -15,6 +15,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import org.easy.wallet.network.BuildKonfig
+import org.easy.wallet.network.NetworkConfigProvider
 import org.easy.wallet.network.httpClient
 import org.easy.wallet.network.source.BlockChairController
 import org.easy.wallet.network.source.EtherScanController
@@ -100,6 +101,6 @@ val networkModule = module {
   }
 
   factory { BlockChairController(get(qualifier = named(SourceQualifier.BLOCK_CHAIR))) }
-  factory { EtherScanController(get(qualifier = named(SourceQualifier.ETHER_SCAN))) }
+  factory { EtherScanController(get(qualifier = named(SourceQualifier.ETHER_SCAN)), get<NetworkConfigProvider>()) }
   factory { GeckoController(get(qualifier = named(SourceQualifier.GECKO))) }
 }

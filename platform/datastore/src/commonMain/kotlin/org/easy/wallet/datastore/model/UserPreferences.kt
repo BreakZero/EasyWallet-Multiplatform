@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class UserPreferences(
   val language: String = "system",
   val passcode: String = "",
+  val debugMode: Boolean = false,
 )
 
 val DefaultPreferences = UserPreferences()
