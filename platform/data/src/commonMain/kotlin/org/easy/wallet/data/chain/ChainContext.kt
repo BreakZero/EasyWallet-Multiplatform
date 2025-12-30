@@ -9,7 +9,7 @@ import org.easy.wallet.model.TokenId
  * Contains the chain adapter and metadata about what the user is currently operating on.
  */
 data class ChainContext(
-    val tokenId: TokenId?,
-    val chainId: ChainId,
-    val adapter: IChainAdapter
+  val tokenId: TokenId?,
+  val chainId: ChainId,
+  val adapter: IChainAdapter
 )

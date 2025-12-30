@@ -11,17 +11,15 @@ import org.easy.wallet.model.Transfer
  * Automatically routes to the correct chain adapter based on the token's chain.
  */
 class GetTransactionHistoryUseCase(
-    private val transactionService: TransactionService
+  private val transactionService: TransactionService
 ) {
-    suspend operator fun invoke(
-        tokenId: TokenId,
-        account: Address,
-        pageSize: Int = 50
-    ): Pager<Int, Transfer> {
-        return transactionService.getTransactionHistoryForToken(
-            tokenId = tokenId,
-            account = account,
-            pageSize = pageSize
-        )
-    }
+  suspend operator fun invoke(
+    tokenId: TokenId,
+    account: Address,
+    pageSize: Int = 50
+  ): Pager<Int, Transfer> = transactionService.getTransactionHistoryForToken(
+    tokenId = tokenId,
+    account = account,
+    pageSize = pageSize
+  )
 }

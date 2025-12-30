@@ -16,7 +16,6 @@ import org.easy.wallet.feature.send.SendFlowViewModel
 import org.easy.wallet.feature.send.amount.EnterAmountScreen
 import org.easy.wallet.feature.send.recipient.RecipientTypingScreen
 import org.easy.wallet.model.TokenId
-import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Serializable

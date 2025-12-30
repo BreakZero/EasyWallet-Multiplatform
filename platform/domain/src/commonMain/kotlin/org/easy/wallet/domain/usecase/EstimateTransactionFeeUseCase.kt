@@ -11,27 +11,25 @@ import org.easy.wallet.model.TokenId
  * Automatically routes to the correct chain adapter based on the token's chain.
  */
 class EstimateTransactionFeeUseCase(
-    private val transactionService: TransactionService
+  private val transactionService: TransactionService
 ) {
-    /**
-     * Estimate the fee for a token transfer.
-     * @param tokenId The token to transfer
-     * @param from Sender address
-     * @param to Recipient address
-     * @param amount Amount to send (in smallest unit)
-     * @return FeePolicy with estimated fee details
-     */
-    suspend operator fun invoke(
-        tokenId: TokenId,
-        from: Address,
-        to: Address,
-        amount: BigInteger
-    ): FeePolicy {
-        return transactionService.estimateFeeForToken(
-            tokenId = tokenId,
-            from = from,
-            to = to,
-            amount = amount
-        )
-    }
+  /**
+   * Estimate the fee for a token transfer.
+   * @param tokenId The token to transfer
+   * @param from Sender address
+   * @param to Recipient address
+   * @param amount Amount to send (in smallest unit)
+   * @return FeePolicy with estimated fee details
+   */
+  suspend operator fun invoke(
+    tokenId: TokenId,
+    from: Address,
+    to: Address,
+    amount: BigInteger
+  ): FeePolicy = transactionService.estimateFeeForToken(
+    tokenId = tokenId,
+    from = from,
+    to = to,
+    amount = amount
+  )
 }

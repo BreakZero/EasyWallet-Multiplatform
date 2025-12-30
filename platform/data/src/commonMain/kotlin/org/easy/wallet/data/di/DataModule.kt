@@ -3,6 +3,9 @@ package org.easy.wallet.data.di
 import org.easy.wallet.data.adapter.BitcoinAdapter
 import org.easy.wallet.data.adapter.EvmAdapter
 import org.easy.wallet.data.adapter.SolanaAdapter
+import org.easy.wallet.data.chain.AdapterRegistry
+import org.easy.wallet.data.chain.ChainContextManager
+import org.easy.wallet.data.dapp.Web3InjectionService
 import org.easy.wallet.data.interfaces.BalanceService
 import org.easy.wallet.data.interfaces.Broadcaster
 import org.easy.wallet.data.interfaces.FeeService
@@ -14,12 +17,9 @@ import org.easy.wallet.data.repository.NewsRepository
 import org.easy.wallet.data.repository.NewsRepositoryImpl
 import org.easy.wallet.data.repository.TokenRepository
 import org.easy.wallet.data.repository.TokenRepositoryImpl
+import org.easy.wallet.data.transaction.TransactionService
 import org.easy.wallet.database.di.databaseModules
 import org.easy.wallet.datastore.di.storeModules
-import org.easy.wallet.data.chain.AdapterRegistry
-import org.easy.wallet.data.chain.ChainContextManager
-import org.easy.wallet.data.dapp.Web3InjectionService
-import org.easy.wallet.data.transaction.TransactionService
 import org.easy.wallet.model.ChainId
 import org.easy.wallet.network.di.networkModule
 import org.koin.core.parameter.parametersOf
