@@ -50,6 +50,9 @@ jobs:
 
       # Build for iOS Simulator (no code signing required)
       - name: Build iOS app for Simulator
+        env:
+          GT_USERNAME: ${{ github.actor }}
+          GT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd iosApp
           xcodebuild -workspace iosApp.xcworkspace \
