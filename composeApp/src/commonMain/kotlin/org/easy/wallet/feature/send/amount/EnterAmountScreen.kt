@@ -15,10 +15,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,8 +30,18 @@ import org.easy.wallet.feature.send.SendFlowState
 
 @Composable
 fun EnterAmountScreen(state: SendFlowState, onAction: (SendFlowAction) -> Unit) {
-  var amount by remember { mutableStateOf(state.amount.orEmpty()) }
   val tokenHolding = state.tokenHolding ?: return
+
+  val isEnableNext by remember(state.amount) {
+    derivedStateOf {
+      runCatching {
+        BigDecimal.parseString(state.amount.orEmpty()) > BigDecimal.ZERO
+      }.fold(
+        onSuccess = { true },
+        onFailure = { false }
+      )
+    }
+  }
 
   Scaffold(
     modifier = Modifier.fillMaxSize(),
@@ -109,16 +118,10 @@ fun EnterAmountScreen(state: SendFlowState, onAction: (SendFlowAction) -> Unit) 
 
       Button(
         onClick = {
-          onAction(SendFlowAction.OnNext(""))
+          onAction(SendFlowAction.OverviewTransaction)
         },
         modifier = Modifier.fillMaxWidth(),
-        enabled = amount.isNotBlank() &&
-          runCatching {
-            BigDecimal.parseString(state.amount.orEmpty())
-          }.fold(
-            onSuccess = { true },
-            onFailure = { false }
-          )
+        enabled = isEnableNext
       ) {
         Text("Review Transaction")
       }

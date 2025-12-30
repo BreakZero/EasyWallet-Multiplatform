@@ -11,6 +11,8 @@ sealed interface SendFlowAction {
     val amount: String
   ) : SendFlowAction
 
+  data object OverviewTransaction: SendFlowAction
+
   data class OnNext(
     val route: String
   ) : SendFlowAction

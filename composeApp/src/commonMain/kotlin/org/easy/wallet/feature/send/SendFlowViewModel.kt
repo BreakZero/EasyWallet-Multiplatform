@@ -52,6 +52,10 @@ class SendFlowViewModel(
         eventChannel.trySend(SendFlowEvent.Popup)
       }
 
+      SendFlowAction.OverviewTransaction -> {
+        signTransaction()
+      }
+
       is SendFlowAction.OnNext -> {
         eventChannel.trySend(SendFlowEvent.NavigateTo(route = action.route))
       }

@@ -10,6 +10,7 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import org.easy.wallet.common.ObserveAsEvents
+import org.easy.wallet.common.sharedViewModel
 import org.easy.wallet.feature.send.SendFlowEvent
 import org.easy.wallet.feature.send.SendFlowViewModel
 import org.easy.wallet.feature.send.amount.EnterAmountScreen
@@ -42,7 +43,8 @@ fun NavGraphBuilder.sendFlowSection(navController: NavController) {
     composable<RecipientAddressRoute> { backStackEntry ->
       val route = backStackEntry.toRoute<RecipientAddressRoute>()
       val tokenId = TokenId(route.tokenId)
-      val viewModel: SendFlowViewModel = koinViewModel { parametersOf(tokenId) }
+      val viewModel: SendFlowViewModel =
+        backStackEntry.sharedViewModel(navController) { parametersOf(tokenId) }
       val state by viewModel.uiState.collectAsStateWithLifecycle()
 
       ObserveAsEvents(viewModel.event) { event ->
@@ -53,6 +55,7 @@ fun NavGraphBuilder.sendFlowSection(navController: NavController) {
               else -> Unit
             }
           }
+
           is SendFlowEvent.OnError -> {}
           SendFlowEvent.Popup -> navController.popBackStack()
         }
@@ -67,7 +70,8 @@ fun NavGraphBuilder.sendFlowSection(navController: NavController) {
     composable<EnterAmountRoute> { backStackEntry ->
       val route = backStackEntry.toRoute<EnterAmountRoute>()
       val tokenId = TokenId(route.tokenId)
-      val viewModel: SendFlowViewModel = koinViewModel { parametersOf(tokenId) }
+      val viewModel: SendFlowViewModel =
+        backStackEntry.sharedViewModel(navController) { parametersOf(tokenId) }
 
       ObserveAsEvents(viewModel.event) { event ->
         when (event) {

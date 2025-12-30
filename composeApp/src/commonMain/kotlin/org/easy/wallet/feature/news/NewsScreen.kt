@@ -49,11 +49,11 @@ private fun NewsTabScreen(newsPagingItems: LazyPagingItems<News>) {
     }
   ) {
     PullToRefreshPagingColumn(
+      pagingItems = newsPagingItems,
       modifier = Modifier
         .fillMaxSize()
         .padding(top = it.calculateTopPadding())
         .padding(horizontal = 16.dp),
-      pagingItems = newsPagingItems,
       contentPadding = PaddingValues(
         top = 16.dp,
         bottom = it.calculateBottomPadding()
