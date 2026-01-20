@@ -2,47 +2,25 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <!-- Method of export: app-store, ad-hoc, development, enterprise -->
-    <key>method</key>
-    <string>development</string>
-
-    <!-- Team ID from Apple Developer account -->
-    <key>teamID</key>
-    <string>YOUR_TEAM_ID</string>
-
-    <!-- Upload to App Store Connect -->
-    <key>uploadBitcode</key>
-    <false/>
-
-    <!-- Upload symbols for crash reports -->
-    <key>uploadSymbols</key>
-    <true/>
-
-    <!-- Compilation mode -->
     <key>compileBitcode</key>
     <false/>
-
-    <!-- Provisioning profiles mapping -->
+    <key>destination</key>
+    <string>export</string>
+    <key>method</key>
+    <string>development</string>
     <key>provisioningProfiles</key>
     <dict>
-        <!-- Replace with your actual bundle ID and provisioning profile name -->
         <key>org.easy.wallet</key>
         <string>YOUR_PROVISIONING_PROFILE_NAME</string>
     </dict>
-
-    <!-- Signing certificate -->
     <key>signingCertificate</key>
     <string>Apple Development</string>
-
-    <!-- Signing style -->
     <key>signingStyle</key>
     <string>manual</string>
-
-    <!-- Strip Swift symbols -->
     <key>stripSwiftSymbols</key>
     <true/>
-
-    <!-- Thinning -->
+    <key>teamID</key>
+    <string>YOUR_TEAM_ID</string>
     <key>thinning</key>
     <string>&lt;none&gt;</string>
 </dict>
