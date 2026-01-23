@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.2.10"
+kotlin = "2.3.0"
 androidGradlePlugin = "9.0.0"
 
 easy-version = "1.0.0"
