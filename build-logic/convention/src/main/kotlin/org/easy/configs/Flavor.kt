@@ -20,7 +20,7 @@ fun configureFlavors(
 ) {
     commonExtension.apply {
         flavorDimensions += FlavorDimension.Environment.name
-        Flavor.values().forEach { flavor ->
+        Flavor.entries.forEach { flavor ->
             productFlavors.create(flavor.name) {
                 dimension = flavor.dimension.name
                 flavorConfigurationBlock(this, flavor)

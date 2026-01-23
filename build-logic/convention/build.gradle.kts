@@ -22,12 +22,6 @@ dependencies {
 }
 
 gradlePlugin {
-//    plugins.register("androidApplication") {
-//        id = "easy.android.application"
-//        version = "1.0.0"
-//        implementationClass = "org.easy.mobile.convention.plugins.AndroidApplicationConventionPlugin"
-//    }
-
   plugins.register("multiplatformLibrary") {
     id = "easy.multiplatform.library"
     implementationClass = "org.easy.plugins.MultiplatformLibraryPlugin"
