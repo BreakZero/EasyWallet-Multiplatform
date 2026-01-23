@@ -14,22 +14,18 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * Configure base Kotlin with Android options
  */
 internal fun Project.configureKotlinAndroid(
-  commonExtension: CommonExtension<*, *, *, *, *, *>,
+  commonExtension: CommonExtension,
 ) {
   commonExtension.apply {
     compileSdk = Version.compileSdk
 
-    defaultConfig {
+    defaultConfig.apply {
       minSdk = Version.minSdk
     }
 
-    packaging {
-      resources {
-        excludes += "/META-INF/{AL2.0,LGPL2.1}"
-      }
-    }
+    packaging.resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
 
-    compileOptions {
+    compileOptions.apply {
       sourceCompatibility = Version.jvmVersion
       targetCompatibility = Version.jvmVersion
 
@@ -38,11 +34,7 @@ internal fun Project.configureKotlinAndroid(
 
     configureKotlin()
 
-    dependencies {
-//      libs.findLibrary("android.desugarJdkLibs").ifPresent {
-//        add("coreLibraryDesugaring", it)
-//      }
-    }
+    // (Optional) coreLibraryDesugaring can be added at the module level if needed.
   }
 }
 

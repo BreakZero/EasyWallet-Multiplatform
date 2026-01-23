@@ -1,6 +1,6 @@
 package org.easy.plugins
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.easy.configs.configureFlavors
 import org.easy.configs.configureKotlinAndroid
 import org.easy.configs.configureMultiplatformLibrary
@@ -19,7 +19,6 @@ class MultiplatformFeaturePlugin: Plugin<Project> {
 
       extensions.configure<LibraryExtension> {
         configureKotlinAndroid(this)
-        defaultConfig.targetSdk = 34
         testOptions.animationsDisabled = true
         configureFlavors(this)
 
