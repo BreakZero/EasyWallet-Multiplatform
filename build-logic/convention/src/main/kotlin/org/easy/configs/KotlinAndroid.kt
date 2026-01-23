@@ -28,13 +28,10 @@ internal fun Project.configureKotlinAndroid(
     compileOptions.apply {
       sourceCompatibility = Version.jvmVersion
       targetCompatibility = Version.jvmVersion
-
-//      isCoreLibraryDesugaringEnabled = true
     }
 
     configureKotlin()
 
-    // (Optional) coreLibraryDesugaring can be added at the module level if needed.
   }
 }
 

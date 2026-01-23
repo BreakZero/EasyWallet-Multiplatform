@@ -4,6 +4,7 @@ import com.android.build.api.dsl.LibraryExtension
 import org.easy.configs.configureFlavors
 import org.easy.configs.configureKotlinAndroid
 import org.easy.configs.configureMultiplatformLibrary
+import org.easy.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

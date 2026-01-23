@@ -6,7 +6,7 @@ import org.easy.configs.configureMultiplatformLibrary
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.configure
 
 class ComposeApplicationPlugin : Plugin<Project> {
   override fun apply(target: Project) {
@@ -16,9 +16,10 @@ class ComposeApplicationPlugin : Plugin<Project> {
       apply(plugin = "org.jetbrains.compose")
       apply(plugin = "org.jetbrains.kotlin.plugin.compose")
 
-      val extension = extensions.getByType<ApplicationExtension>()
 
-      configureKotlinAndroid(extension)
+      extensions.configure<ApplicationExtension> {
+        configureKotlinAndroid(this)
+      }
 
       configureMultiplatformLibrary()
     }

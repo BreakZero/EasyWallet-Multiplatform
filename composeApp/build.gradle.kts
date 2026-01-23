@@ -28,6 +28,7 @@ kotlin {
       pod("TrustWalletCore", moduleName = "WalletCore")
     }
   }
+  @Suppress("DEPRECATION")
   androidTarget {
     compilerOptions {
       jvmTarget.set(JvmTarget.JVM_17)

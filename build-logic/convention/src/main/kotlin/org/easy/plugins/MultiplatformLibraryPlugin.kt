@@ -1,12 +1,11 @@
 package org.easy.plugins
 
-import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
 import org.easy.configs.configureKotlinAndroid
 import org.easy.configs.configureMultiplatformLibrary
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.configure
 
 class MultiplatformLibraryPlugin: Plugin<Project> {
   override fun apply(target: Project) {
@@ -16,8 +15,9 @@ class MultiplatformLibraryPlugin: Plugin<Project> {
 
       configureMultiplatformLibrary()
 
-      val extension = extensions.getByType<LibraryExtension>()
-      configureKotlinAndroid(extension)
+      extensions.configure<LibraryExtension> {
+        configureKotlinAndroid(this)
+      }
     }
   }
 }
