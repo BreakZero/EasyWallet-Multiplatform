@@ -17,7 +17,6 @@ kotlin {
 
 dependencies {
     compileOnly(easy.android.gradlePlugin)
-    compileOnly(easy.android.tools.common)
     compileOnly(easy.compose.gradlePlugin)
     compileOnly(easy.kotlin.gradlePlugin)
 }
