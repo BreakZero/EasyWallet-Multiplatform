@@ -92,7 +92,7 @@ class TransactionService(
     memo: String? = null
   ): UnsignedTx {
     val context = chainContextManager.requireCurrentContext()
-    return context.adapter.buildTransferTx(from, to, token, amount, fee, memo)
+    return context.adapter.buildTransferTx(from, to, token, amount, memo)
   }
 
   /**
@@ -121,7 +121,8 @@ class TransactionService(
    */
   suspend fun signAndBroadcast(unsigned: UnsignedTx, coinType: CoinType): String {
     val context = chainContextManager.requireCurrentContext()
-    return context.adapter.signAndBroadcast(unsigned, coinType)
+    throw RuntimeException()
+//    return context.adapter.signAndBroadcast(unsigned, )
   }
 
   /**

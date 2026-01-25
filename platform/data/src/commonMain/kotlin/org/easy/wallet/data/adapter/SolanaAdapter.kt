@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.trustwallet.core.CoinType
+import com.trustwallet.core.PrivateKey
 import org.easy.wallet.data.interfaces.BalanceService
 import org.easy.wallet.data.interfaces.Broadcaster
 import org.easy.wallet.data.interfaces.FeeService
@@ -60,31 +61,7 @@ class SolanaAdapter(
     throw NotImplementedError("Solana fee estimation not yet implemented")
   }
 
-  override suspend fun buildTransferTx(
-    from: Address,
-    to: Address,
-    token: Token,
-    amount: BigInteger,
-    fee: FeePolicy?,
-    memo: String?
-  ): UnsignedTx {
-    // TODO: Implement Solana transaction building
-    // 1. For native SOL: create a system transfer instruction
-    // 2. For SPL tokens: create a token transfer instruction
-    // 3. Add memo instruction if memo is provided
-    // 4. Get recent blockhash
-    // 5. Create transaction with instructions
-    throw NotImplementedError("Solana transaction building not yet implemented")
-  }
 
-  override suspend fun signAndBroadcast(unsigned: UnsignedTx, coinType: CoinType): String {
-    // TODO: Implement Solana transaction signing and broadcasting
-    // 1. Sign transaction with private key from coinType
-    // 2. Serialize signed transaction
-    // 3. Send via sendTransaction RPC method
-    // 4. Return transaction signature (hash)
-    throw NotImplementedError("Solana transaction signing and broadcasting not yet implemented")
-  }
 
   override fun getTransfers(account: Address, pageSize: Int): Pager<Int, Transfer> {
     // TODO: Implement Solana transaction history fetching
@@ -94,6 +71,24 @@ class SolanaAdapter(
       config = PagingConfig(pageSize = pageSize),
       pagingSourceFactory = { SolanaTransactionPagingSource(account, chainId) }
     )
+  }
+
+  override suspend fun buildTransferTx(
+    from: Address,
+    to: Address,
+    token: Token,
+    amount: BigInteger,
+    memo: String?
+  ): UnsignedTx {
+    TODO("Not yet implemented")
+  }
+
+  override suspend fun signAndBroadcast(
+    unsigned: UnsignedTx,
+    privateKey: PrivateKey,
+    coinType: CoinType
+  ): String {
+    TODO("Not yet implemented")
   }
 }
 

@@ -53,7 +53,6 @@ class SendFlowViewModel(
       }
 
       SendFlowAction.OverviewTransaction -> {
-        signTransaction()
       }
 
       is SendFlowAction.OnNext -> {
