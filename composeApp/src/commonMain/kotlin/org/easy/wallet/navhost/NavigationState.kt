@@ -33,8 +33,8 @@ fun rememberNavKeySavedStateConfiguration(): SavedStateConfiguration {
   return remember {
     SavedStateConfiguration {
       serializersModule = SerializersModule {
+
         polymorphic(NavKey::class) {
-          // Top-level routes only
           subclass(AssetsRoute::class, AssetsRoute.serializer())
           subclass(NewsRoute::class, NewsRoute.serializer())
           subclass(AccountRoute::class, AccountRoute.serializer())
