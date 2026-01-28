@@ -1,26 +1,22 @@
 package org.easy.wallet.feature.account.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import kotlinx.serialization.Serializable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import org.easy.wallet.feature.account.AccountScreen
+import org.easy.wallet.navhost.Navigator
+import kotlinx.serialization.Serializable
 
 @Serializable
-data object AccountBaseRoute
+data object AccountRoute : NavKey
 
-@Serializable
-data object AccountRoute
+fun Navigator.navigateToAccount() = navigate(AccountRoute)
 
-fun NavController.navigateToAccount(navOptions: NavOptions) = navigate(route = AccountRoute, navOptions)
-
-fun NavGraphBuilder.accountSection(accountNestedGraph: NavGraphBuilder.() -> Unit, onEvent: () -> Unit) {
-  navigation<AccountBaseRoute>(startDestination = AccountRoute) {
-    composable<AccountRoute> {
-      AccountScreen(navigateToWallet = onEvent)
-    }
-    accountNestedGraph()
+fun EntryProviderScope<NavKey>.accountSection(
+  accountNestedGraph: EntryProviderScope<NavKey>.() -> Unit,
+  onEvent: () -> Unit
+) {
+  entry<AccountRoute> {
+    AccountScreen(navigateToWallet = onEvent)
   }
+  accountNestedGraph()
 }

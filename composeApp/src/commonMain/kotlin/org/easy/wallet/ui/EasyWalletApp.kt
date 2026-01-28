@@ -19,21 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
 import dev.chrisbanes.haze.ExperimentalHazeApi
-import org.easy.wallet.feature.assets.navigation.AssetsBaseRoute
 import org.easy.wallet.navhost.WalletNavHost
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import kotlin.reflect.KClass
 
 @OptIn(ExperimentalHazeApi::class)
 @Composable
 fun EasyWalletApp(appState: EasyAppState) {
-  val currentDestination = appState.currentDestination
-
   EasyWalletTheme {
     Scaffold(
       modifier = Modifier.fillMaxSize(),
@@ -42,7 +35,7 @@ fun EasyWalletApp(appState: EasyAppState) {
       bottomBar = {
         AnimatedVisibility(
           modifier = Modifier.fillMaxWidth(),
-          visible = appState.currentTopLevelDestination != null,
+          visible = appState.shouldShowNavigationBar(),
           enter = slideInVertically { it },
           exit = slideOutVertically { it }
         ) {
@@ -54,8 +47,7 @@ fun EasyWalletApp(appState: EasyAppState) {
             tonalElevation = 3.dp
           ) {
             appState.topLevelDestinations.forEach { destination ->
-              val selected = currentDestination
-                .isRouteInHierarchy(destination.baseRoute)
+              val selected = destination.route == appState.navigationState.topLevelRoute
               NavigationBarItem(
                 selected = selected,
                 onClick = { appState.navigateToTopLevelDestination(destination) },
@@ -75,13 +67,9 @@ fun EasyWalletApp(appState: EasyAppState) {
     ) {
       WalletNavHost(
         modifier = Modifier.fillMaxSize().padding(it),
-        navController = appState.navController,
-        startDestination = AssetsBaseRoute
+        navigationState = appState.navigationState,
+        navigator = appState.navigator
       )
     }
   }
 }
-
-private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) = this?.hierarchy?.any {
-  it.hasRoute(route)
-} ?: false
