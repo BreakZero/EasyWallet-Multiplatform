@@ -2,72 +2,61 @@ package org.easy.wallet.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
-import kotlinx.coroutines.CoroutineScope
-import org.easy.wallet.feature.account.navigation.navigateToAccount
-import org.easy.wallet.feature.assets.navigation.navigateToAssets
-import org.easy.wallet.feature.news.navigation.navigateToNews
+import androidx.navigation3.runtime.NavKey
+import org.easy.wallet.feature.account.navigation.AccountRoute
+import org.easy.wallet.feature.assets.navigation.AssetsRoute
+import org.easy.wallet.feature.news.navigation.NewsRoute
+import org.easy.wallet.navhost.Navigator
+import org.easy.wallet.navhost.NavigationState
+import org.easy.wallet.navhost.rememberNavigationState
 import org.easy.wallet.navhost.TopLevelDestination
 
 @Composable
-fun rememberAppState(
-  navController: NavHostController = rememberNavController(),
-  coroutineScope: CoroutineScope = rememberCoroutineScope()
-): EasyAppState = remember(navController) {
-  EasyAppState(navController, coroutineScope)
+fun rememberAppState(): EasyAppState {
+  val topLevelRoutes = setOf(
+    AssetsRoute,
+    NewsRoute,
+    AccountRoute
+  )
+  val navigationState = rememberNavigationState(
+    startRoute = AssetsRoute,
+    topLevelRoutes = topLevelRoutes
+  )
+  val navigator = remember { Navigator(navigationState) }
+  return remember(navigationState, navigator, topLevelRoutes) {
+    EasyAppState(navigationState, navigator, topLevelRoutes)
+  }
 }
 
 @Stable
 class EasyAppState(
-  val navController: NavHostController,
-  coroutineScope: CoroutineScope
+  val navigationState: NavigationState,
+  val navigator: Navigator,
+  private val topLevelRoutes: Set<NavKey>
 ) {
-  private val previousDestination = mutableStateOf<NavDestination?>(null)
-
-  val currentDestination: NavDestination?
-    @Composable get() {
-      val currentEntry = navController.currentBackStackEntryFlow
-        .collectAsState(initial = null)
-
-      return currentEntry.value?.destination.also { destination ->
-        if (destination != null) {
-          previousDestination.value = destination
-        }
-      } ?: previousDestination.value
-    }
-
   val currentTopLevelDestination: TopLevelDestination?
-    @Composable get() {
+    get() {
+      val currentRoute = navigationState.topLevelRoute
       return TopLevelDestination.entries.firstOrNull { topLevelDestination ->
-        currentDestination?.hasRoute(route = topLevelDestination.route) == true
+        topLevelDestination.route == currentRoute
       }
     }
 
   val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
 
-  fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
-    val topLevelNavOptions = navOptions {
-      popUpTo(navController.graph.findStartDestination().route!!) {
-        saveState = true
-      }
-      launchSingleTop = true
-      restoreState = true
-    }
+  /**
+   * Returns true if the NavigationBar should be visible.
+   * The NavigationBar is visible only when the current route is a top-level route.
+   * This is a Composable property to ensure it's properly tracked when navigation state changes.
+   */
+  @Composable
+  fun shouldShowNavigationBar(): Boolean {
+    return navigationState.isCurrentRouteTopLevel(topLevelRoutes)
+  }
 
-    when (topLevelDestination) {
-      TopLevelDestination.Assets -> navController.navigateToAssets(topLevelNavOptions)
-      TopLevelDestination.News -> navController.navigateToNews(topLevelNavOptions)
-//      TopLevelDestination.DApps -> navController.navigateToDApps(topLevelNavOptions)
-      TopLevelDestination.Account -> navController.navigateToAccount(topLevelNavOptions)
-    }
+  fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
+    navigator.navigate(topLevelDestination.route)
   }
 }
