@@ -17,19 +17,16 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.savedstate.serialization.SavedStateConfiguration
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 import org.easy.wallet.feature.account.navigation.AccountRoute
 import org.easy.wallet.feature.apps.navigation.DAppsRoute
 import org.easy.wallet.feature.assets.navigation.AssetsRoute
 import org.easy.wallet.feature.news.navigation.NewsRoute
-import org.easy.wallet.feature.send.navigation.EnterAmountRoute
-import org.easy.wallet.feature.wallet.navigation.GenerateSeedRoute
-import org.easy.wallet.feature.wallet.navigation.SetPassCodeRoute
-import org.easy.wallet.feature.wallet.navigation.WalletOptionRoute
-import org.easy.wallet.feature.wallet.navigation.WalletRestoreRoute
 
 /**
- * Creates the SavedStateConfiguration with polymorphic serialization for all NavKey types.
+ * Creates the SavedStateConfiguration with polymorphic serialization for top-level NavKey types.
  * This is required for multiplatform support (iOS, web) where reflection-based serialization is not available.
+ * Only top-level routes need to be registered here, as nested routes are handled automatically by the back stack.
  */
 @Composable
 fun rememberNavKeySavedStateConfiguration(): SavedStateConfiguration {
@@ -37,24 +34,11 @@ fun rememberNavKeySavedStateConfiguration(): SavedStateConfiguration {
     SavedStateConfiguration {
       serializersModule = SerializersModule {
         polymorphic(NavKey::class) {
-          // Top-level routes
+          // Top-level routes only
           subclass(AssetsRoute::class, AssetsRoute.serializer())
           subclass(NewsRoute::class, NewsRoute.serializer())
           subclass(AccountRoute::class, AccountRoute.serializer())
           subclass(DAppsRoute::class, DAppsRoute.serializer())
-
-          // Wallet routes
-          subclass(WalletOptionRoute::class, WalletOptionRoute.serializer())
-          subclass(SetPassCodeRoute::class, SetPassCodeRoute.serializer())
-          subclass(GenerateSeedRoute::class, GenerateSeedRoute.serializer())
-          subclass(WalletRestoreRoute::class, WalletRestoreRoute.serializer())
-
-          // Asset routes
-          subclass(org.easy.wallet.feature.assets.navigation.AssetDetailRoute::class, org.easy.wallet.feature.assets.navigation.AssetDetailRoute.serializer())
-
-          // Send flow routes
-          subclass(org.easy.wallet.feature.send.navigation.RecipientAddressRoute::class, org.easy.wallet.feature.send.navigation.RecipientAddressRoute.serializer())
-          subclass(EnterAmountRoute::class, EnterAmountRoute.serializer())
         }
       }
     }
