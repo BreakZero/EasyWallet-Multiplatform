@@ -19,6 +19,9 @@ kotlin {
         implementation(libs.ktor.serialization)
         implementation(libs.androidx.datastore)
         implementation(libs.androidx.datastore.preferences)
+
+        implementation(libs.ksafe)
+        implementation(libs.ksafe.compose)
       }
     }
   }
