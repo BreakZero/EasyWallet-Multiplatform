@@ -8,10 +8,10 @@ import androidx.navigation3.runtime.NavKey
 import org.easy.wallet.feature.account.navigation.AccountRoute
 import org.easy.wallet.feature.assets.navigation.AssetsRoute
 import org.easy.wallet.feature.news.navigation.NewsRoute
-import org.easy.wallet.navhost.Navigator
 import org.easy.wallet.navhost.NavigationState
-import org.easy.wallet.navhost.rememberNavigationState
+import org.easy.wallet.navhost.Navigator
 import org.easy.wallet.navhost.TopLevelDestination
+import org.easy.wallet.navhost.rememberNavigationState
 
 @Composable
 fun rememberAppState(): EasyAppState {
@@ -52,9 +52,7 @@ class EasyAppState(
    * This is a Composable property to ensure it's properly tracked when navigation state changes.
    */
   @Composable
-  fun shouldShowNavigationBar(): Boolean {
-    return navigationState.isCurrentRouteTopLevel(topLevelRoutes)
-  }
+  fun shouldShowNavigationBar(): Boolean = navigationState.isCurrentRouteTopLevel(topLevelRoutes)
 
   fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
     navigator.navigate(topLevelDestination.route)

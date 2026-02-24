@@ -29,17 +29,14 @@ import org.easy.wallet.feature.news.navigation.NewsRoute
  * Only top-level routes need to be registered here, as nested routes are handled automatically by the back stack.
  */
 @Composable
-fun rememberNavKeySavedStateConfiguration(): SavedStateConfiguration {
-  return remember {
-    SavedStateConfiguration {
-      serializersModule = SerializersModule {
-
-        polymorphic(NavKey::class) {
-          subclass(AssetsRoute::class, AssetsRoute.serializer())
-          subclass(NewsRoute::class, NewsRoute.serializer())
-          subclass(AccountRoute::class, AccountRoute.serializer())
-          subclass(DAppsRoute::class, DAppsRoute.serializer())
-        }
+fun rememberNavKeySavedStateConfiguration(): SavedStateConfiguration = remember {
+  SavedStateConfiguration {
+    serializersModule = SerializersModule {
+      polymorphic(NavKey::class) {
+        subclass(AssetsRoute::class, AssetsRoute.serializer())
+        subclass(NewsRoute::class, NewsRoute.serializer())
+        subclass(AccountRoute::class, AccountRoute.serializer())
+        subclass(DAppsRoute::class, DAppsRoute.serializer())
       }
     }
   }
@@ -49,10 +46,7 @@ fun rememberNavKeySavedStateConfiguration(): SavedStateConfiguration {
  * Create a navigation state that persists config changes and process death.
  */
 @Composable
-fun rememberNavigationState(
-  startRoute: NavKey,
-  topLevelRoutes: Set<NavKey>
-): NavigationState {
+fun rememberNavigationState(startRoute: NavKey, topLevelRoutes: Set<NavKey>): NavigationState {
   val config = rememberNavKeySavedStateConfiguration()
   val topLevelRoute = remember {
     mutableStateOf(startRoute)
@@ -99,20 +93,16 @@ class NavigationState(
   /**
    * Checks if the current route is a top-level route.
    */
-  fun isCurrentRouteTopLevel(topLevelRoutes: Set<NavKey>): Boolean {
-    return currentRoute in topLevelRoutes
-  }
+  fun isCurrentRouteTopLevel(topLevelRoutes: Set<NavKey>): Boolean = currentRoute in topLevelRoutes
 
   /**
    * Convert NavigationState into NavEntries.
    */
   @Composable
-  fun toEntries(
-    entryProvider: (NavKey) -> NavEntry<NavKey>
-  ): SnapshotStateList<NavEntry<NavKey>> {
+  fun toEntries(entryProvider: (NavKey) -> NavEntry<NavKey>): SnapshotStateList<NavEntry<NavKey>> {
     val decoratedEntries = backStacks.mapValues { (_, stack) ->
       val decorators = listOf(
-        rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
+        rememberSaveableStateHolderNavEntryDecorator<NavKey>()
       )
       rememberDecoratedNavEntries(
         backStack = stack,
@@ -120,7 +110,8 @@ class NavigationState(
         entryProvider = entryProvider
       )
     }
-    return stacksInUse.flatMap { decoratedEntries[it] ?: emptyList() }
+    return stacksInUse
+      .flatMap { decoratedEntries[it] ?: emptyList() }
       .toMutableStateList()
   }
 }

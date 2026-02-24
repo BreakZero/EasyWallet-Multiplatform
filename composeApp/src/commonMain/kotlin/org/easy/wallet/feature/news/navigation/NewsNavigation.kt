@@ -2,9 +2,9 @@ package org.easy.wallet.feature.news.navigation
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.news.NewsScreen
 import org.easy.wallet.navhost.Navigator
-import kotlinx.serialization.Serializable
 
 @Serializable
 data object NewsRoute : NavKey

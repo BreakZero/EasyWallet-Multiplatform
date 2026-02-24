@@ -54,7 +54,9 @@ fun AssetsItemView(
       verticalAlignment = Alignment.CenterVertically
     ) {
       Box(
-        modifier = Modifier.size(48.dp).clip(CircleShape)
+        modifier = Modifier
+          .size(48.dp)
+          .clip(CircleShape)
           .background(MaterialTheme.colorScheme.background)
       ) {
         DynamicAsyncImage(

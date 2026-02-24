@@ -1,5 +1,6 @@
 package org.easy.wallet.navhost
 
+import androidx.navigation3.runtime.NavKey
 import easywallet.composeapp.generated.resources.Res
 import easywallet.composeapp.generated.resources.ic_tab_account
 import easywallet.composeapp.generated.resources.ic_tab_home
@@ -12,7 +13,6 @@ import org.easy.wallet.feature.assets.navigation.AssetsRoute
 import org.easy.wallet.feature.news.navigation.NewsRoute
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
-import androidx.navigation3.runtime.NavKey
 
 enum class TopLevelDestination(
   val selectedIcon: DrawableResource,

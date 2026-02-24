@@ -5,7 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import org.easy.wallet.feature.account.navigation.AccountRoute
 import org.easy.wallet.feature.account.navigation.accountSection
 import org.easy.wallet.feature.apps.navigation.appsSection
 import org.easy.wallet.feature.assets.navigation.assetsSection

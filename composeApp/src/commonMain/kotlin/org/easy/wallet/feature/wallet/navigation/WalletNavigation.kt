@@ -2,12 +2,12 @@ package org.easy.wallet.feature.wallet.navigation
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.wallet.WalletOptionScreen
 import org.easy.wallet.feature.wallet.create.GenerateSeedScreen
 import org.easy.wallet.feature.wallet.passcode.CreatePassCodeScreen
 import org.easy.wallet.feature.wallet.restore.WalletRestoreScreen
 import org.easy.wallet.navhost.Navigator
-import kotlinx.serialization.Serializable
 
 @Serializable
 data object WalletOptionRoute : NavKey
