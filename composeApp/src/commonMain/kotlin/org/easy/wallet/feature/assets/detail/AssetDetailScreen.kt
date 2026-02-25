@@ -63,7 +63,7 @@ fun AssetDetailScreen(
   onSend: (TokenId) -> Unit,
   onPopBack: () -> Unit
 ) {
-  val viewModel: AssetDetailViewModel = koinViewModel { parametersOf(tokenId) }
+  val viewModel: AssetDetailViewModel = koinViewModel(key = tokenId.value) { parametersOf(tokenId) }
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   AssetDetailScreen(

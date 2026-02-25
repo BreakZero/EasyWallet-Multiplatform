@@ -43,7 +43,7 @@ fun EntryProviderScope<NavKey>.sendFlowSection(navigator: Navigator) {
   entry<RecipientAddressRoute> { key ->
     val tokenId = TokenId(key.tokenId)
     val viewModel: SendFlowViewModel =
-      sharedViewModel { parametersOf(tokenId) }
+      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.event) { event ->
@@ -61,7 +61,7 @@ fun EntryProviderScope<NavKey>.sendFlowSection(navigator: Navigator) {
   entry<EnterAmountRoute> { key ->
     val tokenId = TokenId(key.tokenId)
     val viewModel: SendFlowViewModel =
-      sharedViewModel { parametersOf(tokenId) }
+      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.event) { event ->
@@ -79,7 +79,7 @@ fun EntryProviderScope<NavKey>.sendFlowSection(navigator: Navigator) {
   entry<ReviewTransactionRoute> { key ->
     val tokenId = TokenId(key.tokenId)
     val viewModel: SendFlowViewModel =
-      sharedViewModel { parametersOf(tokenId) }
+      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.event) { event ->
@@ -97,7 +97,7 @@ fun EntryProviderScope<NavKey>.sendFlowSection(navigator: Navigator) {
   entry<TransactionResultRoute> { key ->
     val tokenId = TokenId(key.tokenId)
     val viewModel: SendFlowViewModel =
-      sharedViewModel { parametersOf(tokenId) }
+      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.event) { event ->

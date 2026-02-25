@@ -15,6 +15,7 @@ kotlin {
         implementation(libs.sqldelight.coroutines.extensions)
 
         implementation(libs.kotlinx.coroutines.core)
+        implementation(libs.kotlinx.datetime)
         implementation(libs.koin.core)
         api(libs.wallet.core.kotlin)
         api(libs.paging.compose.common)
