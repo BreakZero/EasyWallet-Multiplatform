@@ -2,8 +2,9 @@ package org.easy.wallet.navhost
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
 import org.easy.wallet.feature.account.navigation.accountSection
 import org.easy.wallet.feature.apps.navigation.appsSection
 import org.easy.wallet.feature.assets.navigation.assetsSection
@@ -15,27 +16,26 @@ import org.easy.wallet.feature.wallet.navigation.attachWalletGraph
 @Composable
 fun WalletNavHost(
   modifier: Modifier = Modifier,
-  navController: NavHostController,
-  startDestination: Any,
+  navigationState: NavigationState,
+  navigator: Navigator,
 ) {
-  NavHost(
-    modifier = modifier,
-    navController = navController,
-    startDestination = startDestination
-  ) {
-    assetsSection(navController) { }
+  val entryProvider = entryProvider<NavKey> {
+    assetsSection(navigator)
     newsSection()
     appsSection { }
     accountSection(
       onEvent = {
-        navController.navigate(WalletOptionRoute)
+        navigator.navigate(WalletOptionRoute)
       },
-      accountNestedGraph = {
-        attachWalletGraph(
-          navController = navController
-        )
-      }
+      accountNestedGraph = { }
     )
-    sendFlowSection(navController)
+    sendFlowSection(navigator)
+    attachWalletGraph(navigator)
   }
+
+  NavDisplay(
+    modifier = modifier,
+    entries = navigationState.toEntries(entryProvider),
+    onBack = { navigator.goBack() }
+  )
 }

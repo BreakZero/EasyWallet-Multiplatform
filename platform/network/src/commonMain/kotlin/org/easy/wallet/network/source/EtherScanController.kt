@@ -4,12 +4,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
 import org.easy.wallet.model.ChainId
 import org.easy.wallet.model.Transfer
+import org.easy.wallet.network.NetworkConfigProvider
 import org.easy.wallet.network.model.dto.EtherScanBaseResponse
 import org.easy.wallet.network.model.dto.EvmTransactionDTO
 import org.easy.wallet.network.safeGet
 
 class EtherScanController internal constructor(
-  private val httpClient: HttpClient
+  private val httpClient: HttpClient,
+  private val configProvider: NetworkConfigProvider
 ) {
   suspend fun balance(
     address: String,
@@ -21,6 +23,9 @@ class EtherScanController internal constructor(
 
     val result = httpClient
       .safeGet<EtherScanBaseResponse<String>>("") {
+        // Dynamically set host based on debug mode
+        url.host = configProvider.getEtherScanHost()
+
         parameter("module", "account")
         parameter("action", action)
         parameter("chainid", chainid)
@@ -50,6 +55,8 @@ class EtherScanController internal constructor(
 
     val result = httpClient
       .safeGet<EtherScanBaseResponse<List<EvmTransactionDTO>>>("") {
+        url.host = configProvider.getEtherScanHost()
+
         parameter("module", "account")
         parameter("action", "txlist")
         parameter("chainid", chainid)
@@ -73,6 +80,8 @@ class EtherScanController internal constructor(
     val chainid = chainId.value.split(":").last()
     val result = httpClient
       .safeGet<EtherScanBaseResponse<List<EvmTransactionDTO>>>("") {
+        url.host = configProvider.getEtherScanHost()
+
         parameter("module", "account")
         parameter("action", "tokentx")
         parameter("chainid", chainid)

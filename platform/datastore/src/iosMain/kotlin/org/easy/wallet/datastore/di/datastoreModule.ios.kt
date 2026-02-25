@@ -2,6 +2,7 @@ package org.easy.wallet.datastore.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import eu.anifantakis.lib.ksafe.KSafe
 import kotlinx.cinterop.ExperimentalForeignApi
 import org.easy.wallet.datastore.IOSKeyStorePort
 import org.easy.wallet.datastore.KeyStorePort
@@ -17,4 +18,6 @@ internal actual val platformDataStoreModule: Module = module {
   }
 
   single { IOSKeyStorePort(get()) } bind KeyStorePort::class
+
+  single { KSafe() }
 }

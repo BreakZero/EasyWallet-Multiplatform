@@ -1,6 +1,9 @@
 package org.easy.wallet.data.adapter
 
 import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.trustwallet.core.AnySigner
 import com.trustwallet.core.BitcoinSigHashType
@@ -33,9 +36,12 @@ class BitcoinAdapter(
     to: Address,
     token: Token,
     amount: BigInteger
-  ): FeePolicy {
-    TODO("Not yet implemented")
-  }
+  ): FeePolicy = FeePolicy(
+    feeAmount = BigInteger.parseString("10000"),
+    gasPrice = null,
+    gasLimit = null,
+    priorityTip = null
+  )
 
   override suspend fun buildTransferTx(
     from: Address,
@@ -44,7 +50,15 @@ class BitcoinAdapter(
     amount: BigInteger,
     memo: String?
   ): UnsignedTx {
-    TODO("Not yet implemented")
+    val feePolicy = estimateTransferFee(from, to, token, amount)
+    return UnsignedTx(
+      chainId = chainId,
+      from = from,
+      to = to,
+      amount = amount,
+      fee = feePolicy,
+      tokenId = token.tokenId
+    )
   }
 
   override suspend fun signAndBroadcast(
@@ -105,7 +119,20 @@ class BitcoinAdapter(
     )
   }
 
-  override fun getTransfers(account: Address, pageSize: Int): Pager<Int, Transfer> {
-    TODO("Not yet implemented")
+  override fun getTransfers(account: Address, pageSize: Int): Pager<Int, Transfer> = Pager(
+    config = PagingConfig(pageSize = pageSize, prefetchDistance = 2),
+    pagingSourceFactory = { BitcoinTransactionPagingSource() }
+  )
+}
+
+private class BitcoinTransactionPagingSource : PagingSource<Int, Transfer>() {
+  override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transfer> {
+    return LoadResult.Page(
+      data = emptyList(),
+      prevKey = null,
+      nextKey = null
+    )
   }
+
+  override fun getRefreshKey(state: PagingState<Int, Transfer>): Int? = null
 }

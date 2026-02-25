@@ -29,6 +29,12 @@ val viewModelModule = module {
   }
 
   viewModel { (tokenId: TokenId) ->
-    SendFlowViewModel(fetchTokenInformationUseCase = get(), tokenId = tokenId)
+    SendFlowViewModel(
+      fetchTokenInformationUseCase = get(),
+      estimateTransactionFeeUseCase = get(),
+      sendTokenUseCase = get(),
+      validateAddressUseCase = get(),
+      tokenId = tokenId
+    )
   }
 }

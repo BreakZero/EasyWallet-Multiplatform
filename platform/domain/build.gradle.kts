@@ -7,12 +7,13 @@ kotlin {
     commonMain {
       dependencies {
         implementation(projects.platform.model)
-        implementation(projects.platform.data)
-        implementation(projects.platform.datastore)
+        api(projects.platform.data)
 
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.koin.core)
         implementation(libs.kermit)
+        api(libs.paging.compose.common)
+        api(libs.wallet.core.kotlin)
       }
     }
   }

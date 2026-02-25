@@ -7,38 +7,45 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 import org.easy.wallet.data.repository.AccountRepositoryImpl
+import org.easy.wallet.datastore.PreferencesRepository
 import org.easy.wallet.domain.LoadAllBalancesUseCase
 import org.easy.wallet.model.TokenHolding
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AssetsViewModel(
   accountRepository: AccountRepositoryImpl,
-  val allBalancesUseCase: LoadAllBalancesUseCase
+  val allBalancesUseCase: LoadAllBalancesUseCase,
+  private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
   val state: StateFlow<AssetsUiState> =
-    accountRepository
-      .getCurrentAccount()
-      .transformLatest { account ->
-        delay(2_000)
-        if (account == null) {
-          emit(AssetsUiState.EmptyWallet)
-        } else {
-          emitAll(
-            allBalancesUseCase(account)
-              .map { balances ->
-                AssetsUiState.WalletAssets(
-                  walletName = account.name,
-                  assetTokenHoldings = balances
-                )
-              }
-          )
-        }
-      }.catch { emit(AssetsUiState.EmptyWallet) }
+    combine(
+      accountRepository.getCurrentAccount(),
+      preferencesRepository.preferences.map { it.debugMode }.distinctUntilChanged()
+    ) { account, debugMode ->
+      account to debugMode
+    }.transformLatest { (account, _) ->
+      delay(2_000)
+      if (account == null) {
+        emit(AssetsUiState.EmptyWallet)
+      } else {
+        emitAll(
+          allBalancesUseCase(account)
+            .map { balances ->
+              AssetsUiState.WalletAssets(
+                walletName = account.name,
+                assetTokenHoldings = balances
+              )
+            }
+        )
+      }
+    }.catch { emit(AssetsUiState.EmptyWallet) }
       .stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(3_000),

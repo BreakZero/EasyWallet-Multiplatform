@@ -1,13 +1,17 @@
 package org.easy.wallet.feature.send
 
 sealed interface SendFlowEvent {
-  data class OnError(
-    val error: String
-  ) : SendFlowEvent
+  data object GoBack : SendFlowEvent
 
-  data object Popup : SendFlowEvent
+  data object NavigateToEnterAmount : SendFlowEvent
 
-  data class NavigateTo(
-    val route: String
+  data object NavigateToReview : SendFlowEvent
+
+  data object NavigateToResult : SendFlowEvent
+
+  data object NavigateToHome : SendFlowEvent
+
+  data class ShowError(
+    val message: String
   ) : SendFlowEvent
 }

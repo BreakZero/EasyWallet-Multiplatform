@@ -50,4 +50,37 @@
     <string name="title_enter_recipient">Enter Recipient Address</string>
     <string name="hint_enter_recipient">Enter wallet address or scan QR code</string>
     <string name="label_recipient">Recipient Address</string>
+
+    <string name="send_amount_title">Send Amount</string>
+    <string name="send_amount_available">Available Balance</string>
+    <string name="send_amount_label">Amount</string>
+    <string name="send_amount_use_max">Max</string>
+    <string name="send_amount_review">Review Transaction</string>
+    <string name="send_amount_to">To:</string>
+    <string name="send_amount_memo_label">Memo (optional)</string>
+    <string name="send_amount_memo_hint">Add a note</string>
+
+    <string name="send_error_address_empty">Address cannot be empty</string>
+    <string name="send_error_address_invalid">Invalid address format</string>
+    <string name="send_error_address_same">Cannot send to your own address</string>
+    <string name="send_error_amount_empty">Amount cannot be empty</string>
+    <string name="send_error_amount_invalid">Invalid amount format</string>
+    <string name="send_error_amount_zero">Amount must be greater than zero</string>
+    <string name="send_error_amount_exceeds">Amount exceeds available balance</string>
+
+    <string name="send_review_title">Review Transaction</string>
+    <string name="send_review_from">From</string>
+    <string name="send_review_to">To</string>
+    <string name="send_review_amount">Amount</string>
+    <string name="send_review_network_fee">Network Fee</string>
+    <string name="send_review_total">Total</string>
+    <string name="send_review_memo">Memo</string>
+
+    <string name="send_result_success_title">Transaction Sent</string>
+    <string name="send_result_success_subtitle">%1$s %2$s has been sent successfully</string>
+    <string name="send_result_failure_title">Transaction Failed</string>
+    <string name="send_result_failure_subtitle">Your transaction could not be completed</string>
+    <string name="send_result_tx_hash">Transaction Hash</string>
+    <string name="send_result_done">Done</string>
+    <string name="send_result_try_again">Try Again</string>
 </resources>

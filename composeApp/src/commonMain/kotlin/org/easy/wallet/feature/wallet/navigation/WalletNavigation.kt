@@ -1,73 +1,67 @@
 package org.easy.wallet.feature.wallet.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.wallet.WalletOptionScreen
 import org.easy.wallet.feature.wallet.create.GenerateSeedScreen
 import org.easy.wallet.feature.wallet.passcode.CreatePassCodeScreen
 import org.easy.wallet.feature.wallet.restore.WalletRestoreScreen
+import org.easy.wallet.navhost.Navigator
 
 @Serializable
-data object WalletOptionRoute
+data object WalletOptionRoute : NavKey
 
 @Serializable
 data class SetPassCodeRoute(
   val isRestore: Boolean
-)
+) : NavKey
 
 @Serializable
 data class GenerateSeedRoute(
   val passcode: String
-)
+) : NavKey
 
 @Serializable
 data class WalletRestoreRoute(
   val passcode: String
-)
+) : NavKey
 
-fun NavGraphBuilder.attachWalletGraph(navController: NavController) {
-  composable<WalletOptionRoute> {
+fun EntryProviderScope<NavKey>.attachWalletGraph(navigator: Navigator) {
+  entry<WalletOptionRoute> {
     WalletOptionScreen(
-      onCreateWallet = { navController.navigate(route = SetPassCodeRoute(isRestore = false)) },
-      onRestoreWallet = { navController.navigate(route = SetPassCodeRoute(isRestore = true)) },
-      popBackStack = navController::popBackStack
+      onCreateWallet = { navigator.navigate(SetPassCodeRoute(isRestore = false)) },
+      onRestoreWallet = { navigator.navigate(SetPassCodeRoute(isRestore = true)) },
+      popBackStack = navigator::goBack
     )
   }
 
-  composable<SetPassCodeRoute> {
-    val route: SetPassCodeRoute = it.toRoute<SetPassCodeRoute>()
+  entry<SetPassCodeRoute> { key ->
     CreatePassCodeScreen(
-      popBackStack = navController::popBackStack,
+      popBackStack = navigator::goBack,
       toNext = { passcode ->
-        navController.navigate(
-          route = if (route.isRestore) WalletRestoreRoute(passcode) else GenerateSeedRoute(passcode)
-        ) {
-          popUpTo(route) {
-            inclusive = true
-          }
-        }
+        // Remove current route and navigate to next
+        navigator.goBack()
+        navigator.navigate(
+          if (key.isRestore) WalletRestoreRoute(passcode) else GenerateSeedRoute(passcode)
+        )
       }
     )
   }
 
-  composable<GenerateSeedRoute> {
-    val passcode = it.toRoute<GenerateSeedRoute>().passcode
+  entry<GenerateSeedRoute> { key ->
     GenerateSeedScreen(
-      passcode = passcode,
-      popBackStack = navController::popBackStack,
-      onComplete = { navController.popBackStack() }
+      passcode = key.passcode,
+      popBackStack = navigator::goBack,
+      onComplete = { navigator.goBack() }
     )
   }
 
-  composable<WalletRestoreRoute> {
-    val passcode = it.toRoute<WalletRestoreRoute>().passcode
+  entry<WalletRestoreRoute> { key ->
     WalletRestoreScreen(
-      passcode = passcode,
-      popBackStack = navController::popBackStack,
-      onComplete = { navController.popBackStack() }
+      passcode = key.passcode,
+      popBackStack = navigator::goBack,
+      onComplete = { navigator.goBack() }
     )
   }
 }

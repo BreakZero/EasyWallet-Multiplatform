@@ -2,6 +2,7 @@ package org.easy.wallet.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
@@ -16,13 +17,15 @@ class UserPreferencesRepository internal constructor(
   private object K {
     val PASS_CODE = stringPreferencesKey("user.passcode")
     val LANGUAGE = stringPreferencesKey("prefs.language")
+    val DEBUG_MODE = booleanPreferencesKey("prefs.debug_mode")
   }
 
   override val preferences: Flow<UserPreferences>
     get() = dataStore.data.map {
       UserPreferences(
         language = it[K.LANGUAGE] ?: DefaultPreferences.language,
-        passcode = it[K.PASS_CODE] ?: DefaultPreferences.passcode
+        passcode = it[K.PASS_CODE] ?: DefaultPreferences.passcode,
+        debugMode = it[K.DEBUG_MODE] ?: DefaultPreferences.debugMode
       )
     }
 
@@ -43,6 +46,7 @@ class UserPreferencesRepository internal constructor(
     dataStore.edit { e ->
       e[K.LANGUAGE] = p.language
       e[K.PASS_CODE] = p.passcode
+      e[K.DEBUG_MODE] = p.debugMode
     }
   }
 }

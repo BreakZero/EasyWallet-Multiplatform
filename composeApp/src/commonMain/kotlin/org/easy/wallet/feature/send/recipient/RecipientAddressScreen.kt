@@ -2,8 +2,10 @@ package org.easy.wallet.feature.send.recipient
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -19,8 +21,12 @@ import easywallet.composeapp.generated.resources.Res
 import easywallet.composeapp.generated.resources.button_continue
 import easywallet.composeapp.generated.resources.hint_enter_recipient
 import easywallet.composeapp.generated.resources.label_recipient
+import easywallet.composeapp.generated.resources.send_error_address_empty
+import easywallet.composeapp.generated.resources.send_error_address_invalid
+import easywallet.composeapp.generated.resources.send_error_address_same
 import easywallet.composeapp.generated.resources.title_enter_recipient
 import org.easy.wallet.components.EasyTopAppBar
+import org.easy.wallet.feature.send.AddressError
 import org.easy.wallet.feature.send.SendFlowAction
 import org.easy.wallet.feature.send.SendFlowState
 import org.jetbrains.compose.resources.stringResource
@@ -31,7 +37,7 @@ fun RecipientTypingScreen(state: SendFlowState, onAction: (SendFlowAction) -> Un
     modifier = Modifier.fillMaxSize(),
     topBar = {
       EasyTopAppBar(
-        onBack = { onAction(SendFlowAction.Popup) },
+        onBack = { onAction(SendFlowAction.GoBack) },
         title = {
           Text(
             text = stringResource(Res.string.title_enter_recipient),
@@ -54,22 +60,35 @@ fun RecipientTypingScreen(state: SendFlowState, onAction: (SendFlowAction) -> Un
       )
 
       OutlinedTextField(
-        value = state.recipientAddress.orEmpty(),
+        value = state.recipientAddress,
         onValueChange = { onAction(SendFlowAction.OnRecipientChange(it)) },
         modifier = Modifier.fillMaxWidth(),
         placeholder = { Text(text = stringResource(Res.string.hint_enter_recipient)) },
         singleLine = true,
-        keyboardOptions = KeyboardOptions(
-          keyboardType = KeyboardType.Text
-        )
+        isError = state.addressError != null,
+        supportingText = state.addressError?.let { error ->
+          {
+            Text(
+              text = stringResource(
+                when (error) {
+                  AddressError.EMPTY -> Res.string.send_error_address_empty
+                  AddressError.INVALID_FORMAT -> Res.string.send_error_address_invalid
+                  AddressError.SAME_AS_SENDER -> Res.string.send_error_address_same
+                }
+              ),
+              color = MaterialTheme.colorScheme.error
+            )
+          }
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
       )
 
+      Spacer(modifier = Modifier.weight(1f))
+
       Button(
-        onClick = {
-          onAction(SendFlowAction.OnNext(route = "enter_amount"))
-        },
-        modifier = Modifier.fillMaxWidth(),
-        enabled = !state.recipientAddress.isNullOrBlank()
+        onClick = { onAction(SendFlowAction.ContinueToAmount) },
+        modifier = Modifier.fillMaxWidth().height(52.dp),
+        enabled = state.recipientAddress.isNotBlank() && state.addressError == null
       ) {
         Text(text = stringResource(Res.string.button_continue))
       }

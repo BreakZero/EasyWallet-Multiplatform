@@ -28,10 +28,10 @@ import app.cash.paging.compose.LazyPagingItems
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T : Any> PullToRefreshPagingColumn(
+  pagingItems: LazyPagingItems<T>,
   modifier: Modifier = Modifier,
   contentPadding: PaddingValues = PaddingValues(0.dp),
   lazyListState: LazyListState = rememberLazyListState(),
-  pagingItems: LazyPagingItems<T>,
   headerContainer: LazyListScope.() -> Unit = {},
   footerContainer: LazyListScope.() -> Unit = {},
   itemKey: ((index: Int) -> Any)? = {

@@ -2,87 +2,116 @@ package org.easy.wallet.feature.send.navigation
 
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import androidx.navigation.toRoute
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 import org.easy.wallet.common.ObserveAsEvents
+import org.easy.wallet.common.sharedViewModel
 import org.easy.wallet.feature.send.SendFlowEvent
 import org.easy.wallet.feature.send.SendFlowViewModel
 import org.easy.wallet.feature.send.amount.EnterAmountScreen
 import org.easy.wallet.feature.send.recipient.RecipientTypingScreen
+import org.easy.wallet.feature.send.result.TransactionResultScreen
+import org.easy.wallet.feature.send.review.ReviewTransactionScreen
 import org.easy.wallet.model.TokenId
-import org.koin.compose.viewmodel.koinViewModel
+import org.easy.wallet.navhost.Navigator
 import org.koin.core.parameter.parametersOf
 
 @Serializable
-data object SendFlowEntryPoint
+internal data class RecipientAddressRoute(
+  val tokenId: String
+) : NavKey
 
 @Serializable
-private data class RecipientAddressRoute(
+internal data class EnterAmountRoute(
   val tokenId: String
-)
+) : NavKey
 
 @Serializable
-data class EnterAmountRoute(
+internal data class ReviewTransactionRoute(
   val tokenId: String
-)
+) : NavKey
 
-fun NavController.navigateToSendFlow(tokenId: TokenId, navOptions: NavOptions? = null) =
-  navigate(route = RecipientAddressRoute(tokenId.value), navOptions)
+@Serializable
+internal data class TransactionResultRoute(
+  val tokenId: String
+) : NavKey
 
-fun NavController.navigateToEnterAmount(tokenId: TokenId, navOptions: NavOptions? = null) =
-  navigate(route = EnterAmountRoute(tokenId.value), navOptions)
+fun Navigator.navigateToSendFlow(tokenId: TokenId) = navigate(RecipientAddressRoute(tokenId.value))
 
-fun NavGraphBuilder.sendFlowSection(navController: NavController) {
-  navigation<SendFlowEntryPoint>(startDestination = RecipientAddressRoute::class) {
-    composable<RecipientAddressRoute> { backStackEntry ->
-      val route = backStackEntry.toRoute<RecipientAddressRoute>()
-      val tokenId = TokenId(route.tokenId)
-      val viewModel: SendFlowViewModel = koinViewModel { parametersOf(tokenId) }
-      val state by viewModel.uiState.collectAsStateWithLifecycle()
+fun EntryProviderScope<NavKey>.sendFlowSection(navigator: Navigator) {
+  entry<RecipientAddressRoute> { key ->
+    val tokenId = TokenId(key.tokenId)
+    val viewModel: SendFlowViewModel =
+      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-      ObserveAsEvents(viewModel.event) { event ->
-        when (event) {
-          is SendFlowEvent.NavigateTo -> {
-            when (event.route) {
-              "enter_amount" -> navController.navigateToEnterAmount(tokenId)
-              else -> Unit
-            }
-          }
-          is SendFlowEvent.OnError -> {}
-          SendFlowEvent.Popup -> navController.popBackStack()
-        }
+    ObserveAsEvents(viewModel.event) { event ->
+      when (event) {
+        SendFlowEvent.GoBack -> navigator.goBack()
+        SendFlowEvent.NavigateToEnterAmount ->
+          navigator.navigate(EnterAmountRoute(key.tokenId))
+        else -> Unit
       }
-
-      RecipientTypingScreen(
-        state = state,
-        onAction = viewModel::handleAction
-      )
     }
 
-    composable<EnterAmountRoute> { backStackEntry ->
-      val route = backStackEntry.toRoute<EnterAmountRoute>()
-      val tokenId = TokenId(route.tokenId)
-      val viewModel: SendFlowViewModel = koinViewModel { parametersOf(tokenId) }
+    RecipientTypingScreen(state = state, onAction = viewModel::handleAction)
+  }
 
-      ObserveAsEvents(viewModel.event) { event ->
-        when (event) {
-          is SendFlowEvent.NavigateTo -> navController.navigate(event.route)
-          is SendFlowEvent.OnError -> {}
-          SendFlowEvent.Popup -> navController.popBackStack()
-        }
+  entry<EnterAmountRoute> { key ->
+    val tokenId = TokenId(key.tokenId)
+    val viewModel: SendFlowViewModel =
+      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.event) { event ->
+      when (event) {
+        SendFlowEvent.GoBack -> navigator.goBack()
+        SendFlowEvent.NavigateToReview ->
+          navigator.navigate(ReviewTransactionRoute(key.tokenId))
+        else -> Unit
       }
-
-      val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-      EnterAmountScreen(
-        state = state,
-        onAction = viewModel::handleAction
-      )
     }
+
+    EnterAmountScreen(state = state, onAction = viewModel::handleAction)
+  }
+
+  entry<ReviewTransactionRoute> { key ->
+    val tokenId = TokenId(key.tokenId)
+    val viewModel: SendFlowViewModel =
+      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.event) { event ->
+      when (event) {
+        SendFlowEvent.GoBack -> navigator.goBack()
+        SendFlowEvent.NavigateToResult ->
+          navigator.navigate(TransactionResultRoute(key.tokenId))
+        else -> Unit
+      }
+    }
+
+    ReviewTransactionScreen(state = state, onAction = viewModel::handleAction)
+  }
+
+  entry<TransactionResultRoute> { key ->
+    val tokenId = TokenId(key.tokenId)
+    val viewModel: SendFlowViewModel =
+      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.event) { event ->
+      when (event) {
+        SendFlowEvent.GoBack -> navigator.goBack()
+        SendFlowEvent.NavigateToHome ->
+          navigator.popBackTo(
+            predicate = { it is RecipientAddressRoute },
+            inclusive = true
+          )
+        else -> Unit
+      }
+    }
+
+    TransactionResultScreen(state = state, onAction = viewModel::handleAction)
   }
 }

@@ -1,0 +1,73 @@
+name: iOS Test Build
+on:
+  push:
+    branches:
+      - develop
+      - feature/*
+      - bugfix/*
+      - hotfix/*
+  workflow_dispatch:
+
+jobs:
+  build_ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: Copy apikeys.properties from secrets
+        run: |
+          mkdir -p configs
+          echo "${{ secrets.APIKEY_PROPERTIES }}" | base64 --decode > configs/apikeys.properties
+
+      - name: Copy CI gradle.properties
+        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
+
+      - name: Generate dummy framework for CocoaPods
+        run: ./gradlew :composeApp:generateDummyFramework
+
+      - name: Install CocoaPods dependencies
+        run: |
+          cd iosApp
+          pod install --repo-update
+
+      # Build for iOS Simulator (no code signing required)
+      - name: Build iOS app for Simulator
+        env:
+          GT_USERNAME: ${{ github.actor }}
+          GT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd iosApp
+          xcodebuild -workspace iosApp.xcworkspace \
+            -scheme iosApp \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath $RUNNER_TEMP/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: iosApp-simulator-${{ github.run_number }}
+          path: ${{ runner.temp }}/DerivedData/Build/Products/Debug-iphonesimulator/iosApp.app
+          retention-days: 7

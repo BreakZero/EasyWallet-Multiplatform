@@ -1,26 +1,16 @@
 package org.easy.wallet.feature.apps.navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 import org.easy.wallet.feature.apps.DAppsScreen
 
 @Serializable
-data object DAppsBaseRoute
+data object DAppsRoute : NavKey
 
-@Serializable
-data object DAppsRoute
-
-fun NavController.navigateToDApps(navOptions: NavOptions) = navigate(route = DAppsRoute, navOptions)
-
-fun NavGraphBuilder.appsSection(appsNestedGraph: NavGraphBuilder.() -> Unit,) {
-  navigation<DAppsBaseRoute>(startDestination = DAppsRoute) {
-    composable<DAppsRoute> {
-      DAppsScreen()
-    }
-    appsNestedGraph()
+fun EntryProviderScope<NavKey>.appsSection(appsNestedGraph: EntryProviderScope<NavKey>.() -> Unit) {
+  entry<DAppsRoute> {
+    DAppsScreen()
   }
+  appsNestedGraph()
 }
