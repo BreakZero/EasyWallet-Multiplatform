@@ -3,7 +3,6 @@ package org.easy.wallet.data.adapter
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.ionspin.kotlin.bignum.integer.BigInteger
-import kotlin.time.Clock
 import com.trustwallet.core.CoinType
 import com.trustwallet.core.PrivateKey
 import org.easy.wallet.data.interfaces.BalanceService
@@ -19,6 +18,7 @@ import org.easy.wallet.model.Token
 import org.easy.wallet.model.TokenStandard
 import org.easy.wallet.model.Transfer
 import org.easy.wallet.model.UnsignedTx
+import kotlin.time.Clock
 
 /**
  * Solana blockchain adapter.
@@ -57,9 +57,9 @@ class SolanaAdapter(
   )
 
   override fun getTransfers(account: Address, pageSize: Int): Pager<Int, Transfer> = Pager(
-      config = PagingConfig(pageSize = pageSize),
-      pagingSourceFactory = { SolanaTransactionPagingSource(account, chainId) }
-    )
+    config = PagingConfig(pageSize = pageSize),
+    pagingSourceFactory = { SolanaTransactionPagingSource(account, chainId) }
+  )
 
   override suspend fun buildTransferTx(
     from: Address,
@@ -83,9 +83,7 @@ class SolanaAdapter(
     unsigned: UnsignedTx,
     privateKey: PrivateKey,
     coinType: CoinType
-  ): String {
-    return "mock_solana_tx_${Clock.System.now().toEpochMilliseconds()}"
-  }
+  ): String = "mock_solana_tx_${Clock.System.now().toEpochMilliseconds()}"
 }
 
 /**
@@ -95,13 +93,11 @@ class SolanaTransactionPagingSource(
   private val account: Address,
   private val chainId: ChainId
 ) : androidx.paging.PagingSource<Int, Transfer>() {
-  override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transfer> {
-    return LoadResult.Page(
-      data = emptyList(),
-      prevKey = null,
-      nextKey = null
-    )
-  }
+  override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transfer> = LoadResult.Page(
+    data = emptyList(),
+    prevKey = null,
+    nextKey = null
+  )
 
   override fun getRefreshKey(state: androidx.paging.PagingState<Int, Transfer>): Int? = null
 }

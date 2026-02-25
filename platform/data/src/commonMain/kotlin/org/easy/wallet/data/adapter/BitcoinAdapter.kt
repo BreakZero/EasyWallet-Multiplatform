@@ -126,13 +126,11 @@ class BitcoinAdapter(
 }
 
 private class BitcoinTransactionPagingSource : PagingSource<Int, Transfer>() {
-  override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transfer> {
-    return LoadResult.Page(
-      data = emptyList(),
-      prevKey = null,
-      nextKey = null
-    )
-  }
+  override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transfer> = LoadResult.Page(
+    data = emptyList(),
+    prevKey = null,
+    nextKey = null
+  )
 
   override fun getRefreshKey(state: PagingState<Int, Transfer>): Int? = null
 }
