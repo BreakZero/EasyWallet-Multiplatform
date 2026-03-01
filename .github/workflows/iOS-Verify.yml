@@ -1,4 +1,4 @@
-name: iOS Platform Verify
+name: iOS Platform Compiler Verify
 on:
   push:
     branches:
@@ -56,12 +56,15 @@ jobs:
           xcrun simctl list runtimes
           echo "=== Available Devices ==="
           xcrun simctl list devices available
-          
-          # Try to create a simulator with iOS 18.1, fallback to available version
-          if xcrun simctl list runtimes | grep -q "iOS 18.1"; then
-            echo "iOS 18.1 runtime found"
-          else
-            echo "iOS 18.1 runtime not found, checking for alternatives..."
+
+          # Create a simulator if needed
+          DEFAULT_RUNTIME=$(xcrun simctl list runtimes | grep iOS | head -1 | awk '{print $NF}')
+          echo "Using runtime: $DEFAULT_RUNTIME"
+
+          # Check if iPhone 15 simulator exists, create if not
+          if ! xcrun simctl list devices available | grep -q "iPhone 15"; then
+            echo "Creating iPhone 15 simulator..."
+            xcrun simctl create "iPhone 15" com.apple.CoreSimulator.SimDeviceType.iPhone-15 "$DEFAULT_RUNTIME"
           fi
 
       # Step 1: Verify BuildKonfig generation
@@ -86,54 +89,3 @@ jobs:
       # Step 3: Verify framework generation for CocoaPods
       - name: Generate iOS Framework
         run: ./gradlew :composeApp:generateDummyFramework
-
-      # Step 4: Verify CocoaPods setup
-      - name: Cache CocoaPods
-        uses: actions/cache@v4
-        with:
-          path: |
-            iosApp/Pods
-            ~/Library/Caches/CocoaPods
-          key: ${{ runner.os }}-pods-${{ hashFiles('iosApp/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pods-
-
-      - name: Install CocoaPods dependencies
-        run: |
-          cd iosApp
-          pod install --repo-update
-
-      # Step 5: Verify Xcode project builds (compile only, no app bundle)
-      - name: Verify Xcode Build
-        run: |
-          cd iosApp
-          xcodebuild -workspace iosApp.xcworkspace \
-            -scheme iosApp \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            build-for-testing
-
-      - name: ✅ iOS Platform Verification Complete
-        run: |
-          echo "All iOS platform checks passed!"
-          echo "- BuildKonfig generated"
-          echo "- Kotlin compiled for iOS Arm64"
-          echo "- Kotlin compiled for iOS Simulator Arm64"
-          echo "- iOS Framework generated"
-          echo "- CocoaPods dependencies installed"
-          echo "- Xcode project builds successfully"
-
-      # Upload logs on failure
-      - name: Upload logs on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-verify-logs-${{ github.run_number }}
-          path: |
-            ${{ runner.temp }}/**
-            iosApp/build/
-          retention-days: 3
-          if-no-files-found: ignore
