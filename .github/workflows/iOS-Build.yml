@@ -34,25 +34,47 @@ jobs:
           mkdir -p configs
           echo "${{ secrets.APIKEY_PROPERTIES }}" | base64 --decode > configs/apikeys.properties
 
+      - name: Copy package_read.properties from secrets (for TrustWallet Core)
+        run: |
+          mkdir -p configs
+          echo "${{ secrets.PACKAGE_READ_PROPERTIES }}" | base64 --decode > configs/package_read.properties
+
       - name: Copy CI gradle.properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
       - name: Select Xcode version
         run: sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
 
+      - name: Generate BuildKonfig
+        run: ./gradlew -p platform generateBuildKonfig
+
       - name: Generate dummy framework for CocoaPods
         run: ./gradlew :composeApp:generateDummyFramework
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            iosApp/Pods
+            ~/Library/Caches/CocoaPods
+          key: ${{ runner.os }}-pods-${{ hashFiles('iosApp/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
 
       - name: Install CocoaPods dependencies
         run: |
           cd iosApp
-          pod install --repo-update
+          pod install --repo-update --verbose
+
+      - name: Build Kotlin Multiplatform module for iOS
+        env:
+          GPR_USERNAME: ${{ github.actor }}
+          GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./gradlew :composeApp:compileKotlinIosArm64 :composeApp:compileKotlinIosSimulatorArm64 --no-daemon
 
       # Build for iOS Simulator (no code signing required)
       - name: Build iOS app for Simulator
-        env:
-          GT_USERNAME: ${{ github.actor }}
-          GT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd iosApp
           xcodebuild -workspace iosApp.xcworkspace \
@@ -65,9 +87,36 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             build
 
+      - name: Verify build output
+        run: |
+          APP_PATH="$RUNNER_TEMP/DerivedData/Build/Products/Debug-iphonesimulator/iosApp.app"
+          if [ -d "$APP_PATH" ]; then
+            echo "✅ Build successful: $APP_PATH"
+            ls -la "$APP_PATH"
+          else
+            echo "❌ Build failed: iosApp.app not found"
+            exit 1
+          fi
+
+      - name: Package build artifacts
+        run: |
+          cd "$RUNNER_TEMP/DerivedData/Build/Products/Debug-iphonesimulator"
+          zip -r iosApp-simulator.zip iosApp.app
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: iosApp-simulator-${{ github.run_number }}
-          path: ${{ runner.temp }}/DerivedData/Build/Products/Debug-iphonesimulator/iosApp.app
+          path: ${{ runner.temp }}/DerivedData/Build/Products/Debug-iphonesimulator/iosApp-simulator.zip
           retention-days: 7
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-logs-${{ github.run_number }}
+          path: |
+            ${{ runner.temp }}/DerivedData/Logs/
+            iosApp/build/
+          retention-days: 3
+          if-no-files-found: ignore
