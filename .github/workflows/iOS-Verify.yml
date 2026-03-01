@@ -49,6 +49,21 @@ jobs:
       - name: Select Xcode version
         run: sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
 
+      - name: Setup iOS Simulator
+        run: |
+          # Show available runtimes and devices for debugging
+          echo "=== Available Runtimes ==="
+          xcrun simctl list runtimes
+          echo "=== Available Devices ==="
+          xcrun simctl list devices available
+          
+          # Try to create a simulator with iOS 18.1, fallback to available version
+          if xcrun simctl list runtimes | grep -q "iOS 18.1"; then
+            echo "iOS 18.1 runtime found"
+          else
+            echo "iOS 18.1 runtime not found, checking for alternatives..."
+          fi
+
       # Step 1: Verify BuildKonfig generation
       - name: Generate BuildKonfig
         run: ./gradlew -p platform generateBuildKonfig
