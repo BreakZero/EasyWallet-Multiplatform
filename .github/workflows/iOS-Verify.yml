@@ -1,4 +1,4 @@
-name: iOS Test Build
+name: iOS Platform Verify
 on:
   push:
     branches:
@@ -6,12 +6,16 @@ on:
       - feature/*
       - bugfix/*
       - hotfix/*
+  pull_request:
+    branches:
+      - develop
+      - main
   workflow_dispatch:
 
 jobs:
-  build_ios:
+  verify_ios:
     runs-on: macos-latest
-    timeout-minutes: 60
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repository
@@ -34,7 +38,7 @@ jobs:
           mkdir -p configs
           echo "${{ secrets.APIKEY_PROPERTIES }}" | base64 --decode > configs/apikeys.properties
 
-      - name: Copy package_read.properties from secrets (for TrustWallet Core)
+      - name: Copy package_read.properties from secrets
         run: |
           mkdir -p configs
           echo "${{ secrets.PACKAGE_READ_PROPERTIES }}" | base64 --decode > configs/package_read.properties
@@ -45,12 +49,30 @@ jobs:
       - name: Select Xcode version
         run: sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
 
+      # Step 1: Verify BuildKonfig generation
       - name: Generate BuildKonfig
         run: ./gradlew -p platform generateBuildKonfig
 
-      - name: Generate dummy framework for CocoaPods
+      # Step 2: Verify Kotlin compilation for iOS targets
+      - name: Compile Kotlin for iOS (Arm64)
+        env:
+          GPR_USERNAME: ${{ github.actor }}
+          GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./gradlew :composeApp:compileKotlinIosArm64 --no-daemon
+
+      - name: Compile Kotlin for iOS (Simulator Arm64)
+        env:
+          GPR_USERNAME: ${{ github.actor }}
+          GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./gradlew :composeApp:compileKotlinIosSimulatorArm64 --no-daemon
+
+      # Step 3: Verify framework generation for CocoaPods
+      - name: Generate iOS Framework
         run: ./gradlew :composeApp:generateDummyFramework
 
+      # Step 4: Verify CocoaPods setup
       - name: Cache CocoaPods
         uses: actions/cache@v4
         with:
@@ -64,59 +86,39 @@ jobs:
       - name: Install CocoaPods dependencies
         run: |
           cd iosApp
-          pod install --repo-update --verbose
+          pod install --repo-update
 
-      - name: Build Kotlin Multiplatform module for iOS
-        env:
-          GPR_USERNAME: ${{ github.actor }}
-          GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          ./gradlew :composeApp:compileKotlinIosArm64 :composeApp:compileKotlinIosSimulatorArm64 --no-daemon
-
-      # Build for iOS Simulator (no code signing required)
-      - name: Build iOS app for Simulator
+      # Step 5: Verify Xcode project builds (compile only, no app bundle)
+      - name: Verify Xcode Build
         run: |
           cd iosApp
           xcodebuild -workspace iosApp.xcworkspace \
             -scheme iosApp \
             -configuration Debug \
             -sdk iphonesimulator \
-            -destination 'generic/platform=iOS Simulator' \
-            -derivedDataPath $RUNNER_TEMP/DerivedData \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
-            build
+            build-for-testing
 
-      - name: Verify build output
+      - name: ✅ iOS Platform Verification Complete
         run: |
-          APP_PATH="$RUNNER_TEMP/DerivedData/Build/Products/Debug-iphonesimulator/iosApp.app"
-          if [ -d "$APP_PATH" ]; then
-            echo "✅ Build successful: $APP_PATH"
-            ls -la "$APP_PATH"
-          else
-            echo "❌ Build failed: iosApp.app not found"
-            exit 1
-          fi
+          echo "All iOS platform checks passed!"
+          echo "- BuildKonfig generated"
+          echo "- Kotlin compiled for iOS Arm64"
+          echo "- Kotlin compiled for iOS Simulator Arm64"
+          echo "- iOS Framework generated"
+          echo "- CocoaPods dependencies installed"
+          echo "- Xcode project builds successfully"
 
-      - name: Package build artifacts
-        run: |
-          cd "$RUNNER_TEMP/DerivedData/Build/Products/Debug-iphonesimulator"
-          zip -r iosApp-simulator.zip iosApp.app
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: iosApp-simulator-${{ github.run_number }}
-          path: ${{ runner.temp }}/DerivedData/Build/Products/Debug-iphonesimulator/iosApp-simulator.zip
-          retention-days: 7
-
-      - name: Upload build logs on failure
+      # Upload logs on failure
+      - name: Upload logs on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: ios-build-logs-${{ github.run_number }}
+          name: ios-verify-logs-${{ github.run_number }}
           path: |
-            ${{ runner.temp }}/DerivedData/Logs/
+            ${{ runner.temp }}/**
             iosApp/build/
           retention-days: 3
           if-no-files-found: ignore

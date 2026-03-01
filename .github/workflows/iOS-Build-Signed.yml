@@ -61,7 +61,7 @@ jobs:
       - name: Install CocoaPods dependencies
         run: |
           cd iosApp
-          pod install --repo-update --verbose
+          pod install --repo-update
 
       - name: Build Kotlin Multiplatform module for iOS
         env:
