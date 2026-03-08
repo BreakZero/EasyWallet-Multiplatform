@@ -70,6 +70,7 @@ kotlin {
       implementation(libs.material3)
 
       implementation(libs.haze)
+      implementation(libs.kermit)
 
       implementation(libs.coil.compose)
       implementation(libs.coil.network.ktor3)
