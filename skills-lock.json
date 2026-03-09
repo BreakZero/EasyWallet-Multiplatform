@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "compose-pro": {
+      "source": "BreakZero/Compose-Agent-Skill",
+      "sourceType": "github",
+      "computedHash": "c826b1a947a97c0a90eb01820a6331c27cfe1b382ced77b002417fc83c96446b"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+interface:
+  display_name: "Compose Pro"
+  short_description: "Reviews Jetpack Compose code for modern best practices."
+  icon_small: "./assets/compose-pro-icon.svg"
+  icon_large: "./assets/compose-pro-icon.png"
+  brand_color: "#4285F4"
+  default_prompt: "Use $compose-pro to review my project."
+
+policy:
+  allow_implicit_invocation: true
