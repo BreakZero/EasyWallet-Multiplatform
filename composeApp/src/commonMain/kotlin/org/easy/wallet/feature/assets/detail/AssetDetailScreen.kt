@@ -50,7 +50,7 @@ import easywallet.composeapp.generated.resources.text_recipient
 import easywallet.composeapp.generated.resources.text_transfer_history
 import org.easy.wallet.common.ClipboardManager
 import org.easy.wallet.components.EasyTopAppBar
-import org.easy.wallet.model.TokenId
+import org.easy.wallet.model.AssetId
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -59,11 +59,11 @@ import qrgenerator.qrkitpainter.rememberQrKitPainter
 
 @Composable
 fun AssetDetailScreen(
-  tokenId: TokenId,
-  onSend: (TokenId) -> Unit,
+  assetId: AssetId,
+  onSend: (AssetId) -> Unit,
   onPopBack: () -> Unit
 ) {
-  val viewModel: AssetDetailViewModel = koinViewModel(key = tokenId.value) { parametersOf(tokenId) }
+  val viewModel: AssetDetailViewModel = koinViewModel(key = assetId.value) { parametersOf(assetId) }
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   AssetDetailScreen(
@@ -73,7 +73,7 @@ fun AssetDetailScreen(
         AssetDetailEvent.OnPopBack -> onPopBack()
         AssetDetailEvent.OnReceive -> Unit
         is AssetDetailEvent.OnSend -> {
-          onSend(event.tokenId)
+          onSend(event.assetId)
         }
       }
     }
@@ -83,8 +83,9 @@ fun AssetDetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AssetDetailScreen(state: AssetDetailUiState, onEvent: (AssetDetailEvent) -> Unit) {
-  val meta = state.tokenHolding?.asset ?: return
-  val address = state.tokenHolding.address?.value ?: return
+  val assetBalance = state.assetBalance ?: return
+  val meta = assetBalance.asset
+  val address = assetBalance.address.value
 
   Scaffold(
     modifier = Modifier.fillMaxSize(),
@@ -103,12 +104,12 @@ private fun AssetDetailScreen(state: AssetDetailUiState, onEvent: (AssetDetailEv
       verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
       Text(
-        text = state.tokenHolding.amount.format(),
+        text = assetBalance.amount.format(),
         style = MaterialTheme.typography.displayMedium,
         modifier = Modifier.padding(horizontal = 16.dp)
       )
       ActionRow(
-        onSend = { onEvent(AssetDetailEvent.OnSend(tokenId = meta.id)) },
+        onSend = { onEvent(AssetDetailEvent.OnSend(assetId = meta.id)) },
         onReceive = { showModal = true }
       )
       HorizontalDivider(thickness = Dp.Hairline)

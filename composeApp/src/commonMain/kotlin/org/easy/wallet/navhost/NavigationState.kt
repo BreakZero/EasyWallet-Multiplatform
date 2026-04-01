@@ -21,7 +21,6 @@ import kotlinx.serialization.modules.subclass
 import org.easy.wallet.feature.account.navigation.AccountRoute
 import org.easy.wallet.feature.apps.navigation.DAppsRoute
 import org.easy.wallet.feature.assets.navigation.AssetsRoute
-import org.easy.wallet.feature.news.navigation.NewsRoute
 
 /**
  * Creates the SavedStateConfiguration with polymorphic serialization for top-level NavKey types.
@@ -34,7 +33,6 @@ fun rememberNavKeySavedStateConfiguration(): SavedStateConfiguration = remember 
     serializersModule = SerializersModule {
       polymorphic(NavKey::class) {
         subclass(AssetsRoute::class, AssetsRoute.serializer())
-        subclass(NewsRoute::class, NewsRoute.serializer())
         subclass(AccountRoute::class, AccountRoute.serializer())
         subclass(DAppsRoute::class, DAppsRoute.serializer())
       }

@@ -4,7 +4,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.easy.wallet.model.ChainId
-import org.easy.wallet.model.TokenId
 
 /**
  * Manages the current chain context based on user operations.
@@ -20,28 +19,12 @@ class ChainContextManager(
   val currentChainContext: StateFlow<ChainContext?> = _currentChainContext.asStateFlow()
 
   /**
-   * Set the current chain context based on a TokenId.
-   * This is typically called when user selects a token from the asset list
-   * or navigates to token detail/send screens.
-   */
-  suspend fun setContextByToken(tokenId: TokenId) {
-    val chainId = adapterRegistry.getChainIdForToken(tokenId)
-    val adapter = adapterRegistry.getAdapter(chainId)
-    _currentChainContext.value = ChainContext(
-      tokenId = tokenId,
-      chainId = chainId,
-      adapter = adapter
-    )
-  }
-
-  /**
    * Set the current chain context directly by ChainId.
    * Useful for operations not tied to a specific token.
    */
   fun setContextByChainId(chainId: ChainId) {
     val adapter = adapterRegistry.getAdapter(chainId)
     _currentChainContext.value = ChainContext(
-      tokenId = null,
       chainId = chainId,
       adapter = adapter
     )
@@ -52,7 +35,7 @@ class ChainContextManager(
    * Use this when you expect a context to be set.
    */
   fun requireCurrentContext(): ChainContext = _currentChainContext.value
-    ?: error("No chain context set. Call setContextByToken() or setContextByChainId() first.")
+    ?: error("No chain context set. Call setContextByChainId() first.")
 
   /**
    * Get the current chain context or return null.

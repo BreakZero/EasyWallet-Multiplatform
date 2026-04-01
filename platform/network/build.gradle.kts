@@ -49,6 +49,11 @@ buildkonfig {
     with(readLocalKeys()) {
       buildConfigField(STRING, "ETHERSCAN_KEY", getProperty("etherscan"))
       buildConfigField(STRING, "COINGECKO_KEY", getProperty("COINGECKO_KEY"))
+      buildConfigField(
+        STRING,
+        "CHAIN_ASSET_GATEWAY_BASE_URL",
+        getProperty("chain_asset_gateway_base_url", "http://localhost:3000")
+      )
     }
   }
 }

@@ -25,19 +25,20 @@ import androidx.compose.ui.unit.dp
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import org.easy.wallet.model.Address
 import org.easy.wallet.model.Amount
+import org.easy.wallet.model.AssetBalance
+import org.easy.wallet.model.AssetId
+import org.easy.wallet.model.AssetNetwork
+import org.easy.wallet.model.AssetType
 import org.easy.wallet.model.ChainId
-import org.easy.wallet.model.FungibleTokenMeta
-import org.easy.wallet.model.TokenHolding
-import org.easy.wallet.model.TokenId
-import org.easy.wallet.model.TokenStandard
+import org.easy.wallet.model.SupportedAsset
 
 @Composable
 fun AssetsItemView(
-  tokenHolding: TokenHolding,
+  assetBalance: AssetBalance,
   modifier: Modifier = Modifier,
   onItemClick: () -> Unit
 ) {
-  val assetMeta = tokenHolding.asset
+  val assetMeta = assetBalance.asset
   Card(
     modifier = modifier,
     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
@@ -64,7 +65,7 @@ fun AssetsItemView(
             .fillMaxSize(1f)
             .padding(4.dp)
             .clip(CircleShape),
-          imageUrl = assetMeta.logoUrl,
+          imageUrl = assetMeta.iconUrl,
           contentDescription = assetMeta.name
         )
       }
@@ -84,7 +85,7 @@ fun AssetsItemView(
       Spacer(modifier = Modifier.weight(1.0f))
       Column {
         Text(
-          text = "${tokenHolding.amount.format()} ${assetMeta.symbol}",
+          text = "${assetBalance.amount.format()} ${assetMeta.symbol}",
           style = MaterialTheme.typography.titleLarge
         )
         Text(
@@ -101,21 +102,24 @@ fun AssetsItemView(
 @Composable
 private fun AssetItemPreview() {
   AssetsItemView(
-    tokenHolding = TokenHolding(
-      asset = FungibleTokenMeta(
-        id = TokenId(
-          value = "evm:1"
-        ),
+    assetBalance = AssetBalance(
+      asset = SupportedAsset(
+        id = AssetId("evm:1/native"),
         chainId = ChainId("1"),
+        network = AssetNetwork.MAINNET,
+        type = AssetType.NATIVE,
         name = "Ethereum",
         symbol = "ETH",
         decimals = 18,
-        logoUrl = null,
-        standard = TokenStandard.NATIVE,
-        contract = Address("0x0000000000000000000000000000000000000000")
+        iconUrl = null,
+        contractAddress = null,
+        source = "preview",
+        updatedAt = "2026-04-01T00:00:00.000Z"
       ),
       amount = Amount(raw = BigInteger.TEN, decimals = 18),
-      address = Address("")
+      address = Address(""),
+      source = "preview",
+      updatedAt = "2026-04-01T00:00:00.000Z"
     ),
     onItemClick = {}
   )

@@ -7,7 +7,6 @@ import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.NavKey
 import org.easy.wallet.feature.account.navigation.AccountRoute
 import org.easy.wallet.feature.assets.navigation.AssetsRoute
-import org.easy.wallet.feature.news.navigation.NewsRoute
 import org.easy.wallet.navhost.NavigationState
 import org.easy.wallet.navhost.Navigator
 import org.easy.wallet.navhost.TopLevelDestination
@@ -17,7 +16,6 @@ import org.easy.wallet.navhost.rememberNavigationState
 fun rememberAppState(): EasyAppState {
   val topLevelRoutes = setOf(
     AssetsRoute,
-    NewsRoute,
     AccountRoute
   )
   val navigationState = rememberNavigationState(

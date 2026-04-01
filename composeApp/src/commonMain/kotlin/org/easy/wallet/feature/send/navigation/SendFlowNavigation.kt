@@ -13,44 +13,44 @@ import org.easy.wallet.feature.send.amount.EnterAmountScreen
 import org.easy.wallet.feature.send.recipient.RecipientTypingScreen
 import org.easy.wallet.feature.send.result.TransactionResultScreen
 import org.easy.wallet.feature.send.review.ReviewTransactionScreen
-import org.easy.wallet.model.TokenId
+import org.easy.wallet.model.AssetId
 import org.easy.wallet.navhost.Navigator
 import org.koin.core.parameter.parametersOf
 
 @Serializable
 internal data class RecipientAddressRoute(
-  val tokenId: String
+  val assetId: String
 ) : NavKey
 
 @Serializable
 internal data class EnterAmountRoute(
-  val tokenId: String
+  val assetId: String
 ) : NavKey
 
 @Serializable
 internal data class ReviewTransactionRoute(
-  val tokenId: String
+  val assetId: String
 ) : NavKey
 
 @Serializable
 internal data class TransactionResultRoute(
-  val tokenId: String
+  val assetId: String
 ) : NavKey
 
-fun Navigator.navigateToSendFlow(tokenId: TokenId) = navigate(RecipientAddressRoute(tokenId.value))
+fun Navigator.navigateToSendFlow(assetId: AssetId) = navigate(RecipientAddressRoute(assetId.value))
 
 fun EntryProviderScope<NavKey>.sendFlowSection(navigator: Navigator) {
   entry<RecipientAddressRoute> { key ->
-    val tokenId = TokenId(key.tokenId)
+    val assetId = AssetId(key.assetId)
     val viewModel: SendFlowViewModel =
-      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
+      sharedViewModel(key = key.assetId) { parametersOf(assetId) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.event) { event ->
       when (event) {
         SendFlowEvent.GoBack -> navigator.goBack()
         SendFlowEvent.NavigateToEnterAmount ->
-          navigator.navigate(EnterAmountRoute(key.tokenId))
+          navigator.navigate(EnterAmountRoute(key.assetId))
         else -> Unit
       }
     }
@@ -59,16 +59,16 @@ fun EntryProviderScope<NavKey>.sendFlowSection(navigator: Navigator) {
   }
 
   entry<EnterAmountRoute> { key ->
-    val tokenId = TokenId(key.tokenId)
+    val assetId = AssetId(key.assetId)
     val viewModel: SendFlowViewModel =
-      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
+      sharedViewModel(key = key.assetId) { parametersOf(assetId) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.event) { event ->
       when (event) {
         SendFlowEvent.GoBack -> navigator.goBack()
         SendFlowEvent.NavigateToReview ->
-          navigator.navigate(ReviewTransactionRoute(key.tokenId))
+          navigator.navigate(ReviewTransactionRoute(key.assetId))
         else -> Unit
       }
     }
@@ -77,16 +77,16 @@ fun EntryProviderScope<NavKey>.sendFlowSection(navigator: Navigator) {
   }
 
   entry<ReviewTransactionRoute> { key ->
-    val tokenId = TokenId(key.tokenId)
+    val assetId = AssetId(key.assetId)
     val viewModel: SendFlowViewModel =
-      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
+      sharedViewModel(key = key.assetId) { parametersOf(assetId) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.event) { event ->
       when (event) {
         SendFlowEvent.GoBack -> navigator.goBack()
         SendFlowEvent.NavigateToResult ->
-          navigator.navigate(TransactionResultRoute(key.tokenId))
+          navigator.navigate(TransactionResultRoute(key.assetId))
         else -> Unit
       }
     }
@@ -95,9 +95,9 @@ fun EntryProviderScope<NavKey>.sendFlowSection(navigator: Navigator) {
   }
 
   entry<TransactionResultRoute> { key ->
-    val tokenId = TokenId(key.tokenId)
+    val assetId = AssetId(key.assetId)
     val viewModel: SendFlowViewModel =
-      sharedViewModel(key = key.tokenId) { parametersOf(tokenId) }
+      sharedViewModel(key = key.assetId) { parametersOf(assetId) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.event) { event ->

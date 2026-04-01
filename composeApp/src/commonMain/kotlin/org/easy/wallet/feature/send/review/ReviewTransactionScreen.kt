@@ -33,8 +33,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ReviewTransactionScreen(state: SendFlowState, onAction: (SendFlowAction) -> Unit) {
-  val tokenHolding = state.tokenHolding ?: return
-  val symbol = tokenHolding.asset.symbol
+  val assetBalance = state.assetBalance ?: return
+  val symbol = assetBalance.asset.symbol
 
   Scaffold(
     modifier = Modifier.fillMaxSize(),
@@ -69,7 +69,7 @@ fun ReviewTransactionScreen(state: SendFlowState, onAction: (SendFlowAction) -> 
         ) {
           ReviewRow(
             label = "From",
-            value = tokenHolding.address?.value.orEmpty(),
+            value = assetBalance.address.value,
             isTruncated = true
           )
           HorizontalDivider()
@@ -91,7 +91,7 @@ fun ReviewTransactionScreen(state: SendFlowState, onAction: (SendFlowAction) -> 
               label = "Network Fee",
               value = "${AmountFormatter.formatBaseUnits(
                 feeAmount,
-                tokenHolding.asset.decimals
+                assetBalance.asset.decimals
               )} $symbol"
             )
           }

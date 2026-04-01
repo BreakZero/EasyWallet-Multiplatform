@@ -14,20 +14,20 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.easy.wallet.data.transaction.TransferResult
-import org.easy.wallet.domain.FetchTokenInformationUseCase
+import org.easy.wallet.domain.FetchAssetBalanceUseCase
 import org.easy.wallet.domain.coinTypeForChain
 import org.easy.wallet.domain.usecase.EstimateTransactionFeeUseCase
 import org.easy.wallet.domain.usecase.SendTokenUseCase
 import org.easy.wallet.domain.usecase.ValidateAddressUseCase
 import org.easy.wallet.model.Address
-import org.easy.wallet.model.TokenId
+import org.easy.wallet.model.AssetId
 
 class SendFlowViewModel(
-  private val fetchTokenInformationUseCase: FetchTokenInformationUseCase,
+  private val fetchAssetBalanceUseCase: FetchAssetBalanceUseCase,
   private val estimateTransactionFeeUseCase: EstimateTransactionFeeUseCase,
   private val sendTokenUseCase: SendTokenUseCase,
   private val validateAddressUseCase: ValidateAddressUseCase,
-  private val tokenId: TokenId
+  private val assetId: AssetId
 ) : ViewModel() {
   private val eventChannel = Channel<SendFlowEvent>()
   val event = eventChannel.receiveAsFlow()
@@ -40,10 +40,10 @@ class SendFlowViewModel(
   }
 
   private fun loadTokenInformation() {
-    fetchTokenInformationUseCase(tokenId)
-      .onEach { tokenHolding ->
+    fetchAssetBalanceUseCase(assetId)
+      .onEach { assetBalance ->
         _uiState.update {
-          it.copy(tokenHolding = tokenHolding, isLoading = false, error = null)
+          it.copy(assetBalance = assetBalance, isLoading = false, error = null)
         }
       }.launchIn(viewModelScope)
   }
@@ -63,7 +63,7 @@ class SendFlowViewModel(
   }
 
   private fun onRecipientChange(recipient: String) {
-    val chainId = _uiState.value.tokenHolding
+    val chainId = _uiState.value.assetBalance
       ?.asset
       ?.chainId
     val error = when {
@@ -76,14 +76,14 @@ class SendFlowViewModel(
 
   private fun continueToAmount() {
     val state = _uiState.value
-    val chainId = state.tokenHolding?.asset?.chainId
+    val chainId = state.assetBalance?.asset?.chainId
 
     val addressError = when {
       state.recipientAddress.isBlank() -> AddressError.EMPTY
       chainId != null && !validateAddressUseCase(state.recipientAddress, chainId) ->
         AddressError.INVALID_FORMAT
-      state.tokenHolding?.address != null &&
-        state.recipientAddress.equals(state.tokenHolding.address?.value, ignoreCase = true) ->
+      state.assetBalance != null &&
+        state.recipientAddress.equals(state.assetBalance.address.value, ignoreCase = true) ->
         AddressError.SAME_AS_SENDER
       else -> null
     }
@@ -105,15 +105,15 @@ class SendFlowViewModel(
     val parsed = runCatching { BigDecimal.parseString(amount) }.getOrNull()
       ?: return AmountError.INVALID_FORMAT
     if (parsed <= BigDecimal.ZERO) return AmountError.ZERO
-    val holding = _uiState.value.tokenHolding ?: return null
-    val rawAmount = toSmallestUnit(parsed, holding.asset.decimals)
-    if (rawAmount > holding.amount.raw) return AmountError.EXCEEDS_BALANCE
+    val balance = _uiState.value.assetBalance ?: return null
+    val rawAmount = toSmallestUnit(parsed, balance.asset.decimals)
+    if (rawAmount > balance.amount.raw) return AmountError.EXCEEDS_BALANCE
     return null
   }
 
   private fun useMaxAmount() {
-    val holding = _uiState.value.tokenHolding ?: return
-    val formatted = holding.amount.format(displayDecimals = holding.asset.decimals)
+    val balance = _uiState.value.assetBalance ?: return
+    val formatted = balance.amount.format(displayDecimals = balance.asset.decimals)
     _uiState.update { it.copy(amount = formatted, amountError = null) }
   }
 
@@ -132,18 +132,18 @@ class SendFlowViewModel(
 
   private fun estimateFeeAndNavigate() {
     val state = _uiState.value
-    val holding = state.tokenHolding ?: return
-    val senderAddress = holding.address ?: return
+    val balance = state.assetBalance ?: return
+    val senderAddress = balance.address
 
     viewModelScope.launch {
       _uiState.update { it.copy(isEstimatingFee = true) }
       try {
         val amount = toSmallestUnit(
           BigDecimal.parseString(state.amount),
-          holding.asset.decimals
+          balance.asset.decimals
         )
         val fee = estimateTransactionFeeUseCase(
-          tokenId = tokenId,
+          asset = balance.asset,
           from = senderAddress,
           to = Address(state.recipientAddress),
           amount = amount
@@ -159,18 +159,18 @@ class SendFlowViewModel(
 
   private fun confirmSend() {
     val state = _uiState.value
-    val holding = state.tokenHolding ?: return
-    val senderAddress = holding.address ?: return
+    val balance = state.assetBalance ?: return
+    val senderAddress = balance.address
 
     viewModelScope.launch {
       _uiState.update { it.copy(isSending = true) }
       val amount = toSmallestUnit(
         BigDecimal.parseString(state.amount),
-        holding.asset.decimals
+        balance.asset.decimals
       )
-      val coinType = coinTypeForChain(holding.asset.chainId)
+      val coinType = coinTypeForChain(balance.asset.chainId)
       val result = sendTokenUseCase(
-        tokenId = tokenId,
+        asset = balance.asset,
         from = senderAddress,
         to = Address(state.recipientAddress),
         amount = amount,

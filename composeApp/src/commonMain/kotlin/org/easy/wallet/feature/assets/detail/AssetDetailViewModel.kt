@@ -5,15 +5,15 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import org.easy.wallet.domain.FetchTokenInformationUseCase
-import org.easy.wallet.model.TokenId
+import org.easy.wallet.domain.FetchAssetBalanceUseCase
+import org.easy.wallet.model.AssetId
 
 class AssetDetailViewModel(
-  fetchTokenInformationUseCase: FetchTokenInformationUseCase,
-  tokenId: TokenId
+  fetchAssetBalanceUseCase: FetchAssetBalanceUseCase,
+  assetId: AssetId
 ) : ViewModel() {
-  val state = fetchTokenInformationUseCase(tokenId)
+  val state = fetchAssetBalanceUseCase(assetId)
     .map {
-      AssetDetailUiState(it)
+      AssetDetailUiState(assetBalance = it)
     }.stateIn(viewModelScope, SharingStarted.Lazily, AssetDetailUiState())
 }

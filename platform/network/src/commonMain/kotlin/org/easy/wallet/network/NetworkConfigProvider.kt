@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.StateFlow
 interface NetworkConfigProvider {
   val isDebugMode: StateFlow<Boolean>
 
+  fun getChainAssetGatewayBaseUrl(): String
+
   fun getEtherScanHost(): String
 
   fun getBlockChairHost(): String
@@ -21,6 +23,8 @@ interface NetworkConfigProvider {
 class NetworkConfigProviderImpl(
   override val isDebugMode: StateFlow<Boolean>
 ) : NetworkConfigProvider {
+  override fun getChainAssetGatewayBaseUrl(): String = BuildKonfig.CHAIN_ASSET_GATEWAY_BASE_URL
+
   override fun getEtherScanHost(): String = if (isDebugMode.value) {
     "api-sepolia.etherscan.io"
   } else {

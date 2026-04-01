@@ -86,7 +86,7 @@ fun TransactionResultScreen(state: SendFlowState, onAction: (SendFlowAction) -> 
 
 @Composable
 private fun SuccessContent(txHash: String, state: SendFlowState) {
-  val symbol = state.tokenHolding
+  val symbol = state.assetBalance
     ?.asset
     ?.symbol
     .orEmpty()

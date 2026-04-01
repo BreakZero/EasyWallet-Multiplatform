@@ -15,13 +15,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 import org.easy.wallet.data.repository.AccountRepositoryImpl
 import org.easy.wallet.datastore.PreferencesRepository
-import org.easy.wallet.domain.LoadAllBalancesUseCase
-import org.easy.wallet.model.TokenHolding
+import org.easy.wallet.domain.LoadAssetBalancesUseCase
+import org.easy.wallet.model.AssetBalance
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AssetsViewModel(
   accountRepository: AccountRepositoryImpl,
-  val allBalancesUseCase: LoadAllBalancesUseCase,
+  val loadAssetBalancesUseCase: LoadAssetBalancesUseCase,
   private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
   val state: StateFlow<AssetsUiState> =
@@ -36,11 +36,11 @@ class AssetsViewModel(
         emit(AssetsUiState.EmptyWallet)
       } else {
         emitAll(
-          allBalancesUseCase(account)
+          loadAssetBalancesUseCase(account)
             .map { balances ->
               AssetsUiState.WalletAssets(
                 walletName = account.name,
-                assetTokenHoldings = balances
+                assetBalances = balances
               )
             }
         )
@@ -60,6 +60,6 @@ sealed interface AssetsUiState {
 
   data class WalletAssets(
     val walletName: String,
-    val assetTokenHoldings: List<TokenHolding>
+    val assetBalances: List<AssetBalance>
   ) : AssetsUiState
 }

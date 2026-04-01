@@ -30,7 +30,7 @@ import easywallet.composeapp.generated.resources.home_tips
 import easywallet.composeapp.generated.resources.home_tips_desc
 import easywallet.composeapp.generated.resources.restore_wallet
 import org.easy.wallet.components.AssetsItemView
-import org.easy.wallet.model.TokenMeta
+import org.easy.wallet.model.SupportedAsset
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -38,7 +38,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AssetsScreen(
   onCreateWallet: () -> Unit,
   onRestoreWallet: () -> Unit,
-  onAssetClick: (TokenMeta) -> Unit
+  onAssetClick: (SupportedAsset) -> Unit
 ) {
   val viewModel: AssetsViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
@@ -117,9 +117,9 @@ private fun AssetsScreen(state: AssetsUiState, onEvent: (AssetEvent) -> Unit = {
               Text(text = state.walletName, style = MaterialTheme.typography.titleLarge)
             }
           }
-          items(state.assetTokenHoldings, key = { it.asset.id.value }) { holding ->
+          items(state.assetBalances, key = { it.asset.id.value }) { holding ->
             AssetsItemView(
-              tokenHolding = holding,
+              assetBalance = holding,
               modifier = Modifier.fillMaxWidth(),
               onItemClick = { onEvent(AssetEvent.OnItemClick(holding.asset)) }
             )
