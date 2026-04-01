@@ -22,7 +22,7 @@ EXTERNAL SOURCES:
     :path: "../composeApp"
 
 SPEC CHECKSUMS:
-  composeApp: 18b3bc0f165ba3807b304afc1b8244909f9b2f07
+  composeApp: 910addabfcdbe7acacc68012e2241bfbfff502ba
   TrustWalletCore: f3423fa79df3c4904fbda4be83a0c9c183bb4d5f
   WalletCoreSwiftProtobuf: a4798576a2d309511fc45f81843d348732ec571d
 
