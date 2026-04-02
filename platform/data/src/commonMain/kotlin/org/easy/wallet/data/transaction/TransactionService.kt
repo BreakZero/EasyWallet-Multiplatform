@@ -7,10 +7,8 @@ import org.easy.wallet.data.chain.ChainContextManager
 import org.easy.wallet.model.Address
 import org.easy.wallet.model.FeePolicy
 import org.easy.wallet.model.SupportedAsset
-import org.easy.wallet.model.Token
 import org.easy.wallet.model.Transfer
 import org.easy.wallet.model.UnsignedTx
-import org.easy.wallet.model.toToken
 
 /**
  * Domain service for managing cross-chain transactions.
@@ -44,10 +42,10 @@ class TransactionService(
     from: Address,
     to: Address,
     amount: BigInteger,
-    token: Token
+    asset: SupportedAsset
   ): FeePolicy {
     val context = chainContextManager.requireCurrentContext()
-    return context.adapter.estimateTransferFee(from, to, token, amount)
+    return context.adapter.estimateTransferFee(from, to, asset, amount)
   }
 
   suspend fun estimateFeeForAsset(
@@ -57,7 +55,7 @@ class TransactionService(
     amount: BigInteger
   ): FeePolicy {
     chainContextManager.setContextByChainId(asset.chainId)
-    return estimateFee(from, to, amount, asset.toToken())
+    return estimateFee(from, to, amount, asset)
   }
 
   /**
@@ -66,13 +64,13 @@ class TransactionService(
   suspend fun buildTransferTransaction(
     from: Address,
     to: Address,
-    token: Token,
+    asset: SupportedAsset,
     amount: BigInteger,
     fee: FeePolicy? = null,
     memo: String? = null
   ): UnsignedTx {
     val context = chainContextManager.requireCurrentContext()
-    return context.adapter.buildTransferTx(from, to, token, amount, memo)
+    return context.adapter.buildTransferTx(from, to, asset, amount, memo)
   }
 
   suspend fun buildTransferTransactionForAsset(
@@ -84,7 +82,7 @@ class TransactionService(
     memo: String? = null
   ): UnsignedTx {
     chainContextManager.setContextByChainId(asset.chainId)
-    return buildTransferTransaction(from, to, asset.toToken(), amount, fee, memo)
+    return buildTransferTransaction(from, to, asset, amount, fee, memo)
   }
 
   /**
@@ -109,8 +107,8 @@ class TransactionService(
   ): TransferResult = try {
     chainContextManager.setContextByChainId(asset.chainId)
 
-    val fee = estimateFee(from, to, amount, asset.toToken())
-    val unsignedTx = buildTransferTransaction(from, to, asset.toToken(), amount, fee, memo)
+    val fee = estimateFee(from, to, amount, asset)
+    val unsignedTx = buildTransferTransaction(from, to, asset, amount, fee, memo)
     val txHash = signAndBroadcast(unsignedTx, coinType)
 
     TransferResult.Success(txHash, fee)

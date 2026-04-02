@@ -1,12 +1,12 @@
 package org.easy.wallet.data.chain
 
 import org.easy.wallet.data.interfaces.IChainAdapter
+import org.easy.wallet.model.AssetType
 import org.easy.wallet.model.ChainId
-import org.easy.wallet.model.TokenStandard
 
 /**
  * Central registry for all chain adapters.
- * Provides lookup and discovery of adapters by chain ID or token standard.
+ * Provides lookup and discovery of adapters by chain ID or asset type.
  *
  * This abstraction allows for dynamic adapter registration and easy extension
  * to new chains without modifying existing code.
@@ -32,10 +32,10 @@ class AdapterRegistry(
   fun getAllAdapters(): List<IChainAdapter> = adapters.values.toList()
 
   /**
-   * Get adapters that support a specific token standard.
+   * Get adapters that support a specific asset type.
    */
-  fun getAdaptersByStandard(standard: TokenStandard): List<IChainAdapter> = adapters.values.filter { adapter ->
-    standard in adapter.supportedStandards
+  fun getAdaptersByType(type: AssetType): List<IChainAdapter> = adapters.values.filter { adapter ->
+    type in adapter.supportedAssetTypes
   }
 
   /**

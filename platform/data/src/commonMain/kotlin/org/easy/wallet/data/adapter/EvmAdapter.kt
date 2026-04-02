@@ -13,10 +13,10 @@ import com.trustwallet.core.sign
 import org.easy.wallet.data.interfaces.IChainAdapter
 import org.easy.wallet.data.util.clearHexString
 import org.easy.wallet.model.Address
+import org.easy.wallet.model.AssetType
 import org.easy.wallet.model.ChainId
 import org.easy.wallet.model.FeePolicy
-import org.easy.wallet.model.Token
-import org.easy.wallet.model.TokenStandard
+import org.easy.wallet.model.SupportedAsset
 import org.easy.wallet.model.Transfer
 import org.easy.wallet.model.UnsignedTx
 import org.easy.wallet.network.mapper.toGatewayEvmChainIdOrNull
@@ -28,8 +28,8 @@ class EvmAdapter(
   override val chainId: ChainId,
   private val gatewayController: ChainAssetGatewayController
 ) : IChainAdapter {
-  override val supportedStandards: Set<TokenStandard> =
-    setOf(TokenStandard.NATIVE, TokenStandard.ERC20)
+  override val supportedAssetTypes: Set<AssetType> =
+    setOf(AssetType.NATIVE, AssetType.ERC20)
 
   override suspend fun getBalance(account: Address, contract: String?): BigInteger {
     val gatewayChainId = chainId.toGatewayEvmChainIdOrNull() ?: return BigInteger.ZERO
@@ -57,7 +57,7 @@ class EvmAdapter(
   override suspend fun estimateTransferFee(
     from: Address,
     to: Address,
-    token: Token,
+    asset: SupportedAsset,
     amount: BigInteger
   ): FeePolicy = FeePolicy(
     gasLimit = BigInteger.ZERO,
@@ -69,14 +69,14 @@ class EvmAdapter(
   override suspend fun buildTransferTx(
     from: Address,
     to: Address,
-    token: Token,
+    asset: SupportedAsset,
     amount: BigInteger,
     memo: String?
   ): UnsignedTx {
     val feePolicy = estimateTransferFee(
       from = from,
       to = to,
-      token = token,
+      asset = asset,
       amount = amount
     )
     return UnsignedTx(
@@ -86,7 +86,7 @@ class EvmAdapter(
       amount = amount,
       fee = feePolicy,
       nonce = 0L,
-      tokenId = token.tokenId
+      assetId = asset.id
     )
   }
 
