@@ -38,6 +38,8 @@ internal data class GatewayAssetDto(
   val symbol: String? = null,
   @SerialName("name")
   val name: String? = null,
+  @SerialName("logoUrl")
+  val logoUrl: String? = null,
   @SerialName("contractAddress")
   val contractAddress: String? = null,
   @SerialName("decimals")

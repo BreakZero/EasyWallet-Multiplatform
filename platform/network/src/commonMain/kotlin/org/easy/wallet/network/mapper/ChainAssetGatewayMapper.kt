@@ -51,6 +51,7 @@ internal fun GatewayAssetDto.toAssetOrNull(): SupportedAsset? {
     symbol = symbol,
     name = name,
     contractAddress = normalizedContract,
+    logoUrl = logoUrl,
     decimals = decimals,
     source = source,
     updatedAt = updatedAt

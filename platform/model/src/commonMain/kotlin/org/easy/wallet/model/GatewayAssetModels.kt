@@ -27,7 +27,7 @@ data class SupportedAsset(
   val name: String,
   val contractAddress: String?,
   val decimals: Int,
-  val iconUrl: String? = null,
+  val logoUrl: String? = null,
   val source: String,
   val updatedAt: String
 )

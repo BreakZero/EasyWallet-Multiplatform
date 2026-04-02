@@ -52,7 +52,7 @@ buildkonfig {
       buildConfigField(
         STRING,
         "CHAIN_ASSET_GATEWAY_BASE_URL",
-        getProperty("chain_asset_gateway_base_url", "http://localhost:3000")
+        getProperty("chain_asset_gateway_base_url", "http://192.168.124.8:3000")
       )
     }
   }

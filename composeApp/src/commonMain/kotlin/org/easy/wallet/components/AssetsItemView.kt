@@ -65,7 +65,7 @@ fun AssetsItemView(
             .fillMaxSize(1f)
             .padding(4.dp)
             .clip(CircleShape),
-          imageUrl = assetMeta.iconUrl,
+          imageUrl = assetMeta.logoUrl,
           contentDescription = assetMeta.name
         )
       }
@@ -111,7 +111,7 @@ private fun AssetItemPreview() {
         name = "Ethereum",
         symbol = "ETH",
         decimals = 18,
-        iconUrl = null,
+        logoUrl = null,
         contractAddress = null,
         source = "preview",
         updatedAt = "2026-04-01T00:00:00.000Z"
