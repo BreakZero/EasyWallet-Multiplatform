@@ -51,7 +51,7 @@ buildkonfig {
       buildConfigField(
         STRING,
         "CHAIN_ASSET_GATEWAY_BASE_URL",
-        getProperty("chain_asset_gateway_base_url", "http://api.dejinlu.com")
+        getProperty("chain_asset_gateway_base_url", "https://api.dejinlu.com")
       )
     }
   }
