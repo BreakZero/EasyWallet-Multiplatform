@@ -7,7 +7,8 @@ import org.easy.wallet.feature.assets.AssetsScreen
 import org.easy.wallet.feature.assets.detail.AssetDetailScreen
 import org.easy.wallet.feature.send.navigation.navigateToSendFlow
 import org.easy.wallet.feature.wallet.navigation.SetPassCodeRoute
-import org.easy.wallet.model.TokenId
+import org.easy.wallet.model.AssetId
+import org.easy.wallet.model.SupportedAsset
 import org.easy.wallet.navhost.Navigator
 
 @Serializable
@@ -15,15 +16,15 @@ data object AssetsRoute : NavKey
 
 @Serializable
 internal data class AssetDetailRoute(
-  val tokenId: String
+  val assetId: String
 ) : NavKey
 
-private fun Navigator.navigateToAssetDetail(tokenId: TokenId) = navigate(AssetDetailRoute(tokenId.value))
+private fun Navigator.navigateToAssetDetail(asset: SupportedAsset) = navigate(AssetDetailRoute(asset.id.value))
 
 fun EntryProviderScope<NavKey>.assetsSection(navigator: Navigator) {
   entry<AssetsRoute> {
     AssetsScreen(
-      onAssetClick = { navigator.navigateToAssetDetail(tokenId = it.id) },
+      onAssetClick = { navigator.navigateToAssetDetail(it) },
       onCreateWallet = { navigator.navigate(SetPassCodeRoute(false)) },
       onRestoreWallet = { navigator.navigate(SetPassCodeRoute(true)) }
     )
@@ -31,8 +32,8 @@ fun EntryProviderScope<NavKey>.assetsSection(navigator: Navigator) {
 
   entry<AssetDetailRoute> { key ->
     AssetDetailScreen(
-      tokenId = TokenId(key.tokenId),
-      onSend = { tokenId -> navigator.navigateToSendFlow(tokenId) },
+      assetId = AssetId(key.assetId),
+      onSend = { assetId -> navigator.navigateToSendFlow(assetId) },
       onPopBack = navigator::goBack
     )
   }

@@ -4,11 +4,9 @@ import androidx.paging.Pager
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.trustwallet.core.CoinType
 import org.easy.wallet.data.chain.ChainContextManager
-import org.easy.wallet.data.repository.TokenRepository
 import org.easy.wallet.model.Address
 import org.easy.wallet.model.FeePolicy
-import org.easy.wallet.model.Token
-import org.easy.wallet.model.TokenId
+import org.easy.wallet.model.SupportedAsset
 import org.easy.wallet.model.Transfer
 import org.easy.wallet.model.UnsignedTx
 
@@ -24,8 +22,7 @@ import org.easy.wallet.model.UnsignedTx
  * - Broadcasting transactions
  */
 class TransactionService(
-  private val chainContextManager: ChainContextManager,
-  private val tokenRepository: TokenRepository
+  private val chainContextManager: ChainContextManager
 ) {
   /**
    * Get transaction history for the current chain context.
@@ -39,45 +36,26 @@ class TransactionService(
   }
 
   /**
-   * Get transaction history for a specific token.
-   * This sets the chain context automatically based on the token.
-   */
-  suspend fun getTransactionHistoryForToken(
-    tokenId: TokenId,
-    account: Address,
-    pageSize: Int = 50
-  ): Pager<Int, Transfer> {
-    chainContextManager.setContextByToken(tokenId)
-    return getTransactionHistory(account, pageSize)
-  }
-
-  /**
    * Estimate the fee for a transfer in the current chain context.
    */
   suspend fun estimateFee(
     from: Address,
     to: Address,
     amount: BigInteger,
-    token: Token
+    asset: SupportedAsset
   ): FeePolicy {
     val context = chainContextManager.requireCurrentContext()
-    return context.adapter.estimateTransferFee(from, to, token, amount)
+    return context.adapter.estimateTransferFee(from, to, asset, amount)
   }
 
-  /**
-   * Estimate fee for a specific token.
-   * This sets the chain context automatically based on the token.
-   */
-  suspend fun estimateFeeForToken(
-    tokenId: TokenId,
+  suspend fun estimateFeeForAsset(
+    asset: SupportedAsset,
     from: Address,
     to: Address,
     amount: BigInteger
   ): FeePolicy {
-    chainContextManager.setContextByToken(tokenId)
-    val token = tokenRepository.getById(tokenId.value)
-      ?: error("Token not found: ${tokenId.value}")
-    return estimateFee(from, to, amount, token)
+    chainContextManager.setContextByChainId(asset.chainId)
+    return estimateFee(from, to, amount, asset)
   }
 
   /**
@@ -86,31 +64,25 @@ class TransactionService(
   suspend fun buildTransferTransaction(
     from: Address,
     to: Address,
-    token: Token,
+    asset: SupportedAsset,
     amount: BigInteger,
     fee: FeePolicy? = null,
     memo: String? = null
   ): UnsignedTx {
     val context = chainContextManager.requireCurrentContext()
-    return context.adapter.buildTransferTx(from, to, token, amount, memo)
+    return context.adapter.buildTransferTx(from, to, asset, amount, memo)
   }
 
-  /**
-   * Build a transfer transaction for a specific token.
-   * This sets the chain context automatically based on the token.
-   */
-  suspend fun buildTransferTransactionForToken(
-    tokenId: TokenId,
+  suspend fun buildTransferTransactionForAsset(
+    asset: SupportedAsset,
     from: Address,
     to: Address,
     amount: BigInteger,
     fee: FeePolicy? = null,
     memo: String? = null
   ): UnsignedTx {
-    chainContextManager.setContextByToken(tokenId)
-    val token = tokenRepository.getById(tokenId.value)
-      ?: error("Token not found: ${tokenId.value}")
-    return buildTransferTransaction(from, to, token, amount, fee, memo)
+    chainContextManager.setContextByChainId(asset.chainId)
+    return buildTransferTransaction(from, to, asset, amount, fee, memo)
   }
 
   /**
@@ -125,29 +97,18 @@ class TransactionService(
 //    return context.adapter.signAndBroadcast(unsigned, )
   }
 
-  /**
-   * Complete transfer flow: estimate fee -> build tx -> sign and broadcast.
-   * This is a convenience method for the common send flow.
-   */
-  suspend fun executeTransfer(
-    tokenId: TokenId,
+  suspend fun executeTransferForAsset(
+    asset: SupportedAsset,
     from: Address,
     to: Address,
     amount: BigInteger,
     coinType: CoinType,
     memo: String? = null
   ): TransferResult = try {
-    chainContextManager.setContextByToken(tokenId)
-    val token = tokenRepository.getById(tokenId.value)
-      ?: error("Token not found: ${tokenId.value}")
+    chainContextManager.setContextByChainId(asset.chainId)
 
-    // Step 1: Estimate fee
-    val fee = estimateFee(from, to, amount, token)
-
-    // Step 2: Build transaction
-    val unsignedTx = buildTransferTransaction(from, to, token, amount, fee, memo)
-
-    // Step 3: Sign and broadcast
+    val fee = estimateFee(from, to, amount, asset)
+    val unsignedTx = buildTransferTransaction(from, to, asset, amount, fee, memo)
     val txHash = signAndBroadcast(unsignedTx, coinType)
 
     TransferResult.Success(txHash, fee)

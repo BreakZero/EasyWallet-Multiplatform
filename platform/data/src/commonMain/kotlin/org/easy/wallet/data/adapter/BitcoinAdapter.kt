@@ -17,24 +17,45 @@ import com.trustwallet.core.sign
 import okio.ByteString.Companion.decodeHex
 import org.easy.wallet.data.interfaces.IChainAdapter
 import org.easy.wallet.model.Address
+import org.easy.wallet.model.AssetType
 import org.easy.wallet.model.ChainId
 import org.easy.wallet.model.FeePolicy
-import org.easy.wallet.model.Token
-import org.easy.wallet.model.TokenStandard
+import org.easy.wallet.model.SupportedAsset
 import org.easy.wallet.model.Transfer
 import org.easy.wallet.model.UnsignedTx
+import org.easy.wallet.network.source.ChainAssetGatewayController
 
 class BitcoinAdapter(
-  override val chainId: ChainId
+  override val chainId: ChainId,
+  private val gatewayController: ChainAssetGatewayController
 ) : IChainAdapter {
-  override val supportedStandards = setOf(TokenStandard.NATIVE)
+  override val supportedAssetTypes = setOf(AssetType.NATIVE)
 
-  override suspend fun getBalance(account: Address, contract: String?): BigInteger = BigInteger.ONE
+  override suspend fun getBalance(account: Address, contract: String?): BigInteger {
+    if (contract != null) return BigInteger.ZERO
+
+    val balanceResult = gatewayController.balance(
+      address = account.value,
+      chainId = chainId
+    )
+    return balanceResult.fold(
+      onSuccess = {
+        runCatching { BigInteger.parseString(it) }.getOrElse {
+          it.printStackTrace()
+          BigInteger.ZERO
+        }
+      },
+      onFailure = {
+        it.printStackTrace()
+        BigInteger.ZERO
+      }
+    )
+  }
 
   override suspend fun estimateTransferFee(
     from: Address,
     to: Address,
-    token: Token,
+    asset: SupportedAsset,
     amount: BigInteger
   ): FeePolicy = FeePolicy(
     feeAmount = BigInteger.parseString("10000"),
@@ -46,18 +67,18 @@ class BitcoinAdapter(
   override suspend fun buildTransferTx(
     from: Address,
     to: Address,
-    token: Token,
+    asset: SupportedAsset,
     amount: BigInteger,
     memo: String?
   ): UnsignedTx {
-    val feePolicy = estimateTransferFee(from, to, token, amount)
+    val feePolicy = estimateTransferFee(from, to, asset, amount)
     return UnsignedTx(
       chainId = chainId,
       from = from,
       to = to,
       amount = amount,
       fee = feePolicy,
-      tokenId = token.tokenId
+      assetId = asset.id
     )
   }
 

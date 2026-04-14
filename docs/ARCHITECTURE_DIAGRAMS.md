@@ -4,44 +4,44 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                           UI Layer (Compose)                             │
-│                                                                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌─────────────┐ │
-│  │ AssetsScreen │  │AssetDetail   │  │SendFlowScreen│  │DAppsScreen  │ │
-│  │              │  │Screen        │  │              │  │             │ │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬──────┘ │
-└─────────┼──────────────────┼──────────────────┼──────────────────┼───────┘
-          │                  │                  │                  │
-          ▼                  ▼                  ▼                  ▼
+│                           UI Layer (Compose)                            │
+│                                                                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌─────────────┐  │
+│  │ AssetsScreen │  │AssetDetail   │  │SendFlowScreen│  │DAppsScreen  │  │
+│  │              │  │Screen        │  │              │  │             │  │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬──────┘  │
+└─────────┼─────────────────┼─────────────────┼─────────────────┼─────────┘
+          │                 │                 │                 │
+          ▼                 ▼                 ▼                 ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         ViewModel Layer                                  │
-│                                                                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌─────────────┐ │
-│  │ AssetsVM     │  │AssetDetailVM │  │SendFlowVM    │  │DAppsVM      │ │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬──────┘ │
-└─────────┼──────────────────┼──────────────────┼──────────────────┼───────┘
-          │                  │                  │                  │
-          ▼                  ▼                  ▼                  ▼
+│                         ViewModel Layer                                 │
+│                                                                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌─────────────┐  │
+│  │ AssetsVM     │  │AssetDetailVM │  │SendFlowVM    │  │DAppsVM      │  │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬──────┘  │
+└─────────┼─────────────────┼─────────────────┼─────────────────┼─────────┘
+          │                 │                 │                 │
+          ▼                 ▼                 ▼                 ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                      Use Case Layer (Domain)                             │
-│                                                                          │
-│  ┌──────────────────────┐  ┌──────────────────┐  ┌──────────────────┐  │
-│  │ LoadAllBalances      │  │GetTransactionHis │  │SendToken         │  │
-│  │ UseCase              │  │toryUseCase       │  │UseCase           │  │
-│  └──────────────────────┘  └──────────────────┘  └──────────────────┘  │
-│                                                                          │
+│                      Use Case Layer (Domain)                            │
+│                                                                         │
+│  ┌──────────────────────┐  ┌──────────────────┐  ┌──────────────────┐   │
+│  │ LoadAllBalances      │  │GetTransactionHis │  │SendToken         │   │
+│  │ UseCase              │  │toryUseCase       │  │UseCase           │   │
+│  └──────────────────────┘  └──────────────────┘  └──────────────────┘   │
+│                                                                         │
 │  ┌──────────────────────┐  ┌──────────────────┐                         │
 │  │ EstimateTransaction  │  │ConnectDApp       │                         │
 │  │ FeeUseCase           │  │UseCase           │                         │
 │  └──────────────────────┘  └──────────────────┘                         │
-└─────────────────┬────────────────────────────────────────────────────────┘
+└─────────────────┬───────────────────────────────────────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    Domain Services Layer                                 │
-│                                                                          │
+│                    Domain Services Layer                                │
+│                                                                         │
 │  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │              ChainContextManager (Auto-Detection)                 │   │
+│  │              ChainContextManager (Auto-Detection)                │   │
 │  │  ┌────────────────────────────────────────────────────────────┐  │   │
 │  │  │  • setContextByToken(tokenId) → detects chain              │  │   │
 │  │  │  • setContextByChainId(chainId)                            │  │   │
@@ -49,9 +49,9 @@
 │  │  │  • currentChainContext: StateFlow<ChainContext?>           │  │   │
 │  │  └────────────────────────────────────────────────────────────┘  │   │
 │  └──────────────────────────┬───────────────────────────────────────┘   │
-│                             │                                            │
+│                             │                                           │
 │  ┌──────────────────────────▼───────────────────────────────────────┐   │
-│  │                  AdapterRegistry                                  │   │
+│  │                  AdapterRegistry                                 │   │
 │  │  ┌────────────────────────────────────────────────────────────┐  │   │
 │  │  │  Map<String, IChainAdapter>:                               │  │   │
 │  │  │    "evm:1"     → EvmAdapter                                │  │   │
@@ -60,55 +60,55 @@
 │  │  │    "solana:mainnet" → SolanaAdapter                        │  │   │
 │  │  └────────────────────────────────────────────────────────────┘  │   │
 │  └──────────────────────────┬───────────────────────────────────────┘   │
-│                             │                                            │
+│                             │                                           │
 │  ┌──────────────────────────▼───────────────────────────────────────┐   │
-│  │              TransactionService                                   │   │
+│  │              TransactionService                                  │   │
 │  │  • getTransactionHistory(account)                                │   │
 │  │  • estimateFee(from, to, amount, token)                          │   │
 │  │  • buildTransferTransaction(...)                                 │   │
 │  │  • signAndBroadcast(unsigned, coinType)                          │   │
 │  │  • executeTransfer(...) → complete flow                          │   │
 │  └──────────────────────────────────────────────────────────────────┘   │
-│                                                                          │
+│                                                                         │
 │  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │              Web3InjectionService                                 │   │
+│  │              Web3InjectionService                                │   │
 │  │  • getProviderForCurrentChain() → Web3Provider                   │   │
 │  │  • connect(dappUrl, accounts)                                    │   │
 │  │  • handleTransactionRequest(request)                             │   │
 │  │  • switchChain(chainId)                                          │   │
 │  └──────────────────────────────────────────────────────────────────┘   │
-└─────────────────┬────────────────────────────────────────────────────────┘
+└─────────────────┬───────────────────────────────────────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                      Chain Adapter Layer (Data)                          │
-│                                                                          │
-│  ┌────────────────────┐  ┌────────────────────┐  ┌────────────────────┐│
-│  │   EvmAdapter       │  │  BitcoinAdapter    │  │  SolanaAdapter     ││
-│  │                    │  │                    │  │                    ││
-│  │ Implements:        │  │ Implements:        │  │ Implements:        ││
-│  │ • BalanceService   │  │ • BalanceService   │  │ • BalanceService   ││
-│  │ • FeeService       │  │ • FeeService       │  │ • FeeService       ││
-│  │ • TxBuilder        │  │ • TxBuilder        │  │ • TxBuilder        ││
-│  │ • Broadcaster      │  │ • Broadcaster      │  │ • Broadcaster      ││
-│  │ • HistoryService   │  │ • HistoryService   │  │ • HistoryService   ││
-│  │                    │  │                    │  │                    ││
-│  │ Supports:          │  │ Supports:          │  │ Supports:          ││
-│  │ • NATIVE (ETH)     │  │ • NATIVE (BTC)     │  │ • NATIVE (SOL)     ││
-│  │ • ERC20            │  │                    │  │ • SPL              ││
-│  └─────────┬──────────┘  └─────────┬──────────┘  └─────────┬──────────┘│
-└───────────┼──────────────────────────┼──────────────────────┼────────────┘
-            │                          │                      │
-            ▼                          ▼                      ▼
+│                      Chain Adapter Layer (Data)                         │
+│                                                                         │
+│  ┌────────────────────┐  ┌────────────────────┐  ┌────────────────────┐ │
+│  │   EvmAdapter       │  │  BitcoinAdapter    │  │  SolanaAdapter     │ │
+│  │                    │  │                    │  │                    │ │
+│  │ Implements:        │  │ Implements:        │  │ Implements:        │ │
+│  │ • BalanceService   │  │ • BalanceService   │  │ • BalanceService   │ │
+│  │ • FeeService       │  │ • FeeService       │  │ • FeeService       │ │
+│  │ • TxBuilder        │  │ • TxBuilder        │  │ • TxBuilder        │ │
+│  │ • Broadcaster      │  │ • Broadcaster      │  │ • Broadcaster      │ │
+│  │ • HistoryService   │  │ • HistoryService   │  │ • HistoryService   │ │
+│  │                    │  │                    │  │                    │ │
+│  │ Supports:          │  │ Supports:          │  │ Supports:          │ │
+│  │ • NATIVE (ETH)     │  │ • NATIVE (BTC)     │  │ • NATIVE (SOL)     │ │
+│  │ • ERC20            │  │                    │  │ • SPL              │ │
+│  └─────────┬──────────┘  └─────────┬──────────┘  └─────────┬──────────┘ │
+└────────────┼───────────────────────┼───────────────────────┼────────────┘
+             │                       │                       │
+             ▼                       ▼                       ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                       Network/Blockchain Layer                           │
-│                                                                          │
-│  ┌────────────────────┐  ┌────────────────────┐  ┌────────────────────┐│
-│  │ EtherScanController│  │ Bitcoin RPC        │  │ Solana RPC         ││
-│  │ • getBalance       │  │ (To be impl.)      │  │ (To be impl.)      ││
-│  │ • listTransfers    │  │                    │  │                    ││
-│  │ • estimateGas      │  │                    │  │                    ││
-│  └────────────────────┘  └────────────────────┘  └────────────────────┘│
+│                       Network/Blockchain Layer                          │
+│                                                                         │
+│  ┌────────────────────┐  ┌────────────────────┐  ┌────────────────────┐ │
+│  │ EtherScanController│  │ Bitcoin RPC        │  │ Solana RPC         │ │
+│  │ • getBalance       │  │ (To be impl.)      │  │ (To be impl.)      │ │
+│  │ • listTransfers    │  │                    │  │                    │ │
+│  │ • estimateGas      │  │                    │  │                    │ │
+│  └────────────────────┘  └────────────────────┘  └────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -150,11 +150,11 @@ Navigation: navigate("asset-detail/${ethTokenId}")
 │   1. chainId = adapterRegistry.getChainIdForToken(tokenId)               │
 │      └─> TokenRepository.getById("eth-mainnet-native")                   │
 │          └─> Returns Token with chainId = ChainId("evm:1")               │
-│                                                                           │
+│                                                                          │
 │   2. adapter = adapterRegistry.getAdapter(chainId)                       │
 │      └─> Looks up adapters["evm:1"]                                      │
 │          └─> Returns EvmAdapter                                          │
-│                                                                           │
+│                                                                          │
 │   3. Sets _currentChainContext = ChainContext(                           │
 │         tokenId = "eth-mainnet-native",                                  │
 │         chainId = ChainId("evm:1"),                                      │
@@ -199,7 +199,7 @@ User Interaction: Enter recipient & amount, tap "Send"
                            ▼
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ SendTokenUseCase(                                                        │
-│   tokenId = currentTokenId,  // e.g., "eth-mainnet-native"              │
+│   tokenId = currentTokenId,  // e.g., "eth-mainnet-native"               │
 │   from = senderAddress,                                                  │
 │   to = recipientAddress,                                                 │
 │   amount = amountInWei,                                                  │
@@ -210,33 +210,33 @@ User Interaction: Enter recipient & amount, tap "Send"
                            ▼
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ TransactionService.executeTransfer():                                    │
-│                                                                           │
+│                                                                          │
 │   Step 1: Set chain context                                              │
 │   ├─> chainContextManager.setContextByToken(tokenId)                     │
 │   │   └─> Detects chainId = "evm:1", sets EvmAdapter                     │
-│   │                                                                       │
+│   │                                                                      │
 │   Step 2: Get token metadata                                             │
 │   ├─> token = tokenRepository.getById(tokenId)                           │
-│   │                                                                       │
+│   │                                                                      │
 │   Step 3: Estimate fee                                                   │
 │   ├─> fee = estimateFee(from, to, amount, token)                         │
 │   │   └─> context.adapter.estimateTransferFee(...)                       │
 │   │       └─> EvmAdapter.estimateTransferFee(...)                        │
 │   │           └─> EtherScanController.estimateGas() [TODO]               │
-│   │                                                                       │
+│   │                                                                      │
 │   Step 4: Build transaction                                              │
 │   ├─> unsignedTx = buildTransferTransaction(from, to, token, amount, fee)│
 │   │   └─> context.adapter.buildTransferTx(...)                           │
 │   │       └─> EvmAdapter.buildTransferTx(...)                            │
 │   │           └─> Creates UnsignedTx with raw tx data [TODO]             │
-│   │                                                                       │
+│   │                                                                      │
 │   Step 5: Sign and broadcast                                             │
 │   └─> txHash = signAndBroadcast(unsignedTx, coinType)                    │
 │       └─> context.adapter.signAndBroadcast(...)                          │
 │           └─> EvmAdapter.signAndBroadcast(...)                           │
 │               ├─> Sign with TrustWallet Core [TODO]                      │
 │               └─> Broadcast via EtherScanController [TODO]               │
-│                                                                           │
+│                                                                          │
 │   Returns: TransferResult.Success(txHash, feePaid)                       │
 └──────────────────────────┬───────────────────────────────────────────────┘
                            │
@@ -281,7 +281,7 @@ User Interaction: Navigate to "https://app.uniswap.org" in dApp browser
 │          ├─> "evm:*" → EvmWeb3Provider                                   │
 │          ├─> "btc:*" → BitcoinWeb3Provider                               │
 │          └─> "solana:*" → SolanaWeb3Provider                             │
-│                                                                           │
+│                                                                          │
 │   2. provider.connect(dappUrl, accounts)                                 │
 │      └─> EvmWeb3Provider injects window.ethereum [TODO]                  │
 └──────────────────────────┬───────────────────────────────────────────────┘
@@ -289,7 +289,7 @@ User Interaction: Navigate to "https://app.uniswap.org" in dApp browser
                            ▼
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ WebView with injected JavaScript:                                        │
-│                                                                           │
+│                                                                          │
 │   window.ethereum = {                                                    │
 │     request: function({ method, params }) {                              │
 │       // Routes to EvmWeb3Provider in Kotlin                             │
@@ -324,7 +324,7 @@ User Interaction: Navigate to "https://app.uniswap.org" in dApp browser
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                        Same Operation, Different Chains                  │
+│                        Same Operation, Different Chains                 │
 └─────────────────────────────────────────────────────────────────────────┘
 
 ETHEREUM (EVM)                 BITCOIN                      SOLANA
@@ -369,7 +369,7 @@ Returns txHash                 Returns txHash               Returns signature
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                            DATA FLOW                                     │
+│                            DATA FLOW                                    │
 └─────────────────────────────────────────────────────────────────────────┘
 
 User Action                   Domain Layer                Network/Blockchain
@@ -438,7 +438,7 @@ User Action                   Domain Layer                Network/Blockchain
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                         CLASS DEPENDENCIES                              │
+│                         CLASS DEPENDENCIES                             │
 └────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────┐
@@ -454,9 +454,9 @@ User Action                   Domain Layer                Network/Blockchain
          ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                           Use Cases                                     │
-│ ┌───────────────┐  ┌───────────────┐  ┌───────────────┐               │
-│ │ SendTokenUC   │  │ GetHistoryUC  │  │EstimateFeeUC  │               │
-│ └───────┬───────┘  └───────┬───────┘  └───────┬───────┘               │
+│ ┌───────────────┐  ┌───────────────┐  ┌───────────────┐                 │
+│ │ SendTokenUC   │  │ GetHistoryUC  │  │EstimateFeeUC  │                 │
+│ └───────┬───────┘  └───────┬───────┘  └───────┬───────┘                 │
 └─────────┼──────────────────┼──────────────────┼─────────────────────────┘
           │ depends on       │                  │
           └──────────────────┼──────────────────┘
@@ -486,7 +486,7 @@ User Action                   Domain Layer                Network/Blockchain
        ▼
 ┌──────────────────────────────────────────────────────────────┐
 │                    IChainAdapter                             │
-│  ┌────────────┐  ┌────────────┐  ┌────────────┐             │
+│  ┌────────────┐  ┌────────────┐  ┌─────────────┐             │
 │  │ EvmAdapter │  │BtcAdapter  │  │SolanaAdapter│             │
 │  └─────┬──────┘  └─────┬──────┘  └─────┬───────┘             │
 └────────┼───────────────┼───────────────┼─────────────────────┘
@@ -505,32 +505,32 @@ User Action                   Domain Layer                Network/Blockchain
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                      STATE MANAGEMENT                                    │
+│                      STATE MANAGEMENT                                   │
 └─────────────────────────────────────────────────────────────────────────┘
 
 ChainContextManager maintains current chain state:
 
 ┌────────────────────────────────────────────────────────────────────────┐
-│ ChainContextManager                                                     │
-│                                                                         │
+│ ChainContextManager                                                    │
+│                                                                        │
 │  private val _currentChainContext = MutableStateFlow<ChainContext?>(   │
-│    null                                                                 │
-│  )                                                                      │
-│                                                                         │
-│  val currentChainContext: StateFlow<ChainContext?> =                    │
-│    _currentChainContext.asStateFlow()                                   │
+│    null                                                                │
+│  )                                                                     │
+│                                                                        │
+│  val currentChainContext: StateFlow<ChainContext?> =                   │
+│    _currentChainContext.asStateFlow()                                  │
 └────────────────────────────────────────────────────────────────────────┘
                                    │
                     ┌──────────────┼──────────────┐
                     │              │              │
                     ▼              ▼              ▼
-         ┌───────────────┐  ┌───────────┐  ┌───────────┐
-         │setContextBy   │  │setContextBy│  │clear     │
-         │Token()        │  │ChainId()   │  │Context() │
-         └───────┬───────┘  └─────┬─────┘  └─────┬─────┘
-                 │                │              │
-                 │                │              │
-                 ▼                ▼              ▼
+         ┌───────────────┐  ┌────────────┐  ┌───────────┐
+         │setContextBy   │  │setContextBy│  │clear      │
+         │Token()        │  │ChainId()   │  │Context()  │
+         └───────┬───────┘  └─────┬──────┘  └─────┬─────┘
+                 │                │               │
+                 │                │               │
+                 ▼                ▼               ▼
          ┌─────────────────────────────────────────────┐
          │    _currentChainContext.value = ...         │
          └─────────────────┬───────────────────────────┘

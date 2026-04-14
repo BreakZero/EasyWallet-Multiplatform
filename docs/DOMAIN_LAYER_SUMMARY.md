@@ -20,9 +20,9 @@ A comprehensive domain layer that **automatically detects which blockchain the u
 User selects token → ChainContextManager detects chain → Routes to correct adapter
                                     ↓
         ┌───────────────────────────┴──────────────────────────┐
-        │                                                       │
+        │                                                      │
     EvmAdapter                BitcoinAdapter             SolanaAdapter
-        │                         │                           │
+        │                         │                            │
      Ethereum                   Bitcoin                     Solana
      Polygon                                                (SPL tokens)
      Arbitrum

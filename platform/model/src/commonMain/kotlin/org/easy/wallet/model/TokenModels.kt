@@ -56,27 +56,7 @@ value class Address(
   val value: String
 )
 
-@JvmInline
-value class TokenId(
-  val value: String
-)
-
 enum class TokenStandard { NATIVE, ERC20, ERC721, SPL, TRC20 }
-
-data class Token(
-  val tokenId: TokenId,
-  val chainId: ChainId,
-  val standard: TokenStandard,
-  val contract: String?,
-  val symbol: String,
-  val name: String,
-  val decimals: Int,
-  val iconUrl: String?,
-  val enabled: Boolean,
-  val sortOrder: Int,
-  val createdAt: Long,
-  val updatedAt: Long
-)
 
 sealed class TxStatus {
   object Pending : TxStatus()
@@ -94,7 +74,7 @@ data class Transfer(
   val timestamp: Long,
   val from: Address,
   val to: Address,
-  val tokenId: TokenId,
+  val assetId: AssetId,
   val amount: BigInteger,
   val feePaid: BigInteger?,
   val status: TxStatus,
@@ -112,7 +92,7 @@ data class UnsignedTx(
   val chainId: ChainId,
   val from: Address,
   val to: Address?,
-  val tokenId: TokenId,
+  val assetId: AssetId,
   val amount: BigInteger?,
   val fee: FeePolicy?,
   val nonce: Long? = null,
@@ -129,7 +109,7 @@ data class UnsignedTx(
     if (chainId != other.chainId) return false
     if (from != other.from) return false
     if (to != other.to) return false
-    if (tokenId != other.tokenId) return false
+    if (assetId != other.assetId) return false
     if (amount != other.amount) return false
     if (fee != other.fee) return false
     if (!rawMessage.equals(other.rawMessage)) return false
@@ -143,7 +123,7 @@ data class UnsignedTx(
     result = 31 * result + chainId.hashCode()
     result = 31 * result + from.hashCode()
     result = 31 * result + (to?.hashCode() ?: 0)
-    result = 31 * result + tokenId.hashCode()
+    result = 31 * result + assetId.hashCode()
     result = 31 * result + (amount?.hashCode() ?: 0)
     result = 31 * result + (fee?.hashCode() ?: 0)
     result = 31 * result + (rawMessage?.hashCode() ?: 0)

@@ -1,7 +1,7 @@
 package org.easy.wallet.data.interfaces
 
+import org.easy.wallet.model.AssetType
 import org.easy.wallet.model.ChainId
-import org.easy.wallet.model.TokenStandard
 
 interface IChainAdapter :
   BalanceService,
@@ -10,5 +10,5 @@ interface IChainAdapter :
   Broadcaster,
   HistoryService {
   val chainId: ChainId
-  val supportedStandards: Set<TokenStandard>
+  val supportedAssetTypes: Set<AssetType>
 }

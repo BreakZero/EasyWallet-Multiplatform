@@ -1,6 +1,6 @@
 package org.easy.wallet.feature.assets
 
-import org.easy.wallet.model.TokenMeta
+import org.easy.wallet.model.SupportedAsset
 
 sealed interface AssetEvent {
   data object OnRestoreWallet : AssetEvent
@@ -8,6 +8,6 @@ sealed interface AssetEvent {
   data object OnCreateWallet : AssetEvent
 
   data class OnItemClick(
-    val asset: TokenMeta
+    val asset: SupportedAsset
   ) : AssetEvent
 }

@@ -44,8 +44,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun EnterAmountScreen(state: SendFlowState, onAction: (SendFlowAction) -> Unit) {
-  val tokenHolding = state.tokenHolding ?: return
-  val symbol = tokenHolding.asset.symbol
+  val assetBalance = state.assetBalance ?: return
+  val symbol = assetBalance.asset.symbol
 
   Scaffold(
     modifier = Modifier.fillMaxSize(),
@@ -104,7 +104,7 @@ fun EnterAmountScreen(state: SendFlowState, onAction: (SendFlowAction) -> Unit) 
           style = MaterialTheme.typography.bodyMedium
         )
         Text(
-          text = "${tokenHolding.amount.format()} $symbol",
+          text = "${assetBalance.amount.format()} $symbol",
           style = MaterialTheme.typography.bodyMedium,
           color = MaterialTheme.colorScheme.primary
         )

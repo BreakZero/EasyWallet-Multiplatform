@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.LibraryExtension
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import java.io.FileInputStream
 import java.io.InputStreamReader
@@ -38,7 +39,7 @@ kotlin {
   }
 }
 
-android {
+extensions.configure<LibraryExtension>() {
   namespace = "org.easy.wallet.network"
 }
 
@@ -47,8 +48,11 @@ buildkonfig {
 
   defaultConfigs {
     with(readLocalKeys()) {
-      buildConfigField(STRING, "ETHERSCAN_KEY", getProperty("etherscan"))
-      buildConfigField(STRING, "COINGECKO_KEY", getProperty("COINGECKO_KEY"))
+      buildConfigField(
+        STRING,
+        "CHAIN_ASSET_GATEWAY_BASE_URL",
+        getProperty("chain_asset_gateway_base_url", "https://api.dejinlu.com")
+      )
     }
   }
 }

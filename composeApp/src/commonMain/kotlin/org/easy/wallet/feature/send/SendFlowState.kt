@@ -2,11 +2,11 @@ package org.easy.wallet.feature.send
 
 import androidx.compose.runtime.Stable
 import org.easy.wallet.model.FeePolicy
-import org.easy.wallet.model.TokenHolding
+import org.easy.wallet.model.AssetBalance
 
 @Stable
 data class SendFlowState(
-  val tokenHolding: TokenHolding? = null,
+  val assetBalance: AssetBalance? = null,
   val isLoading: Boolean = true,
   val recipientAddress: String = "",
   val addressError: AddressError? = null,

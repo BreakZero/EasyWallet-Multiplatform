@@ -1,21 +1,18 @@
 package org.easy.wallet.data.chain
 
 import org.easy.wallet.data.interfaces.IChainAdapter
-import org.easy.wallet.data.repository.TokenRepository
+import org.easy.wallet.model.AssetType
 import org.easy.wallet.model.ChainId
-import org.easy.wallet.model.TokenId
-import org.easy.wallet.model.TokenStandard
 
 /**
  * Central registry for all chain adapters.
- * Provides lookup and discovery of adapters by chain ID, token ID, or token standard.
+ * Provides lookup and discovery of adapters by chain ID or asset type.
  *
  * This abstraction allows for dynamic adapter registration and easy extension
  * to new chains without modifying existing code.
  */
 class AdapterRegistry(
   private val adapters: Map<String, IChainAdapter>,
-  private val tokenRepository: TokenRepository,
   private val chainRouter: ChainRouter
 ) {
   /**
@@ -30,33 +27,15 @@ class AdapterRegistry(
   }
 
   /**
-   * Get adapter by TokenId.
-   * Looks up the token's chain and returns the appropriate adapter.
-   */
-  suspend fun getAdapterForToken(tokenId: TokenId): IChainAdapter {
-    val chainId = getChainIdForToken(tokenId)
-    return getAdapter(chainId)
-  }
-
-  /**
-   * Get the ChainId for a given TokenId.
-   */
-  suspend fun getChainIdForToken(tokenId: TokenId): ChainId {
-    val token = tokenRepository.getById(tokenId.value)
-      ?: error("Token not found: ${tokenId.value}")
-    return token.chainId
-  }
-
-  /**
    * Get all registered adapters.
    */
   fun getAllAdapters(): List<IChainAdapter> = adapters.values.toList()
 
   /**
-   * Get adapters that support a specific token standard.
+   * Get adapters that support a specific asset type.
    */
-  fun getAdaptersByStandard(standard: TokenStandard): List<IChainAdapter> = adapters.values.filter { adapter ->
-    standard in adapter.supportedStandards
+  fun getAdaptersByType(type: AssetType): List<IChainAdapter> = adapters.values.filter { adapter ->
+    type in adapter.supportedAssetTypes
   }
 
   /**
