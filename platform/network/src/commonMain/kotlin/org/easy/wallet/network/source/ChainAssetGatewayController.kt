@@ -41,18 +41,33 @@ class ChainAssetGatewayController internal constructor(
     chainId: ChainId,
     contractAddress: String? = null
   ): Result<AssetBalance> {
-    val evmChainId = chainId.toGatewayEvmChainIdOrNull()
-      ?: return Result.failure(IllegalArgumentException("Unsupported gateway chain: ${chainId.value}"))
-    val path = if (contractAddress != null) {
-      "/v1/balances/ethereum/$address/erc20/${contractAddress.lowercase()}"
-    } else {
-      "/v1/balances/ethereum/$address/native"
+    val path = when {
+      chainId == ChainId.BTC_MAINNET -> {
+        if (contractAddress != null) {
+          return Result.failure(
+            IllegalArgumentException("Bitcoin native balance does not support contractAddress")
+          )
+        }
+        "/v1/balances/bitcoin/$address/native"
+      }
+
+      else -> {
+        val evmChainId = chainId.toGatewayEvmChainIdOrNull()
+          ?: return Result.failure(IllegalArgumentException("Unsupported gateway chain: ${chainId.value}"))
+        if (contractAddress != null) {
+          "/v1/balances/ethereum/$address/erc20/${contractAddress.lowercase()}"
+        } else {
+          "/v1/balances/ethereum/$address/native"
+        }
+      }
     }
     val url = "${configProvider.getChainAssetGatewayBaseUrl().trimEnd('/')}$path"
 
     val response = httpClient.safeGet<ChainAssetGatewayResponse<GatewayBalanceDto>>(url) {
-      parameter("chainId", evmChainId)
-      parameter("includePrice", false)
+      parameter("includePrice", true)
+      chainId.toGatewayEvmChainIdOrNull()?.let { evmChainId ->
+        parameter("chainId", evmChainId)
+      }
     }
     return response.mapCatching { result ->
       result.data.toAssetBalanceOrNull()

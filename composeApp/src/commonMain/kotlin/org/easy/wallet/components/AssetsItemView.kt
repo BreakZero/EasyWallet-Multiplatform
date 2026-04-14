@@ -76,20 +76,22 @@ fun AssetsItemView(
           text = assetMeta.name,
           style = MaterialTheme.typography.titleMedium
         )
-        Text(
-          text = "$29,450.00",
-          style = MaterialTheme.typography.bodySmall,
-          color = MaterialTheme.colorScheme.secondary
-        )
+        assetBalance.priceUsd?.let {
+          Text(
+            text = "$it USD",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.secondary
+          )
+        }
       }
       Spacer(modifier = Modifier.weight(1.0f))
-      Column {
+      Column(horizontalAlignment = Alignment.End) {
         Text(
           text = "${assetBalance.amount.format()} ${assetMeta.symbol}",
           style = MaterialTheme.typography.titleLarge
         )
         Text(
-          text = "$29,450.00",
+          text = assetBalance.valueUsd?.ifBlank { "--" } ?: "--",
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.secondary
         )

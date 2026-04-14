@@ -42,7 +42,12 @@ val dataModule = module {
 
   single { AssetRepositoryImpl(get()) } bind AssetRepository::class
 
-  single { (chainId: ChainId) -> BitcoinAdapter(chainId) } binds arrayOf(
+  single { (chainId: ChainId) ->
+    BitcoinAdapter(
+      chainId = chainId,
+      gatewayController = get()
+    )
+  } binds arrayOf(
     BalanceService::class,
     Broadcaster::class,
     FeeService::class,

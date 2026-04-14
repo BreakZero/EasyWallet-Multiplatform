@@ -23,13 +23,34 @@ import org.easy.wallet.model.FeePolicy
 import org.easy.wallet.model.SupportedAsset
 import org.easy.wallet.model.Transfer
 import org.easy.wallet.model.UnsignedTx
+import org.easy.wallet.network.source.ChainAssetGatewayController
 
 class BitcoinAdapter(
-  override val chainId: ChainId
+  override val chainId: ChainId,
+  private val gatewayController: ChainAssetGatewayController
 ) : IChainAdapter {
   override val supportedAssetTypes = setOf(AssetType.NATIVE)
 
-  override suspend fun getBalance(account: Address, contract: String?): BigInteger = BigInteger.ONE
+  override suspend fun getBalance(account: Address, contract: String?): BigInteger {
+    if (contract != null) return BigInteger.ZERO
+
+    val balanceResult = gatewayController.balance(
+      address = account.value,
+      chainId = chainId
+    )
+    return balanceResult.fold(
+      onSuccess = {
+        runCatching { BigInteger.parseString(it) }.getOrElse {
+          it.printStackTrace()
+          BigInteger.ZERO
+        }
+      },
+      onFailure = {
+        it.printStackTrace()
+        BigInteger.ZERO
+      }
+    )
+  }
 
   override suspend fun estimateTransferFee(
     from: Address,
