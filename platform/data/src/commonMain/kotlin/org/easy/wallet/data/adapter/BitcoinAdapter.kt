@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import co.touchlab.kermit.Logger
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.trustwallet.core.AnySigner
 import com.trustwallet.core.BitcoinSigHashType
@@ -93,7 +94,7 @@ class BitcoinAdapter(
     val encodedTransaction = output.encoded.toByteArray().toHexString()
 
     return encodedTransaction.also {
-      println("===== Signed Transaction (Hex): $encodedTransaction")
+      Logger.d("===== Signed Transaction (Hex): $encodedTransaction")
     }
   }
 

@@ -13,6 +13,16 @@
 
 需要在 GitHub 仓库设置中添加以下 Secrets（Settings → Secrets and variables → Actions）：
 
+| Secret Name | Required | Description |
+|-------------|----------|-------------|
+| `APIKEY_PROPERTIES` | ✅ | API keys for blockchain services |
+| `PACKAGE_READ_PROPERTIES` | ✅ | GitHub Packages credentials for TrustWallet Core |
+| `IOS_CERTIFICATE_BASE64` | ⚠️ | Required for signed builds only |
+| `IOS_CERTIFICATE_PASSWORD` | ⚠️ | Required for signed builds only |
+| `KEYCHAIN_PASSWORD` | ⚠️ | Required for signed builds only |
+| `IOS_PROVISIONING_PROFILE_BASE64` | ⚠️ | Required for signed builds only |
+| `IOS_EXPORT_OPTIONS_PLIST` | ⚠️ | Required for signed builds only |
+
 ### 1. IOS_CERTIFICATE_BASE64
 
 iOS 签名证书（.p12 格式）的 Base64 编码。
@@ -74,6 +84,25 @@ base64 -i .github/ExportOptions.plist | pbcopy
 
 项目已有的 API keys 配置（与 Android CI 共用）。
 
+### 7. PACKAGE_READ_PROPERTIES
+
+GitHub Packages 读取配置，用于下载 TrustWallet Core 依赖。
+
+**生成步骤：**
+
+创建 `configs/package_read.properties` 文件：
+```properties
+gpr.name=<github-username>
+gpr.key=<github-token>
+```
+
+然后转换为 Base64：
+```bash
+base64 -i configs/package_read.properties | pbcopy
+```
+
+将复制的内容粘贴到 GitHub Secret `PACKAGE_READ_PROPERTIES` 中。
+
 ## ExportOptions.plist 配置说明
 
 ### method 字段说明
@@ -128,6 +157,30 @@ CI 将在以下情况自动触发：
 - 保留天数：7 天
 - 文件类型：`.ipa`
 
+## CI 工作流程改进
+
+### 缓存策略
+
+CI 现在包含以下缓存机制：
+
+1. **Gradle 缓存** - 通过 `actions/setup-java` 和 `actions/setup-gradle` 自动管理
+2. **CocoaPods 缓存** - 缓存 `iosApp/Pods` 和 `~/Library/Caches/CocoaPods`
+
+### 构建流程
+
+1. **Generate BuildKonfig** - 生成包含 API keys 的配置文件
+2. **Generate Dummy Framework** - 为 CocoaPods 生成占位 framework
+3. **Install CocoaPods** - 安装依赖（带缓存）
+4. **Build Kotlin Module** - 编译 KMP 共享模块
+5. **Build iOS App** - Xcode 构建 iOS 应用
+6. **Verify Output** - 验证构建产物
+7. **Package & Upload** - 打包并上传 artifact
+
+### 失败处理
+
+- 构建失败时会自动上传构建日志作为 artifact
+- 签名构建会确保钥匙串在结束时清理
+
 ## 常见问题
 
 ### 1. 签名失败
@@ -150,7 +203,14 @@ CI 将在以下情况自动触发：
 检查：
 - Gradle 配置是否正确
 - JDK 版本是否匹配（当前使用 JDK 17）
-- API keys 配置是否正确
+- API keys 配置是否正确 (`APIKEY_PROPERTIES` secret)
+- GitHub Packages 认证是否正确 (`PACKAGE_READ_PROPERTIES` secret)
+
+常见错误：
+```
+Could not resolve com.trustwallet:wallet-core-kotlin:4.3.21
+```
+解决方法：确保已配置 `PACKAGE_READ_PROPERTIES` secret 且包含有效的 GitHub token。
 
 ### 4. Archive 失败
 
@@ -188,6 +248,8 @@ xcodebuild -exportArchive \
 2. 查看 GitHub Actions 日志获取详细错误信息
 
 3. 使用 `workflow_dispatch` 手动触发测试 CI
+
+4. 下载并查看构建日志 artifact（构建失败时自动上传）
 
 ## 进一步优化
 

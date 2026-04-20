@@ -12,20 +12,19 @@ coilCompose = "3.3.0"
 compose-multiplatform = "1.10.0"
 datastore = "1.2.0"
 haze = "1.7.2"
-kermit = "2.0.8"
+kermit = "2.1.0"
 kotlin = "2.3.0"
 kotlinxSerializationJson = "1.10.0"
-ktor = "3.4.0"
+ktor = "3.4.1"
 coroutines = "1.10.2"
-navigationCompose = "2.9.1"
 navigation3 = "1.0.0-alpha06"
 savedstate = "1.4.0"
 koin = "4.1.1"
 pagingComposeCommon = "3.3.0-alpha02-0.5.1"
 walletCoreKotlin = "4.3.21"
-vico = "3.0.0"
-foundationAndroid = "1.10.2"
-ksafe = "1.6.0"
+vico = "3.0.2"
+foundationAndroid = "1.10.4"
+ksafe = "1.7.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -42,7 +41,6 @@ coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.r
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 savedstate-compose = { module = "org.jetbrains.androidx.savedstate:savedstate-compose", version.ref = "savedstate" }
 

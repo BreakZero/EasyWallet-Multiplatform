@@ -1,0 +1,91 @@
+name: iOS Platform Compiler Verify
+on:
+  push:
+    branches:
+      - develop
+      - feature/*
+      - bugfix/*
+      - hotfix/*
+  pull_request:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+
+jobs:
+  verify_ios:
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: Copy apikeys.properties from secrets
+        run: |
+          mkdir -p configs
+          echo "${{ secrets.APIKEY_PROPERTIES }}" | base64 --decode > configs/apikeys.properties
+
+      - name: Copy package_read.properties from secrets
+        run: |
+          mkdir -p configs
+          echo "${{ secrets.PACKAGE_READ_PROPERTIES }}" | base64 --decode > configs/package_read.properties
+
+      - name: Copy CI gradle.properties
+        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
+
+      - name: Setup iOS Simulator
+        run: |
+          # Show available runtimes and devices for debugging
+          echo "=== Available Runtimes ==="
+          xcrun simctl list runtimes
+          echo "=== Available Devices ==="
+          xcrun simctl list devices available
+
+          # Create a simulator if needed
+          DEFAULT_RUNTIME=$(xcrun simctl list runtimes | grep iOS | head -1 | awk '{print $NF}')
+          echo "Using runtime: $DEFAULT_RUNTIME"
+
+          # Check if iPhone 15 simulator exists, create if not
+          if ! xcrun simctl list devices available | grep -q "iPhone 15"; then
+            echo "Creating iPhone 15 simulator..."
+            xcrun simctl create "iPhone 15" com.apple.CoreSimulator.SimDeviceType.iPhone-15 "$DEFAULT_RUNTIME"
+          fi
+
+      # Step 1: Verify BuildKonfig generation
+      - name: Generate BuildKonfig
+        run: ./gradlew -p platform generateBuildKonfig
+
+      # Step 2: Verify Kotlin compilation for iOS targets
+      - name: Compile Kotlin for iOS (Arm64)
+        env:
+          GPR_USERNAME: ${{ github.actor }}
+          GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./gradlew :composeApp:compileKotlinIosArm64 --no-daemon
+
+      - name: Compile Kotlin for iOS (Simulator Arm64)
+        env:
+          GPR_USERNAME: ${{ github.actor }}
+          GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./gradlew :composeApp:compileKotlinIosSimulatorArm64 --no-daemon
+
+      # Step 3: Verify framework generation for CocoaPods
+      - name: Generate iOS Framework
+        run: ./gradlew :composeApp:generateDummyFramework

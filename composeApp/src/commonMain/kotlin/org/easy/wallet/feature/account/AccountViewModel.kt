@@ -2,6 +2,7 @@ package org.easy.wallet.feature.account
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -16,7 +17,7 @@ class AccountViewModel(
   fun listAccounts() {
     viewModelScope.launch {
       accountRepository.listAccounts().onEach {
-        println("===== $it")
+        Logger.d("Account: $it")
       }
     }
   }

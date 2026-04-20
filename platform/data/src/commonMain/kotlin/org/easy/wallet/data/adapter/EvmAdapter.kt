@@ -2,6 +2,7 @@ package org.easy.wallet.data.adapter
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import co.touchlab.kermit.Logger
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import com.trustwallet.core.AnySigner
 import com.trustwallet.core.CoinType
@@ -10,6 +11,9 @@ import com.trustwallet.core.ethereum.SigningInput
 import com.trustwallet.core.ethereum.SigningOutput
 import com.trustwallet.core.ethereum.Transaction
 import com.trustwallet.core.sign
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.withContext
 import org.easy.wallet.data.interfaces.IChainAdapter
 import org.easy.wallet.data.util.clearHexString
 import org.easy.wallet.model.Address
@@ -42,13 +46,13 @@ class EvmAdapter(
       onSuccess = {
         runCatching {
           BigInteger.parseString(it)
-        }.getOrElse {
-          it.printStackTrace()
+        }.getOrElse { error ->
+          Logger.e(error) { "Failed to parse balance" }
           BigInteger.ZERO
         }
       },
       onFailure = {
-        it.printStackTrace()
+        Logger.e(it) { "Failed to get balance" }
         BigInteger.ZERO
       }
     )
@@ -59,12 +63,14 @@ class EvmAdapter(
     to: Address,
     asset: SupportedAsset,
     amount: BigInteger
-  ): FeePolicy = FeePolicy(
-    gasLimit = BigInteger.ZERO,
-    gasPrice = BigInteger.ZERO,
-    feeAmount = BigInteger.ZERO,
-    priorityTip = BigInteger.ZERO
-  )
+  ): FeePolicy = withContext(Dispatchers.IO) {
+    FeePolicy(
+      gasLimit = BigInteger.ZERO,
+      gasPrice = BigInteger.ZERO,
+      feeAmount = BigInteger.ZERO,
+      priorityTip = BigInteger.ZERO
+    )
+  }
 
   override suspend fun buildTransferTx(
     from: Address,
