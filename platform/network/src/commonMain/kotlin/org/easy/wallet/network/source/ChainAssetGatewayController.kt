@@ -2,6 +2,8 @@ package org.easy.wallet.network.source
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.easy.wallet.model.AssetBalance
 import org.easy.wallet.model.ChainId
 import org.easy.wallet.model.SupportedAsset
@@ -22,7 +24,9 @@ class ChainAssetGatewayController internal constructor(
   suspend fun listAssets(): Result<List<SupportedAsset>> {
     val url = "${configProvider.getChainAssetGatewayBaseUrl().trimEnd('/')}/v1/assets"
     return httpClient
-      .safeGet<ChainAssetGatewayResponse<GatewayAssetsPayload>>(url)
+      .safeGet<ChainAssetGatewayResponse<GatewayAssetsPayload>>(url) {
+        applyGatewayNetworkParameter()
+      }
       .map { response -> response.data.items.mapNotNull { it.toAssetOrNull() } }
   }
 
@@ -42,7 +46,7 @@ class ChainAssetGatewayController internal constructor(
     contractAddress: String? = null
   ): Result<AssetBalance> {
     val path = when {
-      chainId == ChainId.BTC_MAINNET -> {
+      chainId == ChainId.BTC_MAINNET || chainId == ChainId.BTC_TESTNET -> {
         if (contractAddress != null) {
           return Result.failure(
             IllegalArgumentException("Bitcoin native balance does not support contractAddress")
@@ -65,6 +69,7 @@ class ChainAssetGatewayController internal constructor(
 
     val response = httpClient.safeGet<ChainAssetGatewayResponse<GatewayBalanceDto>>(url) {
       parameter("includePrice", true)
+      applyGatewayNetworkParameter()
       chainId.toGatewayEvmChainIdOrNull()?.let { evmChainId ->
         parameter("chainId", evmChainId)
       }
@@ -83,7 +88,14 @@ class ChainAssetGatewayController internal constructor(
       ?: return Result.failure(IllegalArgumentException("Unsupported gateway chain: ${chainId.value}"))
     val url = "${configProvider.getChainAssetGatewayBaseUrl().trimEnd('/')}/v1/transactions/ethereum/$txHash"
     return httpClient.safeGet<ChainAssetGatewayResponse<GatewayTransactionDetailDto>>(url) {
+      applyGatewayNetworkParameter()
       parameter("chainId", evmChainId)
     }.map { it.data }
+  }
+
+  private fun io.ktor.client.request.HttpRequestBuilder.applyGatewayNetworkParameter() {
+    if (configProvider.isDebugMode.value) {
+      parameter("network", "testnet")
+    }
   }
 }
